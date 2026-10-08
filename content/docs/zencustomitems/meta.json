@@ -8,6 +8,7 @@
     "conditions",
     "filters-and-mutators",
     "flags",
-    "sets-and-mastery"
+    "sets-and-mastery",
+    "api"
   ]
 }

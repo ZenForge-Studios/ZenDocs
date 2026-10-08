@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import {
   BookOpen,
@@ -88,8 +89,15 @@ export default function HomePage() {
           {/* Left Brand + Nav links */}
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center gap-2 outline-none group">
-              <div className="flex size-7 items-center justify-center rounded-lg bg-zinc-800 text-white font-black text-sm group-hover:scale-105 transition-transform">
-                <span className="font-mono">Z</span>
+              <div className="relative flex size-7 items-center justify-center rounded-lg overflow-hidden group-hover:scale-105 transition-transform">
+                <Image
+                  src="/logo.png"
+                  alt="ZenForge"
+                  width={28}
+                  height={28}
+                  className="size-full object-contain"
+                  priority
+                />
               </div>
             </Link>
 
@@ -198,8 +206,14 @@ export default function HomePage() {
           
           {/* Organization Tag */}
           <div className="flex items-center gap-2">
-            <div className="flex size-6 items-center justify-center rounded-md bg-zinc-800 text-white font-mono text-xs font-bold">
-              Z
+            <div className="relative flex size-6 items-center justify-center rounded-md overflow-hidden">
+              <Image
+                src="/logo.png"
+                alt="ZenForge"
+                width={24}
+                height={24}
+                className="size-full object-contain"
+              />
             </div>
             <span className="font-medium text-muted-foreground text-sm tracking-wide">
               ZenForge Development
@@ -271,8 +285,8 @@ export default function HomePage() {
                   <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400 bg-amber-400/10 border border-amber-400/20 px-2 py-0.5 rounded">
                     PLUGIN
                   </span>
-                  <div className="size-6 rounded-full bg-black/40 flex items-center justify-center text-xs font-mono text-zinc-400">
-                    Z
+                  <div className="relative size-6 rounded-full overflow-hidden">
+                    <Image src="/logo.png" alt="ZenForge" width={24} height={24} className="size-full object-contain" />
                   </div>
                 </div>
                 <div>
@@ -308,8 +322,8 @@ export default function HomePage() {
                   <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-400/10 border border-emerald-400/20 px-2 py-0.5 rounded">
                     ENCHANTS
                   </span>
-                  <div className="size-6 rounded-full bg-black/40 flex items-center justify-center text-xs font-mono text-zinc-400">
-                    Z
+                  <div className="relative size-6 rounded-full overflow-hidden">
+                    <Image src="/logo.png" alt="ZenForge" width={24} height={24} className="size-full object-contain" />
                   </div>
                 </div>
                 <div>
@@ -345,8 +359,8 @@ export default function HomePage() {
                   <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-400 bg-indigo-400/10 border border-indigo-400/20 px-2 py-0.5 rounded">
                     ECONOMY
                   </span>
-                  <div className="size-6 rounded-full bg-black/40 flex items-center justify-center text-xs font-mono text-zinc-400">
-                    Z
+                  <div className="relative size-6 rounded-full overflow-hidden">
+                    <Image src="/logo.png" alt="ZenForge" width={24} height={24} className="size-full object-contain" />
                   </div>
                 </div>
                 <div>
@@ -680,8 +694,8 @@ export default function HomePage() {
             </p>
             <div className="mx-1.5 mb-1.5 flex flex-col gap-4 rounded-lg bg-card p-4 ring-1 ring-border/60">
               <div className="flex items-center gap-3">
-                <div className="size-12 rounded-xl bg-zinc-800 flex items-center justify-center font-mono font-black text-white text-xl">
-                  Z
+                <div className="relative size-12 rounded-xl overflow-hidden shadow-sm shrink-0">
+                  <Image src="/logo.png" alt="ZenForge" width={48} height={48} className="size-full object-contain" />
                 </div>
                 <div className="flex min-w-0 flex-col gap-0.5">
                   <p className="truncate font-semibold text-sm">ZenForge Development</p>
@@ -719,8 +733,8 @@ export default function HomePage() {
             {/* Brand column */}
             <div className="col-span-2 flex flex-col gap-3">
               <Link href="/" className="flex items-center gap-2 font-semibold text-base text-foreground">
-                <div className="size-6 rounded bg-zinc-800 text-white font-mono flex items-center justify-center text-xs">
-                  Z
+                <div className="relative size-6 rounded overflow-hidden">
+                  <Image src="/logo.png" alt="ZenForge" width={24} height={24} className="size-full object-contain" />
                 </div>
                 <span>ZenForge</span>
               </Link>

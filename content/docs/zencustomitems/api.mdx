@@ -1,0 +1,351 @@
+---
+title: "API para Desarrolladores"
+description: "Documentación oficial de la API de ZenCustomItems para desarrolladores de Spigot, Paper y Folia: creación de ítems, persistencia PDC, sockets, upgrades, maestría, eventos y extensibilidad."
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+
+Bienvenido a la documentación oficial de la **API de ZenCustomItems**. Esta API permite a desarrolladores de plugins de Spigot, Paper y Folia interactuar completamente con el plugin: crear y modificar ítems personalizados, manipular su persistencia (PDC), registrar ítems o recetas en runtime, manejar sockets y gemas, realizar mejoras (upgrades), gestionar evolución y maestrías, registrar nuevos efectos, condiciones, filtros y mutadores, y escuchar eventos personalizados del ciclo de vida de los ítems.
+
+---
+
+## 1. Instalación y Dependencia
+
+En tu archivo `plugin.yml` agrega la dependencia suave o estricta según tu caso:
+
+```yaml title="plugin.yml"
+depend: [ZenCustomItems]
+# O si es opcional:
+softdepend: [ZenCustomItems]
+```
+
+---
+
+## 2. Obtención de la Instancia de la API
+
+Puedes acceder a la API de dos maneras:
+
+### A) Mediante el Singleton Provider (Recomendado)
+
+<Tabs items={['Kotlin', 'Java']}>
+  <Tab value="Kotlin">
+```kotlin
+import com.cuac_xd.zencustomitems.api.ZenCustomItemsProvider
+
+val api = ZenCustomItemsProvider.get()
+```
+  </Tab>
+  <Tab value="Java">
+```java
+import com.cuac_xd.zencustomitems.api.ZenCustomItemsAPI;
+import com.cuac_xd.zencustomitems.api.ZenCustomItemsProvider;
+
+ZenCustomItemsAPI api = ZenCustomItemsProvider.get();
+```
+  </Tab>
+</Tabs>
+
+### B) Vía Bukkit ServicesManager
+
+```java
+RegisteredServiceProvider<ZenCustomItemsAPI> provider = Bukkit.getServicesManager().getRegistration(ZenCustomItemsAPI.class);
+if (provider != null) {
+    ZenCustomItemsAPI api = provider.getProvider();
+}
+```
+
+---
+
+## 3. Creación e Inspección de Ítems
+
+### Métodos Principales
+
+| Método | Retorno | Descripción |
+| :--- | :--- | :--- |
+| `isZenItem(ItemStack? item)` | `Boolean` | Comprueba si un ItemStack es un ítem personalizado de Zen. |
+| `getItemId(ItemStack? item)` | `String?` | Obtiene el ID configurado del ítem o `null`. |
+| `matches(ItemStack? item, String expectedId)` | `Boolean` | Verifica si el ítem coincide con el ID dado (no distingue mayúsculas/minúsculas). |
+| `createItem(String id, Int amount = 1)` | `ItemStack?` | Construye un nuevo ítem a partir de su ID con valores iniciales. |
+| `createItem(ItemDefinition def, Int amount = 1)` | `ItemStack` | Construye un nuevo ítem a partir de su definición. |
+| `buildItem(ItemDefinition def, ItemInstance inst)` | `ItemStack` | Construye un ítem a partir de una instancia específica. |
+| `getItemDefinition(String id)` | `ItemDefinition?` | Obtiene la definición de un ítem cargado. |
+| `registerItemDefinition(ItemDefinition def)` | `Unit` | Registra programáticamente un nuevo ítem en tiempo de ejecución. |
+| `getAllItemDefinitions()` | `Collection<ItemDefinition>` | Retorna todas las definiciones de ítems cargadas. |
+
+### Ejemplos de Uso
+
+<Tabs items={['Kotlin', 'Java']}>
+  <Tab value="Kotlin">
+```kotlin
+val api = ZenCustomItemsProvider.get()
+
+// Dar un ítem al jugador
+val sword = api.createItem("excalibur", 1)
+if (sword != null) {
+    player.inventory.addItem(sword)
+}
+
+// Verificar ítem en mano
+val heldItem = player.inventory.itemInMainHand
+if (api.matches(heldItem, "excalibur")) {
+    player.sendMessage("¡Tienes la espada legendaria!")
+}
+```
+  </Tab>
+  <Tab value="Java">
+```java
+ZenCustomItemsAPI api = ZenCustomItemsProvider.get();
+
+ItemStack item = api.createItem("golden_apple", 5);
+if (item != null) {
+    player.getInventory().addItem(item);
+}
+```
+  </Tab>
+</Tabs>
+
+---
+
+## 4. Instancias y Persistencia (PDC)
+
+Cada ítem generado puede tener un estado runtime propio (`ItemInstance`) guardado de forma persistente en su `PersistentDataContainer`:
+
+### Métodos de Instancia y Variables
+
+| Método | Retorno | Descripción |
+| :--- | :--- | :--- |
+| `getInstanceId(ItemStack? item)` | `UUID?` | Retorna el UUID único de la instancia o `null`. |
+| `loadInstance(ItemStack? item)` | `ItemInstance?` | Carga el objeto `ItemInstance` completo con su estado. |
+| `saveInstance(ItemStack item, ItemInstance inst)` | `Unit` | Guarda los datos del `ItemInstance` en el PDC del ítem. |
+| `setVariable(ItemStack item, String key, String value)` | `Boolean` | Agrega o modifica una variable personalizada en el ítem y actualiza su visualización. |
+| `getVariable(ItemStack item, String key)` | `String?` | Obtiene el valor de una variable guardada en el ítem. |
+| `updateItem(ItemStack item)` | `Boolean` | Actualiza un ítem a la versión más reciente de su archivo YAML preservando stats y cantidad. |
+| `updatePlayerInventory(Player player)` | `Int` | Actualiza todos los ítems del inventario del jugador. |
+
+#### Ejemplo: Guardar datos personalizados en un ítem
+
+```kotlin
+val item = player.inventory.itemInMainHand
+if (api.isZenItem(item)) {
+    // Asignar variable
+    api.setVariable(item, "kills", "42")
+    
+    // Leer variable
+    val kills = api.getVariable(item, "kills")?.toIntOrNull() ?: 0
+}
+```
+
+---
+
+## 5. Behavior Flags (Restricciones)
+
+Las `ItemBehaviorFlag` permiten restringir acciones sobre los ítems (evitar que se coloquen como bloques, se crafteen, se tiren al suelo, se metan a yunques, etc.):
+
+### Flags Disponibles
+
+- `NO_PLACE`: Impide colocar el ítem como bloque.
+- `NO_CRAFT`: Impide usarlo como ingrediente en mesas de crafteo.
+- `NO_DROP`: Impide soltar el ítem al suelo.
+- `NO_USE`: Impide hacer clic derecho o interactuar con el ítem.
+- `NO_CONSUME`: Impide comerlo o beberlo.
+- `NO_EQUIP`: Impide colocarlo en casillas de armadura.
+- `NO_ANVIL`: Impide repararlo o renombrarlo en yunques.
+- `NO_SMITHING`: Impide modificarlo en mesas de herrería.
+- `NO_GRINDSTONE`: Impide usarlo en afiladoras.
+- `NO_ENCHANT`: Impide encantarlo en mesas de encantamiento.
+- `NO_BREWING`: Impide colocarlo en soportes de pociones.
+- `NO_FURNACE`: Impide cocinarlo en hornos.
+
+### Métodos
+
+```kotlin
+// Comprobar una flag
+val noDrop = api.hasBehaviorFlag(item, ItemBehaviorFlag.NO_DROP)
+
+// Agregar una flag
+api.addBehaviorFlag(item, ItemBehaviorFlag.NO_ANVIL)
+
+// Remover una flag
+api.removeBehaviorFlag(item, ItemBehaviorFlag.NO_CRAFT)
+
+// Bitmask raw
+val flags = api.getBehaviorFlags(item)
+api.setBehaviorFlags(item, flags)
+```
+
+---
+
+## 6. Sockets y Gemas
+
+ZenCustomItems incluye un sistema modular de engarzado de gemas y runas:
+
+```kotlin
+val weapon = player.inventory.itemInMainHand
+val gem = player.inventory.itemInOffHand
+
+// Intentar engarzar la gema en el arma
+val success = api.insertSocketItem(weapon, gem, player)
+if (success) {
+    player.sendMessage("¡Gema engarzada con éxito!")
+}
+```
+
+---
+
+## 7. Upgrades y Mejoras
+
+Permite mejorar los ítems custom (`+1`, `+2`, etc.) evaluando las probabilidades de éxito, fallo o rotura configuradas en el ítem:
+
+```kotlin
+val result = api.upgradeItem(item, player)
+
+when (result) {
+    UpgradeResult.SUCCESS -> player.sendMessage("¡Mejora exitosa!")
+    UpgradeResult.FAILED -> player.sendMessage("La mejora falló.")
+    UpgradeResult.DESTROYED -> player.sendMessage("¡El ítem se ha destruido!")
+    UpgradeResult.MAX_LEVEL_REACHED -> player.sendMessage("Nivel máximo alcanzado.")
+    UpgradeResult.NOT_UPGRADEABLE -> player.sendMessage("Este ítem no puede ser mejorado.")
+}
+```
+
+---
+
+## 8. Evolución y Maestría
+
+Los ítems pueden ganar experiencia y subir de nivel de maestría:
+
+```kotlin
+// Añadir 25 de XP al ítem en mano
+api.addMasteryExperience(player, item, 25)
+
+// Consultar nivel y experiencia
+val level = api.getMasteryLevel(item)
+val xp = api.getMasteryExperience(item)
+```
+
+---
+
+## 9. Sets de Armadura
+
+Permite registrar bonificaciones por llevar piezas de un mismo conjunto y consultar piezas activas:
+
+```kotlin
+// Consultar piezas activas que lleva un jugador
+val activePieces = api.getActiveSetPieces(player, "dragon_set")
+
+// Forzar recálculo del set tras equipar armaduras
+api.recalculatePlayerArmorSets(player)
+```
+
+---
+
+## 10. Eventos de Bukkit Personalizados
+
+Todos los eventos están en el paquete `com.cuac_xd.zencustomitems.api.event` y pueden escucharse mediante un listener de Bukkit estándar:
+
+| Evento | Cuándo se dispara | Cancelable |
+| :--- | :--- | :---: |
+| `ZenItemCraftEvent` | Cuando un jugador está a punto de craftear un ítem de Zen. | Sí |
+| `ZenTriggerExecuteEvent` | Antes de ejecutar cualquier trigger (`RIGHT_CLICK`, `MELEE_DAMAGE`, etc.). | Sí |
+| `ZenItemSocketEvent` | Antes de que una gema/runa sea engarzada en un ítem. | Sí |
+| `ZenItemUpgradeEvent` | Antes de realizar el intento de upgrade de un ítem. | Sí |
+| `ZenItemPostUpgradeEvent` | Inmediatamente después de que finalice un upgrade con el resultado obtenido. | No |
+| `ZenItemExpGainEvent` | Cuando un ítem custom va a recibir experiencia de maestría. | Sí |
+| `ZenItemLevelUpEvent` | Cuando un ítem sube de nivel de maestría. | No |
+| `ZenSetBonusActivateEvent` | Cuando se activa una bonificación de conjunto de armadura. | Sí |
+
+### Ejemplo de Listener
+
+```kotlin
+import com.cuac_xd.zencustomitems.api.event.ZenItemCraftEvent
+import com.cuac_xd.zencustomitems.api.event.ZenItemSocketEvent
+import com.cuac_xd.zencustomitems.api.event.ZenItemUpgradeEvent
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+
+class MyCustomListener : Listener {
+
+    @EventHandler
+    fun onZenCraft(event: ZenItemCraftEvent) {
+        val player = event.player
+        val def = event.definition
+        
+        if (def.id == "excalibur" && !player.hasPermission("vip.craft")) {
+            event.isCancelled = true
+            player.sendMessage("§c¡No tienes permiso VIP para craftear este ítem!")
+        }
+    }
+
+    @EventHandler
+    fun onSocket(event: ZenItemSocketEvent) {
+        event.player?.sendMessage("§aEngarzando §e${event.socketableDefinition.id} §aen §b${event.targetDefinition.id}")
+    }
+
+    @EventHandler
+    fun onUpgrade(event: ZenItemUpgradeEvent) {
+        if (event.targetLevel > 5 && !event.player?.isOp!!) {
+            event.isCancelled = true
+            event.player?.sendMessage("§cNo puedes mejorar ítems más allá del nivel +5.")
+        }
+    }
+}
+```
+
+---
+
+## 11. Extensibilidad: Efectos, Condiciones, Filtros y Mutadores
+
+Puedes registrar nuevas acciones y condiciones personalizadas para que funcionen con los triggers del plugin (tanto desde archivos YAML como desde el editor web):
+
+### Registrar un Efecto Personalizado
+```kotlin
+api.registerEffect(object : ZenEffect {
+    override val id: String = "MY_CUSTOM_EFFECT"
+
+    override fun execute(context: TriggerContext, parameters: Map<String, Any>) {
+        val player = context.player ?: return
+        val message = parameters["message"] as? String ?: "¡Hola!"
+        player.sendMessage("§d[CustomEffect] $message")
+    }
+})
+```
+
+### Registrar una Condición Personalizada
+```kotlin
+api.registerCondition(object : ZenCondition {
+    override val id: String = "IS_DAYTIME"
+
+    override fun evaluate(context: TriggerContext, parameters: Map<String, Any>): Boolean {
+        val world = context.player?.world ?: return false
+        val time = world.time
+        return time in 0..12000
+    }
+})
+```
+
+### Registrar un Filtro Personalizado
+```kotlin
+api.registerFilter(object : ZenFilter {
+    override val id: String = "ONLY_BABY_MOBS"
+
+    override fun filter(context: TriggerContext, parameters: Map<String, Any>): Boolean {
+        val target = context.targetEntity
+        return target is org.bukkit.entity.Ageable && !target.isAdult
+    }
+})
+```
+
+### Registrar un Mutador Personalizado
+```kotlin
+api.registerMutator(object : ZenMutator {
+    override val id: String = "DOUBLE_DAMAGE"
+
+    override fun mutate(context: TriggerContext, variableName: String, parameters: Map<String, Any>) {
+        if (variableName.equals("damage", ignoreCase = true)) {
+            context.damage *= 2.0
+        }
+    }
+})
+```

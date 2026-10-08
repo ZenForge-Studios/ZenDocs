@@ -1,7 +1,7 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
 import { appName } from './shared';
 import { DiscordIcon, GithubIcon, SpigotIcon, BuiltByBitIcon } from '@/components/BrandIcons';
-import { Layers } from 'lucide-react';
+import Image from 'next/image';
 import React from 'react';
 
 export function baseOptions(): BaseLayoutProps {
@@ -9,8 +9,15 @@ export function baseOptions(): BaseLayoutProps {
     nav: {
       title: (
         <div className="flex items-center gap-2.5 select-none group">
-          <div className="flex size-7 items-center justify-center rounded-md bg-zinc-800 text-white dark:bg-zinc-800 dark:text-white transition-all">
-            <Layers className="size-4 text-white" />
+          <div className="relative flex size-7 items-center justify-center rounded-md overflow-hidden transition-all group-hover:scale-105">
+            <Image
+              src="/logo.png"
+              alt="ZenForge Logo"
+              width={28}
+              height={28}
+              className="size-full object-contain"
+              priority
+            />
           </div>
           <div className="flex items-baseline gap-1.5 font-bold tracking-tight">
             <span className="text-foreground text-sm font-semibold">ZenForge</span>
