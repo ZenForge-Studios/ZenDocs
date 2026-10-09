@@ -1,31 +1,44 @@
 ---
 title: "API para Desarrolladores"
-description: "Guía completa para desarrolladores y referencia de la API de ZenEnchants."
+description: "Documentación oficial y técnica de la API de ZenEnchants: catálogo de encantamientos, manipulación de ítems, libros custom, polvos mágicos, extensibilidad (efectos, condiciones, mutadores, filtros) y eventos de Bukkit."
 ---
 
 import { Callout } from 'fumadocs-ui/components/callout';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
 
-# API para Desarrolladores
-
----
-
-Este documento explica cómo integrar **ZenEnchants** en plugins externos de ítems (como plugins de ítems custom, MMOItems, ShopGUIPlus, kits, crates o sistemas de economía) para consultar, aplicar, remover y generar ítems con encantamientos personalizados.
+Bienvenido a la documentación técnica y de integración de la API de **ZenEnchants**. Esta API está diseñada para permitir que cualquier plugin externo (sistemas de ítems custom, MMOItems, EcoItems, plugins de economía, tiendas GUI, recompensas de crates, minijuegos, etc.) interactúe de forma nativa, fluida y sin fricción con los encantamientos, libros, polvos mágicos y mecánicas del plugin.
 
 ---
 
-## 1. Dependencia en tu Proyecto (Gradle / Maven)
+## 1. Instalación y Dependencia
 
-Si estás desarrollando otro plugin en el mismo servidor o entorno:
+Para usar ZenEnchants en tu plugin, añade el `.jar` o artefacto como dependencia de compilación:
 
-### Gradle (Kotlin DSL)
-```kotlin
+<Tabs items={['Gradle (Kotlin DSL)', 'Gradle (Groovy)', 'Maven (pom.xml)']}>
+  <Tab value="Gradle (Kotlin DSL)">
+```kotlin title="build.gradle.kts"
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     compileOnly(files("libs/ZenEnchants-1.0.0.jar"))
 }
 ```
+  </Tab>
+  <Tab value="Gradle (Groovy)">
+```groovy title="build.gradle"
+repositories {
+    mavenCentral()
+}
 
-### Maven (`pom.xml`)
-```xml
+dependencies {
+    compileOnly files('libs/ZenEnchants-1.0.0.jar')
+}
+```
+  </Tab>
+  <Tab value="Maven (pom.xml)">
+```xml title="pom.xml"
 <dependency>
     <groupId>com.cuac_xd.zenenchants</groupId>
     <artifactId>ZenEnchants</artifactId>
@@ -33,166 +46,405 @@ dependencies {
     <scope>provided</scope>
 </dependency>
 ```
+  </Tab>
+</Tabs>
 
-Asegúrate de agregar `ZenEnchants` a la lista de `depend` o `softdepend` de tu `plugin.yml`:
-```yaml
-softdepend: [ZenEnchants]
+### Declaración en `plugin.yml` o `paper-plugin.yml`
+Declara a `ZenEnchants` como dependencia suave (`softdepend`) o mandatoria (`depend`):
+
+```yaml title="plugin.yml"
+name: MiPluginCustom
+version: 1.0.0
+main: com.miusuario.miplugin.MiPlugin
+softdepend:
+  - ZenEnchants
 ```
 
 ---
 
-## 2. Punto de Entrada: `ZenEnchantsAPI`
+## 2. Punto de Entrada Principal: `ZenEnchantsAPI`
 
-La clase principal de interacción es [`com.cuac_xd.zenenchants.api.ZenEnchantsAPI`](../src/main/java/com/cuac_xd/zenenchants/api/ZenEnchantsAPI.java). Sus métodos de catálogo se pueden consultar después de que el plugin termine de cargar. Toda operación que lea o modifique un `ItemStack` debe ejecutarse en el hilo principal del servidor.
+Todo el acceso a la API se canaliza de forma estática y segura a través de la clase:
+`com.cuac_xd.zenenchants.api.ZenEnchantsAPI`
+
+<Callout type="info" title="Hilos y Ciclo de Vida">
+La API se inicializa automáticamente durante el `onEnable` de ZenEnchants. Toda operación de lectura o modificación sobre instancias de `ItemStack` debe ejecutarse en el **hilo principal del servidor (Server Main Thread)**.
+</Callout>
 
 ```java
 import com.cuac_xd.zenenchants.api.ZenEnchantsAPI;
 import com.cuac_xd.zenenchants.model.ZenEnchantment;
 import com.cuac_xd.zenenchants.model.Rarity;
+import com.cuac_xd.zenenchants.model.EnchantmentType;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.Material;
 ```
 
 ---
 
-## 3. Ejemplos Prácticos de Integración
+## 3. Guía de Casos de Uso
 
-### 3.1 Aplicar un Encantamiento Custom a un Ítem
-Aplica un encantamiento custom actualizando automáticamente los tags PDC (PersistentDataContainer) y el Lore visual del ítem con colores MiniMessage:
+### 3.1 Consulta de Encantamientos del Catálogo
+Puedes buscar encantamientos por su ID, listar todos los registrados o consultar catálogos independientes (customs vs vanillas).
 
 ```java
-ItemStack espada = new ItemStack(Material.NETHERITE_SWORD);
-
-// Aplicar directamente por ID y Nivel
-boolean success = ZenEnchantsAPI.applyEnchantment(espada, "lifesteal", 3);
-if (success) {
-    player.sendMessage("¡Encantamiento aplicado con éxito!");
+// Buscar un encantamiento por ID
+Optional<ZenEnchantment> opt = ZenEnchantsAPI.getEnchantment("telepathy");
+if (opt.isPresent()) {
+    ZenEnchantment enchant = opt.get();
+    String nombre = enchant.getDisplayNameRaw();
+    int nivelMax = enchant.getMaxLevel();
+    String rarezaId = enchant.getRarityId();
+    String tipoId = enchant.getTypeId(); // normal, special, curse, etc.
 }
 
-// O buscando el objeto ZenEnchantment primero:
-Optional<ZenEnchantment> lifesteal = ZenEnchantsAPI.getEnchantment("lifesteal");
-lifesteal.ifPresent(enchant -> {
-    ZenEnchantsAPI.applyEnchantment(espada, enchant, 5);
-});
+// Saber si existe un ID
+if (ZenEnchantsAPI.isEnchantmentRegistered("lifesteal")) {
+    // Está cargado y listo
+}
+
+// Listar todos los encantamientos (customs + overrides vanilla)
+List<ZenEnchantment> todos = ZenEnchantsAPI.getAllEnchantments();
+
+// Obtener solo custom o solo vanilla
+Collection<ZenEnchantment> customs = ZenEnchantsAPI.getCustomEnchantmentsCatalog();
+Collection<ZenEnchantment> vanillas = ZenEnchantsAPI.getVanillaEnchantmentsCatalog();
 ```
 
 ---
 
-### 3.2 Leer Encantamientos Custom de un Ítem
-Obtén un mapa de todos los encantamientos custom presentes en el ítem junto con sus respectivos niveles:
+### 3.2 Registro Dinámico de Encantamientos en Tiempo de Ejecución
+Otros plugins pueden registrar o desregistrar encantamientos personalizados en tiempo de ejecución sin necesidad de archivos YAML:
 
+```java
+ZenEnchantment miEnchant = new ZenEnchantment(
+    "mi_encantamiento",       // id
+    "<gold>Poder Oculto</gold>",// display name
+    "legendary",              // rarity id
+    "special",                // type id
+    5,                        // max level
+    true,                     // enabled
+    false,                    // is vanilla
+    null,                     // vanilla key
+    Set.of(TargetGroup.SWORD),// targets
+    Set.of("sword"),          // target ids
+    Set.of("sharpness"),      // conflicts
+    true,                     // table available
+    true,                     // villager available
+    true,                     // loot available
+    List.of("<gray>Otorga un golpe devastador.</gray>"), // description
+    Map.of(),                 // placeholders
+    List.of()                 // configured effects
+);
+
+// Registrar
+ZenEnchantsAPI.registerEnchantment(miEnchant);
+
+// Desregistrar si fuese necesario
+ZenEnchantsAPI.unregisterEnchantment("mi_encantamiento");
+```
+
+---
+
+### 3.3 Consulta y Manipulación de Encantamientos en Ítems
+
+#### Obtener y Comprobar Encantamientos en un Ítem
 ```java
 ItemStack item = player.getInventory().getItemInMainHand();
 
-// Obtener todos los encantamientos custom en el ítem
+// Obtener mapa de [ID del encantamiento -> Nivel]
 Map<String, Integer> enchants = ZenEnchantsAPI.getCustomEnchantments(item);
 
-for (Map.Entry<String, Integer> entry : enchants.entrySet()) {
-    String id = entry.getKey();
-    int level = entry.getValue();
-    player.sendMessage("Encantamiento: " + id + " | Nivel: " + level);
-}
-
-// Comprobar si tiene uno específico
+// Comprobar si tiene uno en específico
 if (ZenEnchantsAPI.hasCustomEnchantment(item, "telepathy")) {
-    int level = ZenEnchantsAPI.getEnchantmentLevel(item, "telepathy");
-    player.sendMessage("Este pico tiene Telepathy nivel " + level);
+    int nivel = ZenEnchantsAPI.getEnchantmentLevel(item, "telepathy");
+    player.sendMessage("¡Tu herramienta tiene Telepatía nivel " + nivel + "!");
 }
+```
+
+#### Validar si un Encantamiento es Compatible
+Antes de aplicar, puedes verificar si cumple los requisitos (targets, niveles, conflictos, límite global por ítem y límite por tipo):
+
+```java
+ZenEnchantment enchant = ZenEnchantsAPI.getEnchantment("lifesteal").get();
+
+// Validación booleana simple
+if (ZenEnchantsAPI.canApply(item, enchant, 3)) {
+    // Es aplicable
+}
+
+// O diagnóstico detallado del motivo por el cual no aplica:
+Optional<String> error = ZenEnchantsAPI.getApplyError(item, enchant, 3);
+if (error.isPresent()) {
+    switch (error.get()) {
+        case "incompatible-item" -> player.sendMessage("Este ítem no admite ese encantamiento.");
+        case "invalid-level" -> player.sendMessage("El nivel está fuera del rango permitido.");
+        case "conflict" -> player.sendMessage("Entra en conflicto con otro encantamiento presente.");
+        case "enchantment-limit" -> player.sendMessage("El ítem alcanzó el límite máximo de encantamientos.");
+        case "type-limit-reached" -> player.sendMessage("Has alcanzado el límite para esa categoría de encantamiento.");
+    }
+}
+```
+
+#### Aplicar y Remover Encantamientos
+Aplica encantamientos actualizando automáticamente los tags PDC (PersistentDataContainer) y el Lore visual del ítem (soportando formateo MiniMessage):
+
+```java
+// Aplicar por ID (retorna true si fue exitoso)
+boolean exito = ZenEnchantsAPI.applyEnchantment(item, "critical_strike", 3);
+
+// Aplicar en contexto de un jugador (dispara EnchantApplyEvent con su contexto)
+ZenEnchantsAPI.applyEnchantment(player, item, "critical_strike", 3);
+
+// Remover un encantamiento y actualizar el Lore limpiamente
+ZenEnchantsAPI.removeEnchantment(player, item, "critical_strike");
+
+// Forzar actualización visual del Lore si hiciste modificaciones manuales
+ZenEnchantsAPI.updateItemLore(item);
 ```
 
 ---
 
-### 3.3 Remover un Encantamiento Custom
-Remueve un encantamiento por su identificador y reconstruye el lore del ítem de forma limpia:
+### 3.4 Libros Encantados Custom y Polvos Mágicos
 
+#### Libros Encantados con Probabilidad de Éxito y Destrucción
 ```java
-ItemStack item = player.getInventory().getItemInMainHand();
+ZenEnchantment enchant = ZenEnchantsAPI.getEnchantment("bleed").get();
 
-if (ZenEnchantsAPI.hasCustomEnchantment(item, "bleed")) {
-    ZenEnchantsAPI.removeEnchantment(item, "bleed");
-    player.sendMessage("Se ha purgado el encantamiento Bleed de tu arma.");
+// Crear libro: (Encantamiento, Nivel, % Éxito, % Destrucción)
+ItemStack libro = ZenEnchantsAPI.createEnchantedBook(enchant, 2, 80, 15);
+player.getInventory().addItem(libro);
+
+// Comprobar y leer metadatos de un libro
+if (ZenEnchantsAPI.isCustomBook(libro)) {
+    String enchantId = ZenEnchantsAPI.getBookEnchantmentId(libro).orElse("ninguno");
+    int nivel = ZenEnchantsAPI.getBookEnchantmentLevel(libro);
+    int exitoRate = ZenEnchantsAPI.getBookSuccessRate(libro);
+    int destruccionRate = ZenEnchantsAPI.getBookDestroyRate(libro);
+    
+    // Modificar tasa de éxito y actualizar su Lore automáticamente
+    ZenEnchantsAPI.setBookSuccessRate(libro, 100);
 }
 ```
 
----
-
-### 3.4 Crear Libros de Encantamientos con Tasas de Éxito / Destrucción
-Genera libros encantados idénticos a los del plugin para recompensas de Crates, Bosses o Tiendas:
-
+#### Libros Misteriosos (Mystery Books)
 ```java
-Optional<ZenEnchantment> opt = ZenEnchantsAPI.getEnchantment("critical_strike");
-
-if (opt.isPresent()) {
-    // Parámetros: encantamiento, nivel, % éxito, % destrucción
-    ItemStack libro = ZenEnchantsAPI.createEnchantedBook(opt.get(), 3, 85, 10);
-    player.getInventory().addItem(libro);
-}
-```
-
----
-
-### 3.5 Crear Libros Misteriosos (Mystery Books)
-Genera libros misteriosos que los jugadores pueden abrir con clic derecho:
-
-```java
-// Rarezas disponibles: "common", "rare", "legendary", "special"
+// Crear libro misterioso de rareza legendaria
 ItemStack mysteryBook = ZenEnchantsAPI.createMysteryBook("legendary");
 player.getInventory().addItem(mysteryBook);
+
+// Validar y leer rareza
+if (ZenEnchantsAPI.isMysteryBook(item)) {
+    String rareza = ZenEnchantsAPI.getMysteryBookRarity(item);
+}
 ```
 
----
-
-### 3.6 Crear y Comprobar Polvo Mágico (Magic Dust)
-Genera polvos mágicos de éxito para recompensas o plugins de crafteo/tiendas:
-
+#### Polvos Mágicos de Éxito (Magic Dust)
 ```java
 // Crear polvo mágico que añade +15% de éxito
 ItemStack polvo = ZenEnchantsAPI.createMagicDust(15);
 player.getInventory().addItem(polvo);
 
-// Comprobar si un ítem es polvo mágico y obtener su porcentaje
+// Comprobar si un ítem es polvo mágico y obtener su valor
 if (ZenEnchantsAPI.isMagicDust(item)) {
-    int incremento = ZenEnchantsAPI.getDustRate(item);
-    player.sendMessage("Este polvo incrementa el éxito en: +" + incremento + "%");
+    int porcentaje = ZenEnchantsAPI.getDustRate(item);
+    player.sendMessage("Este polvo añade +" + porcentaje + "% de éxito.");
 }
 ```
 
 ---
 
-### 3.7 Consultar Catálogo Completo y Rarezas
-Útil para plugins de menús, subastas o wikis internas:
+### 3.5 Rarezas, Tipos y Targets
 
 ```java
-// Lista de todos los encantamientos registrados en el servidor
-List<ZenEnchantment> all = ZenEnchantsAPI.getAllEnchantments();
-player.sendMessage("Total de encantamientos disponibles: " + all.size());
-
-// Información de una rareza
-Optional<Rarity> rareza = ZenEnchantsAPI.getRarity("legendary");
-rareza.ifPresent(r -> {
-    player.sendMessage("Rareza: " + r.displayNameRaw() + " | Color: " + r.colorTag());
+// Obtener información de una rareza
+Optional<Rarity> rarezaOpt = ZenEnchantsAPI.getRarity("legendary");
+rarezaOpt.ifPresent(rarity -> {
+    String nombre = rarity.displayNameRaw();
+    String color = rarity.colorTag();
+    int pesoLoot = rarity.lootWeight();
 });
+
+// Obtener todos los tipos de encantamiento (EcoEnchants style)
+for (EnchantmentType tipo : ZenEnchantsAPI.getAllTypes()) {
+    String id = tipo.id();
+    int limite = tipo.limit(); // -1 si es ilimitado
+}
+
+// Validar compatibilidad de target
+boolean compatible = ZenEnchantsAPI.matchesTargets(List.of("pickaxe", "shovel"), Material.DIAMOND_PICKAXE);
 ```
 
 ---
 
-## Resumen de Métodos de `ZenEnchantsAPI`
+### 3.6 Extensibilidad del Motor: Efectos, Condiciones, Mutadores y Filtros
 
-| Método | Retorno | Descripción |
-| :--- | :--- | :--- |
-| `getEnchantment(String id)` | `Optional<ZenEnchantment>` | Busca un encantamiento por ID. |
-| `getAllEnchantments()` | `List<ZenEnchantment>` | Devuelve todos los encantamientos registrados. |
-| `getRarity(String id)` | `Optional<Rarity>` | Obtiene los datos de una rareza. |
-| `getCustomEnchantments(ItemStack item)` | `Map<String, Integer>` | Devuelve todos los encantamientos custom del ítem. |
-| `hasCustomEnchantment(ItemStack item, String id)` | `boolean` | Verifica si el ítem tiene el encantamiento. |
-| `getEnchantmentLevel(ItemStack item, String id)` | `int` | Devuelve el nivel del encantamiento en el ítem (0 si no está). |
-| `applyEnchantment(ItemStack item, String id, int level)` | `boolean` | Aplica un encantamiento por ID actualizando NBT y Lore. |
-| `applyEnchantment(ItemStack item, ZenEnchantment e, int level)` | `void` | Aplica un objeto encantamiento directamente. |
-| `removeEnchantment(ItemStack item, String id)` | `void` | Quita un encantamiento y actualiza el Lore. |
-| `createEnchantedBook(ZenEnchantment e, int lvl, int succ, int dest)` | `ItemStack` | Crea un libro con tasas de éxito/destrucción. |
-| `createMysteryBook(String rarityId)` | `ItemStack` | Crea un libro misterioso abrible con clic derecho. |
-| `createMagicDust(int rate)` | `ItemStack` | Crea un ítem de Polvo Mágico con un porcentaje de incremento. |
-| `isCustomBook(ItemStack item)` | `boolean` | Indica si el ítem es un libro de encantamiento custom. |
-| `isMysteryBook(ItemStack item)` | `boolean` | Indica si el ítem es un libro misterioso sin abrir. |
-| `isMagicDust(ItemStack item)` | `boolean` | Indica si el ítem es Polvo Mágico de éxito. |
-| `getDustRate(ItemStack item)` | `int` | Devuelve el porcentaje de éxito que otorga el Polvo Mágico. |
+ZenEnchants permite registrar efectos, condiciones, mutadores y filtros personalizados desde tu propio plugin. Una vez registrados en código Java, **pueden invocarse en cualquier archivo YAML** de `enchants/*.yml`:
+
+#### Registrar Efecto Personalizado
+```java
+ZenEnchantsAPI.registerCustomEffect("LIGHTNING_EXPLOSION", (context, args) -> {
+    Player player = context.getPlayer();
+    if (player != null && context.getTarget() != null) {
+        Location loc = context.getTarget().getLocation();
+        loc.getWorld().strikeLightning(loc);
+        loc.getWorld().createExplosion(loc, 2.0f, false, false);
+    }
+});
+```
+
+#### Registrar Condición Personalizada
+```java
+ZenEnchantsAPI.registerCustomCondition("IS_FULL_MOON", (context, config) -> {
+    Player player = context.getPlayer();
+    if (player == null) return false;
+    long time = player.getWorld().getFullTime();
+    long days = time / 24000;
+    return (days % 8) == 0; // Luna llena
+});
+```
+
+#### Registrar Mutador Personalizado
+```java
+ZenEnchantsAPI.registerCustomMutator("DOUBLE_DAMAGE_MUTATOR", (context, config) -> {
+    context.setDamage(context.getDamage() * 2.0);
+});
+```
+
+#### Registrar Filtro Personalizado
+```java
+ZenEnchantsAPI.registerCustomFilter((context, filterMap) -> {
+    if (filterMap.containsKey("custom_permission")) {
+        String perm = String.valueOf(filterMap.get("custom_permission"));
+        return context.getPlayer() != null && context.getPlayer().hasPermission(perm);
+    }
+    return true;
+});
+```
+
+#### Disparo Manual de Triggers y Daño de Efectos
+```java
+// Procesar un trigger programáticamente sobre una espada en la mano
+ExecutionContext ctx = new ExecutionContext(TriggerType.MELEE_ATTACK, player, victim, null, weapon, 1, 10.0);
+ZenEnchantsAPI.processTrigger(TriggerType.MELEE_ATTACK, ctx);
+
+// Infligir daño desde un efecto sin riesgo de causar bucles infinitos
+ZenEnchantsAPI.damageFromEffect(victim, 8.5, player);
+```
+
+---
+
+## 4. Eventos de la API (Bukkit Event System)
+
+ZenEnchants despacha eventos públicos a través del gestor de eventos de Bukkit (`org.bukkit.event.Listener`). Todos estos eventos son cancelables (`Cancellable`) o modificables:
+
+| Evento | Paquete | Descripción | Cancelable |
+| :--- | :--- | :--- | :---: |
+| **`EnchantApplyEvent`** | `com.cuac_xd.zenenchants.api.event` | Se dispara antes de aplicar un encantamiento a un ítem. Permite modificar el nivel o cancelar la aplicación. | Sí |
+| **`EnchantRemoveEvent`** | `com.cuac_xd.zenenchants.api.event` | Se dispara antes de purgar o remover un encantamiento de un ítem. | Sí |
+| **`EnchantTriggerEvent`** | `com.cuac_xd.zenenchants.api.event` | Se dispara en el motor antes de ejecutar los efectos de un encantamiento tras un disparador. Permite anular efectos específicos. | Sí |
+| **`CustomBookApplyEvent`** | `com.cuac_xd.zenenchants.api.event` | Se dispara cuando un jugador aplica un libro en yunque o arrastrándolo (drag & drop). Permite editar las tasas de éxito/destrucción. | Sí |
+| **`MysteryBookOpenEvent`** | `com.cuac_xd.zenenchants.api.event` | Se dispara al abrir un Libro Misterioso. Permite cambiar el encantamiento generado, su nivel o cancelar la apertura. | Sí |
+| **`MagicDustApplyEvent`** | `com.cuac_xd.zenenchants.api.event` | Se dispara cuando un jugador aplica Polvo Mágico sobre un libro encantado. Permite modificar el incremento porcentual. | Sí |
+
+### Ejemplo: Escuchando Eventos
+
+```java
+package com.miplugin.listeners;
+
+import com.cuac_xd.zenenchants.api.event.EnchantApplyEvent;
+import com.cuac_xd.zenenchants.api.event.CustomBookApplyEvent;
+import com.cuac_xd.zenenchants.api.event.MysteryBookOpenEvent;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+
+public class ZenEnchantsEventListener implements Listener {
+
+    @EventHandler
+    public void onEnchantApply(EnchantApplyEvent event) {
+        if (event.getPlayer() != null && !event.getPlayer().hasPermission("miplugin.enchants.use")) {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage("§c¡No tienes permiso para aplicar este encantamiento!");
+        }
+    }
+
+    @EventHandler
+    public void onCustomBookApply(CustomBookApplyEvent event) {
+        // Otorgar 100% de éxito garantizado a usuarios VIP
+        if (event.getPlayer().hasPermission("miplugin.vip.luck")) {
+            event.setSuccessRate(100);
+            event.setDestroyRate(0);
+        }
+    }
+
+    @EventHandler
+    public void onMysteryBookOpen(MysteryBookOpenEvent event) {
+        // Notificar en el chat si un jugador reveló un encantamiento legendario o especial
+        if ("legendary".equalsIgnoreCase(event.getSelectedEnchantment().getRarityId())) {
+            event.getPlayer().sendMessage("§6§l¡HAS OBTENIDO UN ENCANTAMIENTO LEGENDARIO!");
+        }
+    }
+}
+```
+
+---
+
+## 5. Resumen de Métodos de `ZenEnchantsAPI`
+
+```java
+// Instancia
+ZenEnchantsPlugin getPlugin()
+
+// Catálogo y Registro
+Optional<ZenEnchantment> getEnchantment(String id)
+boolean isEnchantmentRegistered(String id)
+List<ZenEnchantment> getAllEnchantments()
+Collection<ZenEnchantment> getCustomEnchantmentsCatalog()
+Collection<ZenEnchantment> getVanillaEnchantmentsCatalog()
+void registerEnchantment(ZenEnchantment enchantment)
+boolean unregisterEnchantment(String id)
+
+// Rarezas, Tipos y Targets
+Optional<Rarity> getRarity(String id)
+Collection<Rarity> getAllRarities()
+Optional<EnchantmentType> getType(String id)
+Collection<EnchantmentType> getAllTypes()
+Optional<TargetDefinition> getTarget(String id)
+boolean matchesTargets(Collection<String> targetIds, Material material)
+
+// Manipulación de Ítems
+Map<String, Integer> getCustomEnchantments(ItemStack item)
+boolean hasCustomEnchantment(ItemStack item, String enchantId)
+int getEnchantmentLevel(ItemStack item, String enchantId)
+Optional<String> getApplyError(ItemStack item, ZenEnchantment enchantment, int level)
+boolean canApply(ItemStack item, ZenEnchantment enchantment, int level)
+void applyEnchantment(ItemStack item, ZenEnchantment enchantment, int level)
+void applyEnchantment(Player player, ItemStack item, ZenEnchantment enchantment, int level)
+boolean applyEnchantment(ItemStack item, String enchantId, int level)
+boolean applyEnchantment(Player player, ItemStack item, String enchantId, int level)
+void removeEnchantment(ItemStack item, String enchantId)
+void removeEnchantment(Player player, ItemStack item, String enchantId)
+void updateItemLore(ItemStack item)
+
+// Libros y Polvos Mágicos
+ItemStack createEnchantedBook(ZenEnchantment enchantment, int level, int successRate, int destroyRate)
+boolean isCustomBook(ItemStack item)
+Optional<String> getBookEnchantmentId(ItemStack item)
+int getBookEnchantmentLevel(ItemStack item)
+int getBookSuccessRate(ItemStack item)
+void setBookSuccessRate(ItemStack item, int successRate)
+int getBookDestroyRate(ItemStack item)
+ItemStack createMysteryBook(String rarityId)
+boolean isMysteryBook(ItemStack item)
+String getMysteryBookRarity(ItemStack item)
+ItemStack createMagicDust(int rate)
+boolean isMagicDust(ItemStack item)
+int getDustRate(ItemStack item)
+
+// Extensibilidad del Motor
+void registerCustomEffect(String effectId, EnchantEffect effect)
+void registerCustomCondition(String conditionId, EnchantCondition condition)
+void registerCustomMutator(String mutatorId, EnchantMutator mutator)
+void registerCustomFilter(EnchantFilter filter)
+void processTrigger(TriggerType trigger, ExecutionContext context)
+void damageFromEffect(LivingEntity target, double amount, Entity source)
+```
