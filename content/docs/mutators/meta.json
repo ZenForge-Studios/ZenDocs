@@ -1,0 +1,29 @@
+{
+  "title": "Mutators",
+  "pages": [
+    "index",
+    "abs",
+    "add",
+    "block_type",
+    "ceil",
+    "clamp",
+    "divide",
+    "exponential",
+    "floor",
+    "lerp",
+    "max",
+    "min",
+    "multiply",
+    "negate",
+    "normalize",
+    "only_pvp",
+    "percent_add",
+    "percentage",
+    "random",
+    "random_int",
+    "round",
+    "round_to_step",
+    "scale",
+    "subtract"
+  ]
+}

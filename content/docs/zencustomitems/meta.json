@@ -1,12 +1,9 @@
 {
-  "title": "ZenCustomItems (New)",
+  "title": "ZenCustomItems",
   "pages": [
     "index",
+    "creacion_items",
     "configuracion",
-    "effects",
-    "triggers",
-    "conditions",
-    "filters-and-mutators",
     "flags",
     "sets-and-mastery",
     "api"

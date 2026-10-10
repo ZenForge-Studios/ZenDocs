@@ -1,0 +1,271 @@
+---
+title: "Effects (Efectos)"
+description: "Catálogo completo de los 255 efectos declarativos ejecutables del motor ZenCore."
+---
+
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { Callout } from 'fumadocs-ui/components/callout';
+
+Los **Efectos** son las acciones que se ejecutan cuando se activa un disparador (Trigger) y se satisfacen los filtros y condiciones. Soportan expresiones dinámicas, parámetros de contexto y formateo MiniMessage.
+
+---
+
+## Catálogo de Efectos (255)
+
+<Cards>
+  <Card title="actionbar" href="/docs/effects/actionbar" description="Proyecta un texto animado sobre la barra de acción del jugador." />
+  <Card title="add_armor" href="/docs/effects/add_armor" description="Suma puntos planos a la barra de armadura." />
+  <Card title="add_armor_toughness" href="/docs/effects/add_armor_toughness" description="Incrementa la dureza de la armadura frente a impactos pesados." />
+  <Card title="add_attack_speed" href="/docs/effects/add_attack_speed" description="Aumenta la velocidad de ataque y enfriamiento de arma." />
+  <Card title="add_cooldown" href="/docs/effects/add_cooldown" description="Añade tiempo adicional de espera al cooldown de una habilidad." />
+  <Card title="add_custom_stat" href="/docs/effects/add_custom_stat" description="Incrementa una estadística interna del plugin para el jugador." />
+  <Card title="add_damage" href="/docs/effects/add_damage" description="Agrega daño adicional al ataque en curso mediante fórmulas matemáticas." />
+  <Card title="add_knockback_resistance" href="/docs/effects/add_knockback_resistance" description="Otorga resistencia al retroceso por golpes o proyectiles." />
+  <Card title="add_movement_speed" href="/docs/effects/add_movement_speed" description="Otorga velocidad de desplazamiento base al jugador." />
+  <Card title="add_potion_effect" href="/docs/effects/add_potion_effect" description="Aplica un efecto de poción de Minecraft con duración y amplificador." />
+  <Card title="add_socket" href="/docs/effects/add_socket" description="Añade un nuevo zócalo/socket vacío al ítem." />
+  <Card title="add_time" href="/docs/effects/add_time" description="Avanza una cantidad de ticks el reloj del mundo." />
+  <Card title="add_upgrade" href="/docs/effects/add_upgrade" description="Aumenta en +1 el nivel de mejora del ítem invocando el motor de upgrades." />
+  <Card title="add_variable" href="/docs/effects/add_variable" description="Suma una cantidad numérica a una variable persistente del ítem." />
+  <Card title="age_baby_animal" href="/docs/effects/age_baby_animal" description="Hace crecer instantáneamente a una cría animal a su estado adulto." />
+  <Card title="air_refill" href="/docs/effects/air_refill" description="Rellena la burbuja de aire del jugador bajo el agua." />
+  <Card title="apply_fatigue" href="/docs/effects/apply_fatigue" description="Aplica fatiga de picar a la víctima ralentizando sus acciones." />
+  <Card title="apply_vulnerability" href="/docs/effects/apply_vulnerability" description="Aplica vulnerabilidad y lentitud temporal al objetivo golpeado." />
+  <Card title="armor_pierce" href="/docs/effects/armor_pierce" description="Ignora un porcentaje de la armadura y protección del objetivo atacado." />
+  <Card title="arrow_rain" href="/docs/effects/arrow_rain" description="Hace llover una ráfaga de flechas desde el cielo sobre la zona." />
+  <Card title="auto_replant" href="/docs/effects/auto_replant" description="Vuelve a plantar de inmediato la semilla tras cosechar un cultivo maduro." />
+  <Card title="auto_smelt" href="/docs/effects/auto_smelt" description="Funde y cocina automáticamente los minerales y alimentos conseguidos." />
+  <Card title="blast_mining" href="/docs/effects/blast_mining" description="Mina un cubo tridimensional de bloques centrado en el bloque picado." />
+  <Card title="bleed" href="/docs/effects/bleed" description="Aplica daño sangrado por pulsos periódicos de tiempo con partículas de sangre." />
+  <Card title="blink" href="/docs/effects/blink" description="Teletransporta al jugador hacia adelante en la dirección a la que mira." />
+  <Card title="blood_particles" href="/docs/effects/blood_particles" description="Spawnea partículas de salpicadura de sangre en la criatura impactada." />
+  <Card title="bonemeal_radius" href="/docs/effects/bonemeal_radius" description="Aplica polvo de hueso y acelera la maduración de cultivos en área." />
+  <Card title="boost_elytra" href="/docs/effects/boost_elytra" description="Otorga un cohete de propulsión instantáneo si el jugador está usando élitros en vuelo." />
+  <Card title="boost_regeneration" href="/docs/effects/boost_regeneration" description="Otorga regeneración de vida acelerada al jugador." />
+  <Card title="bossbar" href="/docs/effects/bossbar" description="Muestra una barra de jefe personalizada en la parte superior." />
+  <Card title="bossbar_create" href="/docs/effects/bossbar_create" description="Crea una barra de jefe personalizada en la parte superior." />
+  <Card title="bossbar_remove" href="/docs/effects/bossbar_remove" description="Elimina la barra de jefe personalizada del usuario." />
+  <Card title="bounce_attack" href="/docs/effects/bounce_attack" description="El ataque rebota sucesivamente entre múltiples enemigos cercanos." />
+  <Card title="bounce_projectile" href="/docs/effects/bounce_projectile" description="Hace que el proyectil rebote hacia otra entidad cercana tras impactar." />
+  <Card title="break_block" href="/docs/effects/break_block" description="Rompe el bloque involucrado." />
+  <Card title="broadcast" href="/docs/effects/broadcast" description="Transmite un mensaje global a todo el servidor o jugadores autorizados." />
+  <Card title="cancel_event" href="/docs/effects/cancel_event" description="Cancela de inmediato la ejecución del evento desencadenante de Bukkit." />
+  <Card title="catch_projectile" href="/docs/effects/catch_projectile" description="Atrapa la flecha enemiga en pleno vuelo y la guarda en el inventario." />
+  <Card title="chain_lightning" href="/docs/effects/chain_lightning" description="Desata un rayo en cadena que salta de un enemigo a otro en proximidad." />
+  <Card title="charm" href="/docs/effects/charm" description="Enamora instantáneamente a los animales objetivos listos para reproducirse." />
+  <Card title="clear_chat" href="/docs/effects/clear_chat" description="Limpia la ventana del chat del jugador enviando líneas en blanco." />
+  <Card title="clear_effect" href="/docs/effects/clear_effect" description="Elimina todos los efectos de poción activos en la entidad." />
+  <Card title="clear_negative_effects" href="/docs/effects/clear_negative_effects" description="Purga instantáneamente todos los efectos negativos y toxinas activas." />
+  <Card title="clear_positive_effects" href="/docs/effects/clear_positive_effects" description="Disipa todos los buffs y efectos beneficiosos de la víctima." />
+  <Card title="cleave" href="/docs/effects/cleave" description="Inflige un porcentaje del daño en área a todos los enemigos circundantes." />
+  <Card title="clone_target" href="/docs/effects/clone_target" description="Crea un clon ilusorio del objetivo para distraer en combate." />
+  <Card title="compact_blocks" href="/docs/effects/compact_blocks" description="Compacta materiales sueltos en el inventario (ej. 9 de carbón en 1 bloque de carbón)." />
+  <Card title="condense_ores" href="/docs/effects/condense_ores" description="Compacta lingotes y gemás en bloques de 9 unidades automáticamente." />
+  <Card title="confuse_mobs" href="/docs/effects/confuse_mobs" description="Hace que los monstruos del área comiencen a atacarse entre sí." />
+  <Card title="console_command" href="/docs/effects/console_command" description="Ejecuta un comando con permisos de la consola de Minecraft." />
+  <Card title="consume_item" href="/docs/effects/consume_item" description="Reduce la cantidad del ítem en la mano." />
+  <Card title="convert_entity" href="/docs/effects/convert_entity" description="Transforma la criatura golpeada en otra especie." />
+  <Card title="create_firework" href="/docs/effects/create_firework" description="Lanza un cohete de fuegos artificiales configurable." />
+  <Card title="create_water_pocket" href="/docs/effects/create_water_pocket" description="Crea una burbuja temporal de aire en medio de un océano." />
+  <Card title="crit_particles" href="/docs/effects/crit_particles" description="Dispara ráfagas de partículas de impacto crítico." />
+  <Card title="cure_zombie_villager" href="/docs/effects/cure_zombie_villager" description="Cura de forma inmediata a un aldeano zombi transformándolo en aldeano." />
+  <Card title="damage" href="/docs/effects/damage" description="Aplica daño a la entidad objetivo o al portador." />
+  <Card title="damage_item" href="/docs/effects/damage_item" description="Consume puntos de durabilidad del ítem como coste de ejecución." />
+  <Card title="damage_multiplier" href="/docs/effects/damage_multiplier" description="Multiplica el daño total infligido o recibido por un factor configurado." />
+  <Card title="dash" href="/docs/effects/dash" description="Impulsa hacia adelante en la dirección de la mirada del jugador." />
+  <Card title="deal_damage" href="/docs/effects/deal_damage" description="Inflige una cantidad directa de daño a la entidad seleccionada." />
+  <Card title="decay_blocks" href="/docs/effects/decay_blocks" description="Convierte piedra o bloques sólidos en grava o arena derruida." />
+  <Card title="deflect_projectile" href="/docs/effects/deflect_projectile" description="Desvía proyectiles enemigos rebotándolos hacia atrás." />
+  <Card title="disarm" href="/docs/effects/disarm" description="Obliga a la víctima a soltar el ítem que sostiene en su mano principal." />
+  <Card title="dismount_passengers" href="/docs/effects/dismount_passengers" description="Desmonta a todos los jinetes de la criatura seleccionada." />
+  <Card title="dispatch_bungee_message" href="/docs/effects/dispatch_bungee_message" description="Envía un mensaje a través del canal de plugins de BungeeCord / Velocity." />
+  <Card title="double_drops" href="/docs/effects/double_drops" description="Duplica la cantidad de drops generados en la rotura o asesinato." />
+  <Card title="double_jump" href="/docs/effects/double_jump" description="Otorga un impulso en el aire estilo doble salto con partículas de nube." />
+  <Card title="dragon_breath" href="/docs/effects/dragon_breath" description="Crea una nube persistente de aliento de dragón que inflige daño mágico." />
+  <Card title="drop_head" href="/docs/effects/drop_head" description="Hace que la criatura derrotada suelte su cabeza." />
+  <Card title="drop_item" href="/docs/effects/drop_item" description="Genera un ítem físico en el suelo del mundo." />
+  <Card title="elder_guardian_curse" href="/docs/effects/elder_guardian_curse" description="Muestra la animación fantasma del Elder Guardian en la visión del jugador." />
+  <Card title="enchantment_table_particles" href="/docs/effects/enchantment_table_particles" description="Genera runas y glifos voladores de mesa de encantamientos." />
+  <Card title="evoker_fangs" href="/docs/effects/evoker_fangs" description="Spawnea colmillos de invocador de Evoker que emergen del suelo." />
+  <Card title="execute" href="/docs/effects/execute" description="Elimina instantáneamente al objetivo si su vida se encuentra por debajo del porcentaje configurado." />
+  <Card title="execute_target" href="/docs/effects/execute_target" description="Elimina instantáneamente al objetivo si su salud se encuentra bajo el umbral porcentual." />
+  <Card title="experience" href="/docs/effects/experience" description="Entrega puntos de experiencia planos al jugador." />
+  <Card title="explosion" href="/docs/effects/explosion" description="Detona una explosión de potencia personalizada con control de bloques." />
+  <Card title="explosive_mining" href="/docs/effects/explosive_mining" description="Detona y mina en área esférica sin romper bloques irrompibles como la bedrock." />
+  <Card title="extinguish" href="/docs/effects/extinguish" description="Apaga instantáneamente el fuego de la entidad." />
+  <Card title="extinguish_fire_area" href="/docs/effects/extinguish_fire_area" description="Extingue todas las llamás del suelo en un área determinada." />
+  <Card title="extinguish_fire_radius" href="/docs/effects/extinguish_fire_radius" description="Extingue fuego normal y del alma en área." />
+  <Card title="fear" href="/docs/effects/fear" description="Repele y asusta a los monstruos cercanos empujándolos lejos." />
+  <Card title="feed" href="/docs/effects/feed" description="Restaura puntos de comida y nivel de saturación al jugador." />
+  <Card title="feed_radius" href="/docs/effects/feed_radius" description="Restaura comida o vida en área a los jugadores aliados cercanos." />
+  <Card title="fertilize_soil" href="/docs/effects/fertilize_soil" description="Aplica fertilizante mejorando la tasa de crecimiento de la tierra." />
+  <Card title="fill_bucket" href="/docs/effects/fill_bucket" description="Llena un cubo vacío con agua, lava o leche." />
+  <Card title="fill_liquid" href="/docs/effects/fill_liquid" description="Llena o drena fluidos (agua o lava) en un radio especificado." />
+  <Card title="flash_screen" href="/docs/effects/flash_screen" description="Genera un destello visual en la pantalla del usuario." />
+  <Card title="float" href="/docs/effects/float" description="Eleva por los aires a la entidad objetivo." />
+  <Card title="food" href="/docs/effects/food" description="Incrementa o disminuye el nivel de comida/hambre del jugador." />
+  <Card title="freeze" href="/docs/effects/freeze" description="Congela a la víctima simulando el efecto de nieve en polvo." />
+  <Card title="freeze_water" href="/docs/effects/freeze_water" description="Congela el agua circundante en hielo escarchado temporal." />
+  <Card title="give_exp" href="/docs/effects/give_exp" description="Otorga puntos de experiencia vanilla al jugador." />
+  <Card title="give_item" href="/docs/effects/give_item" description="Entrega un ítem configurado directamente al inventario del jugador." />
+  <Card title="give_levels" href="/docs/effects/give_levels" description="Otorga niveles completos de experiencia." />
+  <Card title="give_money" href="/docs/effects/give_money" description="Deposita dinero en la cuenta económica de Vault del jugador." />
+  <Card title="give_permission" href="/docs/effects/give_permission" description="Concede temporalmente un permiso de LuckPerms." />
+  <Card title="grant_absorption" href="/docs/effects/grant_absorption" description="Otorga corazones dorados de absorción temporal." />
+  <Card title="grant_fire_resistance" href="/docs/effects/grant_fire_resistance" description="Otorga inmunidad total al fuego y la lava." />
+  <Card title="grant_glowing" href="/docs/effects/grant_glowing" description="Resalta la silueta brillante de la entidad a través de paredes." />
+  <Card title="grant_haste" href="/docs/effects/grant_haste" description="Aumenta drásticamente la velocidad de minado y ataque." />
+  <Card title="grant_invisibility" href="/docs/effects/grant_invisibility" description="Vuelve invisible al jugador ante entidades y rivales." />
+  <Card title="grant_jump_boost" href="/docs/effects/grant_jump_boost" description="Permite saltar bloques más altos y reduce daño por caída." />
+  <Card title="grant_night_vision" href="/docs/effects/grant_night_vision" description="Otorga visión nocturna nítida en cuevas y oscuridad." />
+  <Card title="grant_resistance" href="/docs/effects/grant_resistance" description="Aplica el efecto de poción de Resistencia reduciendo todo daño recibido." />
+  <Card title="grant_slow_falling" href="/docs/effects/grant_slow_falling" description="Hace que el jugador caiga como una pluma sin sufrir daño de impacto." />
+  <Card title="grant_speed" href="/docs/effects/grant_speed" description="Aumenta la velocidad de carrera y desplazamiento." />
+  <Card title="grant_strength" href="/docs/effects/grant_strength" description="Aumenta el daño base de los ataques cuerpo a cuerpo." />
+  <Card title="grant_water_breathing" href="/docs/effects/grant_water_breathing" description="Permite respirar bajo el agua sin ahogamiento." />
+  <Card title="grappling_hook" href="/docs/effects/grappling_hook" description="Propulsa al jugador a toda velocidad hacia la ubicación o bloque seleccionado." />
+  <Card title="gravity_well" href="/docs/effects/gravity_well" description="Crea un vórtice gravitacional que atrae entidades al centro." />
+  <Card title="ground_slam" href="/docs/effects/ground_slam" description="Golpea el suelo levantando por los aires y dañando a los enemigos cercanos." />
+  <Card title="grow_crops" href="/docs/effects/grow_crops" description="Acelera el crecimiento de cultivos simulando polvo de hueso." />
+  <Card title="guardian_beam" href="/docs/effects/guardian_beam" description="Proyecta el rayo láser de Guardián entre dos entidades." />
+  <Card title="heal" href="/docs/effects/heal" description="Restaura puntos de vida a la entidad objetivo." />
+  <Card title="homing_arrow" href="/docs/effects/homing_arrow" description="Convierte la flecha disparada en un proyectil teledirigido hacia el enemigo." />
+  <Card title="ignite" href="/docs/effects/ignite" description="Prende fuego a la entidad durante la cantidad especificada de segundos." />
+  <Card title="ignite_creepers" href="/docs/effects/ignite_creepers" description="Fuerza a los creepers cercanos a entrar en estado de ignición." />
+  <Card title="keep_inventory_on_death" href="/docs/effects/keep_inventory_on_death" description="Evita que el jugador pierda su inventario al fallecer." />
+  <Card title="keep_xp_on_death" href="/docs/effects/keep_xp_on_death" description="Evita la pérdida de experiencia acumulada al morir." />
+  <Card title="kick_player" href="/docs/effects/kick_player" description="Expulsa al jugador del servidor con un mensaje explicativo." />
+  <Card title="kill_nearby_monsters" href="/docs/effects/kill_nearby_monsters" description="Elimina a todos los monstruos de bajo rango en el radio." />
+  <Card title="knockback" href="/docs/effects/knockback" description="Aplica un empuje vectorial horizontal y vertical sobre el objetivo." />
+  <Card title="launch" href="/docs/effects/launch" description="Propulsa a la entidad directamente por los aires." />
+  <Card title="launch_projectile" href="/docs/effects/launch_projectile" description="Dispara un proyectil en la dirección de la mirada del jugador." />
+  <Card title="launch_towards" href="/docs/effects/launch_towards" description="Dispara al jugador propulsado hacia la entidad seleccionada." />
+  <Card title="level" href="/docs/effects/level" description="Otorga niveles completos de experiencia." />
+  <Card title="levitate_area" href="/docs/effects/levitate_area" description="Hace levitar temporalmente a todos los mobs y jugadores cercanos." />
+  <Card title="lifesteal" href="/docs/effects/lifesteal" description="Drena un porcentaje del daño causado al oponente y lo transfiere como vida al atacante." />
+  <Card title="lightning" href="/docs/effects/lightning" description="Invoca la caída de un rayo en la ubicación especificada." />
+  <Card title="line_mine" href="/docs/effects/line_mine" description="Mina un túnel o línea recta en la dirección a la que apunta el jugador." />
+  <Card title="log_console" href="/docs/effects/log_console" description="Escribe una línea de registro informativa en los logs de la consola." />
+  <Card title="magnet_drops" href="/docs/effects/magnet_drops" description="Atrae todos los ítems tirados en el suelo hacia la posición del jugador." />
+  <Card title="melt_ice" href="/docs/effects/melt_ice" description="Derrite hielo y nieve en agua en el radio circundante." />
+  <Card title="message" href="/docs/effects/message" description="Envía un mensaje formateado al chat con soporte de MiniMessage y variables." />
+  <Card title="meteor_shower" href="/docs/effects/meteor_shower" description="Bombardea el área con una lluvia de pequeñas bolas de fuego." />
+  <Card title="modify_attribute" href="/docs/effects/modify_attribute" description="Modifica cualquier atributo vanilla de la entidad." />
+  <Card title="modify_variable" href="/docs/effects/modify_variable" description="Permite operaciones de `INCREMENT`, `DECREMENT` o `SET` sobre variables." />
+  <Card title="mount_entity" href="/docs/effects/mount_entity" description="Monta al jugador sobre la criatura atacada." />
+  <Card title="mutate_drops" href="/docs/effects/mutate_drops" description="Multiplica o altera los ítems generados al romper un bloque." />
+  <Card title="open_anvil" href="/docs/effects/open_anvil" description="Abre la interfaz de un yunque virtual sin desgaste." />
+  <Card title="open_enderchest" href="/docs/effects/open_enderchest" description="Abre el cofre del End personal del jugador." />
+  <Card title="open_grindstone" href="/docs/effects/open_grindstone" description="Abre una afiladora virtual para desencantar ítems." />
+  <Card title="open_smithing_table" href="/docs/effects/open_smithing_table" description="Abre la mesa de herrería virtual." />
+  <Card title="open_workbench" href="/docs/effects/open_workbench" description="Abre una mesa de crafteo virtual en pantalla." />
+  <Card title="pacify_mobs" href="/docs/effects/pacify_mobs" description="Elimina la hostilidad y agresividad de las criaturas cercanas." />
+  <Card title="particle" href="/docs/effects/particle" description="Genera una nube estática de partículas." />
+  <Card title="particle_circle" href="/docs/effects/particle_circle" description="Dibuja un círculo horizontal de partículas alrededor de la ubicación." />
+  <Card title="particle_helix" href="/docs/effects/particle_helix" description="Genera una espiral ascendente de partículas rodeando a la entidad." />
+  <Card title="particle_line" href="/docs/effects/particle_line" description="Dibuja una línea de partículas uniendo al atacante y la víctima." />
+  <Card title="particle_ring" href="/docs/effects/particle_ring" description="Traza un anillo horizontal perfecto de partículas en el suelo." />
+  <Card title="particle_sphere" href="/docs/effects/particle_sphere" description="Genera una esfera envolvente de partículas en la ubicación." />
+  <Card title="piercing_shot" href="/docs/effects/piercing_shot" description="Permite a la flecha perforar múltiples entidades consecutivas." />
+  <Card title="piglin_pacify" href="/docs/effects/piglin_pacify" description="Pacifica a los Piglins cercanos que tengan como objetivo al jugador." />
+  <Card title="place_block" href="/docs/effects/place_block" description="Coloca un bloque en la coordenada fijada si el espacio está libre." />
+  <Card title="play_note" href="/docs/effects/play_note" description="Toca una nota musical instrumental de bloque musical." />
+  <Card title="play_sound" href="/docs/effects/play_sound" description="Reproduce un efecto de sonido espacial con volumen y tono." />
+  <Card title="play_sound_world" href="/docs/effects/play_sound_world" description="Reproduce un sonido audible en todo el mundo para todos los presentes." />
+  <Card title="play_totem_sound" href="/docs/effects/play_totem_sound" description="Reproduce el sonido sagrado de activación de tótem." />
+  <Card title="player_command" href="/docs/effects/player_command" description="Ejecuta un comando en nombre del jugador." />
+  <Card title="poison_cloud" href="/docs/effects/poison_cloud" description="Invoca una nube tóxica que envenena a todas las criaturas enemigas en el radio." />
+  <Card title="potion_effect" href="/docs/effects/potion_effect" description="Aplica un efecto de poción vanilla a la entidad indicada." />
+  <Card title="projectile_beam" href="/docs/effects/projectile_beam" description="Emite un haz continuo de partículas que avanza en línea recta, atravesando el espacio e infligiendo daño con impacto ..." />
+  <Card title="pull" href="/docs/effects/pull" description="Atrae a la víctima hacia el jugador o viceversa." />
+  <Card title="push" href="/docs/effects/push" description="Empuja a la entidad objetivo lejos del jugador." />
+  <Card title="reflect_damage" href="/docs/effects/reflect_damage" description="Devuelve un porcentaje del daño recibido directamente al atacante." />
+  <Card title="reflect_projectile" href="/docs/effects/reflect_projectile" description="Invierte la dirección y velocidad de un proyectil que se aproxima." />
+  <Card title="remove_all_negative_effects" href="/docs/effects/remove_all_negative_effects" description="Limpia todos los efectos negativos activos (veneno, lentitud, wither, fatiga, etc.)." />
+  <Card title="remove_entity" href="/docs/effects/remove_entity" description="Elimina la entidad objetivo del mundo." />
+  <Card title="remove_item" href="/docs/effects/remove_item" description="Retira un ítem del inventario del jugador." />
+  <Card title="remove_light" href="/docs/effects/remove_light" description="Remueve bloques de luz creados anteriormente." />
+  <Card title="remove_potion_effect" href="/docs/effects/remove_potion_effect" description="Remueve una poción determinada o purga todas las activas." />
+  <Card title="remove_scoreboard_tag" href="/docs/effects/remove_scoreboard_tag" description="Elimina una etiqueta del Scoreboard de la entidad." />
+  <Card title="remove_variable" href="/docs/effects/remove_variable" description="Elimina una variable almacenada." />
+  <Card title="repair_hand" href="/docs/effects/repair_hand" description="Restaura la durabilidad del ítem en mano o de todas las piezas de armadura equipadas." />
+  <Card title="repair_item" href="/docs/effects/repair_item" description="Restaura puntos de durabilidad perdida al ítem utilizado o equipado." />
+  <Card title="repulse_all" href="/docs/effects/repulse_all" description="Onda expansiva que empuja a todos los enemigos alejándolos con fuerza sónica." />
+  <Card title="reset_cooldown" href="/docs/effects/reset_cooldown" description="Restablece el tiempo de enfriamiento de un grupo de habilidades." />
+  <Card title="run_command" href="/docs/effects/run_command" description="Ejecuta un comando en la consola o a nombre del jugador." />
+  <Card title="run_player_command" href="/docs/effects/run_player_command" description="Obliga al jugador a ejecutar un comando como si lo escribiera." />
+  <Card title="safe_fall" href="/docs/effects/safe_fall" description="Resetea la distancia de caída y otorga caída lenta temporal." />
+  <Card title="saturation" href="/docs/effects/saturation" description="Añade puntos de saturación al jugador." />
+  <Card title="send_json_message" href="/docs/effects/send_json_message" description="Envía componentes Raw JSON avanzados con eventos de click y hover." />
+  <Card title="send_message" href="/docs/effects/send_message" description="Envía un mensaje de texto formateado con MiniMessage al chat." />
+  <Card title="set_block" href="/docs/effects/set_block" description="Cambia el bloque en la posición por otro material." />
+  <Card title="set_block_type" href="/docs/effects/set_block_type" description="Cambia el material del bloque objetivo de forma instantánea." />
+  <Card title="set_damage" href="/docs/effects/set_damage" description="Sobrescribe de forma absoluta el valor del daño del evento." />
+  <Card title="set_durability" href="/docs/effects/set_durability" description="Modifica directamente la durabilidad actual del ítem." />
+  <Card title="set_gamemode" href="/docs/effects/set_gamemode" description="Cambia el modo de juego del jugador." />
+  <Card title="set_glide" href="/docs/effects/set_glide" description="Activa o desactiva el planeo de élitros en el jugador." />
+  <Card title="set_health" href="/docs/effects/set_health" description="Establece la salud de la entidad en un valor exacto." />
+  <Card title="set_max_health" href="/docs/effects/set_max_health" description="Altera la salud máxima permanente del jugador o criatura." />
+  <Card title="set_scoreboard_tag" href="/docs/effects/set_scoreboard_tag" description="Asigna una etiqueta NBT ScoreboardTag a la entidad." />
+  <Card title="set_time" href="/docs/effects/set_time" description="Cambia la hora del mundo." />
+  <Card title="set_variable" href="/docs/effects/set_variable" description="Establece el valor de una variable del ítem." />
+  <Card title="set_weather" href="/docs/effects/set_weather" description="Fija el clima del mundo actual." />
+  <Card title="shadow_step" href="/docs/effects/shadow_step" description="Teletransporta al atacante directamente a la espalda de la víctima." />
+  <Card title="shear_area" href="/docs/effects/shear_area" description="Esquila o poda todas las ovejas o bloques en el radio con tijeras." />
+  <Card title="shield_break" href="/docs/effects/shield_break" description="Desactiva el escudo del oponente y lo deja en tiempo de recarga si estaba bloqueando." />
+  <Card title="shield_disable" href="/docs/effects/shield_disable" description="Inhabilita el escudo del defensor durante varios segundos." />
+  <Card title="shockwave" href="/docs/effects/shockwave" description="Empuja con fuerza hacia afuera a todas las entidades del radio." />
+  <Card title="shulker_bullet" href="/docs/effects/shulker_bullet" description="Dispara un proyectil teledirigido de Shulker hacia el objetivo." />
+  <Card title="silk_touch_spawner" href="/docs/effects/silk_touch_spawner" description="Permite obtener el spawner como ítem al minarlo con toque de seda." />
+  <Card title="smelt_inventory" href="/docs/effects/smelt_inventory" description="Cocina todos los minerales crudos del inventario del jugador." />
+  <Card title="smelt_ore" href="/docs/effects/smelt_ore" description="Funde menas de hierro, oro y cobre al instante en sus respectivos lingotes." />
+  <Card title="smoke_cloud" href="/docs/effects/smoke_cloud" description="Crea una cortina densa de humo que dificulta la visibilidad." />
+  <Card title="sonic_boom" href="/docs/effects/sonic_boom" description="Dispara un haz sónico horizontal de Warden atravesando paredes." />
+  <Card title="spawn_cobweb" href="/docs/effects/spawn_cobweb" description="Coloca una telaraña temporal que ralentiza al enemigo." />
+  <Card title="spawn_entity" href="/docs/effects/spawn_entity" description="Invoca una criatura en la ubicación especificada." />
+  <Card title="spawn_falling_block" href="/docs/effects/spawn_falling_block" description="Spawnea un bloque con física de caída (ej. arena, yunque)." />
+  <Card title="spawn_iron_golem" href="/docs/effects/spawn_iron_golem" description="Spawnea un Golem de Hierro leal para asistir en combate." />
+  <Card title="spawn_light" href="/docs/effects/spawn_light" description="Coloca un bloque invisible de luz en la ubicación." />
+  <Card title="spawn_minion" href="/docs/effects/spawn_minion" description="Invoca un esbirro aliado que defiende al jugador durante un tiempo." />
+  <Card title="spawn_particle" href="/docs/effects/spawn_particle" description="Genera una nube de partículas de Minecraft en la coordenada." />
+  <Card title="spawn_particle_ring" href="/docs/effects/spawn_particle_ring" description="Genera un anillo circular de partículas decorativas o de advertencia." />
+  <Card title="spawn_primed_tnt_barrage" href="/docs/effects/spawn_primed_tnt_barrage" description="Lanza un bombardeo de dinamitas en la zona objetivo." />
+  <Card title="spawn_tnt" href="/docs/effects/spawn_tnt" description="Genera un bloque de dinamita encendida con cuenta atrás." />
+  <Card title="spawn_wolf_pack" href="/docs/effects/spawn_wolf_pack" description="Invoca una manada de lobos domesticados listos para atacar." />
+  <Card title="spectral_arrow_convert" href="/docs/effects/spectral_arrow_convert" description="Transforma una flecha común en flecha espectral que marca al blanco." />
+  <Card title="sphere_mine" href="/docs/effects/sphere_mine" description="Mina una esfera perfecta alrededor del bloque roto." />
+  <Card title="steal_exp" href="/docs/effects/steal_exp" description="Permite absorber o almacenar niveles/experiencia en el ítem." />
+  <Card title="stop_sound" href="/docs/effects/stop_sound" description="Detiene de forma forzosa un sonido o música que el jugador esté oyendo." />
+  <Card title="strike_lightning_effect" href="/docs/effects/strike_lightning_effect" description="Invoca un rayo cosmético sin causar fuego ni daño." />
+  <Card title="strip_wood_area" href="/docs/effects/strip_wood_area" description="Descorteza todos los troncos en proximidad de un solo clic con hacha." />
+  <Card title="stun" href="/docs/effects/stun" description="Inmoviliza a la criatura o jugador cancelando su velocidad de movimiento." />
+  <Card title="sun_strike" href="/docs/effects/sun_strike" description="Impacto de fuego celestial concentrado desde el cielo en la ubicación objetivo." />
+  <Card title="swap_locations" href="/docs/effects/swap_locations" description="Intercambia instantáneamente las posiciones del jugador y su oponente." />
+  <Card title="take_exp" href="/docs/effects/take_exp" description="Resta puntos de experiencia al usuario." />
+  <Card title="take_levels" href="/docs/effects/take_levels" description="Deduce niveles completos de experiencia." />
+  <Card title="take_money" href="/docs/effects/take_money" description="Deduce dinero de la cuenta de Vault como coste de habilidad." />
+  <Card title="take_permission" href="/docs/effects/take_permission" description="Revoca un permiso otorgado al jugador." />
+  <Card title="tame_nearby_animals" href="/docs/effects/tame_nearby_animals" description="Domestica automáticamente animales salvajes del entorno." />
+  <Card title="taunt" href="/docs/effects/taunt" description="Provoca a todos los monstruos en el radio para que ataquen al jugador." />
+  <Card title="telepathy" href="/docs/effects/telepathy" description="Envía de forma instantánea los drops rotos o botín al inventario del jugador." />
+  <Card title="teleport" href="/docs/effects/teleport" description="Teletransporta a una entidad hacia una coordenada o destino." />
+  <Card title="teleport_home" href="/docs/effects/teleport_home" description="Teletransporta al jugador de regreso a su punto de reaparición o cama." />
+  <Card title="teleport_relative" href="/docs/effects/teleport_relative" description="Teletransporta al jugador desplazándolo de forma relativa a su orientación." />
+  <Card title="thorns_damage" href="/docs/effects/thorns_damage" description="Refleja daño directo de vuelta al atacante al recibir un impacto." />
+  <Card title="till_area" href="/docs/effects/till_area" description="Ara la tierra en un radio de bloques simultáneamente con azadas." />
+  <Card title="till_dirt" href="/docs/effects/till_dirt" description="Crea arados o senderos de tierra en radio de forma instantánea." />
+  <Card title="time_warp" href="/docs/effects/time_warp" description="Intercambia instantáneamente las posiciones físicas del jugador y la víctima objetivo." />
+  <Card title="title" href="/docs/effects/title" description="Muestra un título y subtítulo en medio de la pantalla del usuario." />
+  <Card title="totem_animation" href="/docs/effects/totem_animation" description="Dispara la animación visual del Tótem de la Inmortalidad en pantalla." />
+  <Card title="transmute_block" href="/docs/effects/transmute_block" description="Transforma el bloque actual a otro material especificado." />
+  <Card title="tree_feller" href="/docs/effects/tree_feller" description="Tala el árbol completo al quebrar un bloque de su base." />
+  <Card title="triple_drops" href="/docs/effects/triple_drops" description="Triplica los drops conseguidos del bloque o criatura." />
+  <Card title="true_damage" href="/docs/effects/true_damage" description="Inflige daño puro directo que ignora la reducción de armadura, encantamientos de protección y escudos." />
+  <Card title="vampirism" href="/docs/effects/vampirism" description="Restaura una cantidad plana de corazones al asestar golpes críticos." />
+  <Card title="vein_mine" href="/docs/effects/vein_mine" description="Rompe de forma continua la veta entera del mineral conectado." />
+  <Card title="velocity" href="/docs/effects/velocity" description="Aplica un vector de aceleración en los ejes X, Y, Z." />
+  <Card title="void_filter" href="/docs/effects/void_filter" description="Elimina y destruye los bloques molestos seleccionados (ej. diorita, grava)." />
+  <Card title="wall_climb" href="/docs/effects/wall_climb" description="Otorga impulso vertical continuo para trepar paredes lisas." />
+  <Card title="wither_damage" href="/docs/effects/wither_damage" description="Aplica el efecto de daño degenerativo de Wither." />
+  <Card title="wither_skull" href="/docs/effects/wither_skull" description="Dispara un proyectil de calavera de Wither hacia la dirección de la mirada." />
+</Cards>

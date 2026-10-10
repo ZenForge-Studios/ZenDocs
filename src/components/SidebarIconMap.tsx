@@ -43,9 +43,12 @@ export function getSidebarIcon(slug: string, isFolder: boolean = false): React.R
 
   // Folders / Categorías mayores
   if (isFolder) {
+    if (s.includes('general')) return <BookOpen className="size-4 text-zinc-400 group-hover:text-zinc-200" />;
     if (s.includes('effects')) return <Sparkles className="size-4 text-zinc-400 group-hover:text-zinc-200" />;
     if (s.includes('triggers')) return <Target className="size-4 text-zinc-400 group-hover:text-zinc-200" />;
     if (s.includes('conditions')) return <Sliders className="size-4 text-zinc-400 group-hover:text-zinc-200" />;
+    if (s.includes('filters')) return <Sliders className="size-4 text-zinc-400 group-hover:text-zinc-200" />;
+    if (s.includes('mutators')) return <Variable className="size-4 text-zinc-400 group-hover:text-zinc-200" />;
     if (s.includes('enchants')) return <Wand2 className="size-4 text-zinc-400 group-hover:text-zinc-200" />;
     if (s.includes('customitems')) return <Package className="size-4 text-zinc-400 group-hover:text-zinc-200" />;
     if (s.includes('economy')) return <Coins className="size-4 text-zinc-400 group-hover:text-zinc-200" />;

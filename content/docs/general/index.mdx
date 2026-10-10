@@ -1,0 +1,31 @@
+---
+title: "ZenCore Engine"
+description: "Motor central declarativo de efectos, disparadores, condiciones y mutadores para el ecosistema de plugins ZenForge."
+---
+
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { Callout } from 'fumadocs-ui/components/callout';
+
+**ZenCore** es el motor declarativo central que potencia todo el ecosistema de plugins de ZenForge (incluyendo **ZenCustomItems**, **ZenEnchants**, y futuros sistemas). Inspirado en la arquitectura modular de estándares como *Libreforge / Eco*, unifica la lógica de ejecución de habilidades, mecánicas de combate, cálculo de variables y sincronización de eventos de Minecraft.
+
+---
+
+## Módulos del Motor
+
+<Cards>
+  <Card title="Effects (Efectos)" href="/docs/effects" description="Acciones y habilidades ejecutables: daño, partículas, pociones, empuje, sonidos y utilidades." />
+  <Card title="Conditions (Condiciones)" href="/docs/conditions" description="Validaciones lógicas y requisitos de contexto: salud, biomas, permisos y variables." />
+  <Card title="Triggers (Disparadores)" href="/docs/triggers" description="Eventos de Minecraft que inician la ejecución de habilidades del jugador o entorno." />
+  <Card title="Filters (Filtros)" href="/docs/filters" description="Filtros precisos de entidades, bloques y orígenes de daño." />
+  <Card title="Mutators (Mutadores)" href="/docs/mutators" description="Operaciones matemáticas y cinemáticas para transformar valores de daño y variables." />
+  <Card title="Placeholders y Expresiones" href="/docs/general/placeholders" description="Placeholders universales y soporte de fórmulas matemáticas evaluadas en tiempo real." />
+</Cards>
+
+---
+
+## Filosofía de Diseño
+
+1. **Rendimiento de Grado Servidor**: Cada efecto y condición está compilado para ejecutarse sin demoras en el hilo principal de Paper y Folia.
+2. **Sintaxis Declarativa YAML**: Escribe habilidades avanzadas directamente en archivos de configuración sin necesidad de programar en Java.
+3. **Persistencia PDC Nativa**: Los datos de variables e instancias se almacenan de forma segura en el `PersistentDataContainer` de Minecraft.
+4. **Formato MiniMessage**: Soporte completo para degradados, colores HEX y estilos enriquecidos en mensajes, títulos y barras de acción.

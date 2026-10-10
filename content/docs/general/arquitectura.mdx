@@ -1,0 +1,43 @@
+---
+title: "Arquitectura del Motor"
+description: "Estructura del ciclo de ejecución declarativo: Triggers -> Filters -> Conditions -> Mutators -> Effects."
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+El motor ZenCore procesa cada habilidad mediante una cadena de ejecución modular y determinista.
+
+---
+
+## Flujo de Ejecución
+
+```text
+[ Evento en Minecraft ]
+          │
+          ▼
+     1. TRIGGER      -> El evento activa el disparador registrado.
+          │
+          ▼
+     2. FILTERS      -> Comprueba si las entidades o bloques objetivo coinciden.
+          │
+          ▼
+    3. CONDITIONS    -> Evalúa si se cumplen todos los requisitos y probabilidades.
+          │
+          ▼
+     4. MUTATORS     -> Altera matemáticamente valores de contexto (daño, vectores).
+          │
+          ▼
+     5. EFFECTS      -> Ejecuta la lista secuencial de acciones finales.
+```
+
+---
+
+## Contexto de Ejecución (`TriggerContext`)
+
+Cada trigger genera un objeto de contexto que viaja a través de la cadena con acceso seguro a:
+
+- **`player`**: El jugador que inició la acción (si aplica).
+- **`targetEntity`**: La entidad objetivo atacada o afectada.
+- **`targetBlock`**: El bloque roto, colocado o interactuado.
+- **`damage`**: El valor numérico del daño en curso.
+- **`variables`**: Variables de instancia personalizadas asociadas al ítem o jugador.

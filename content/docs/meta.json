@@ -1,6 +1,13 @@
 {
-  "title": "Documentación",
+  "title": "Documentaci\u00f3n",
   "pages": [
+    "general",
+    "effects",
+    "conditions",
+    "filters",
+    "mutators",
+    "triggers",
+    "---PLUGINS---",
     "zenafkzone",
     "zenauctions",
     "zenbank",

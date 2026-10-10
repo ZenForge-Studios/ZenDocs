@@ -1,53 +1,198 @@
 ---
 title: "Creación de Encantamientos"
-description: "Para crear un nuevo encantamiento, simplemente añade un archivo .yml en plugins/ZenEnchants/enchants/..."
+description: "Aprende a diseñar y configurar encantamientos personalizados con efectos, disparadores y condiciones del motor ZenCore."
 ---
 
 import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import Link from 'next/link';
 
 # Creación de Encantamientos
 
+Crear un nuevo encantamiento en **ZenEnchants** es un proceso modular y declarativo. Todos los encantamientos se configuran mediante archivos `.yml` independientes dentro del directorio `plugins/ZenEnchants/enchants/`.
+
+Cada encantamiento se conecta directamente con el motor unificado **ZenCore**, permitiéndote combinar más de 250 efectos, 110 disparadores de eventos, condiciones y filtros lógicos.
+
 ---
 
-Para crear un nuevo encantamiento, simplemente añade un archivo `.yml` en `plugins/ZenEnchants/enchants/` siguiendo el estándar Libreforge:
+## Enlaces Rápidos a la Documentación del Motor
+
+Para consultar la lista completa de identificadores y parámetros que puedes utilizar en las secciones `effects:`, `triggers:`, `conditions:` y `filters:`, visita las guías oficiales del motor:
+
+<Cards>
+  <Card title="Catálogo de Efectos (255)" href="/docs/effects" description="Consulta todos los efectos de combate, pociones, partículas, sonidos y utilidades ejecutables." />
+  <Card title="Catálogo de Triggers (111)" href="/docs/triggers" description="Lista completa de disparadores de eventos: ataques cuerpo a cuerpo, disparos, minería, daño y más." />
+  <Card title="Catálogo de Condiciones (74)" href="/docs/conditions" description="Validaciones lógicas: vida, permisos, biomas, mundo, clima, distancias o variables." />
+  <Card title="Filtros (19) y Mutadores (22)" href="/docs/filters" description="Filtra entidades objetivo, tipos de bloques y altera coordenadas o daño dinámicamente." />
+</Cards>
+
+---
+
+## Estructura de un Encantamiento (`enchants/<id>.yml`)
+
+El nombre del archivo (sin la extensión `.yml`) define el identificador interno único del encantamiento.
+
+A continuación tienes un ejemplo completo y ampliamente comentado con las opciones soportadas:
 
 ```yaml
+# ==============================================================
+# Identificador y visualización básica
+# ==============================================================
 id: "soul_storm"
-display-name: "%rarity_color%Soul Storm"
-rarity: "legendary"
-max-level: 3
+display-name: "%rarity_color%Soul Storm" # Nombre formateado con el color de su rareza
+rarity: "legendary"                     # Rareza definida en rarities.yml (ej: common, rare, legendary)
+max-level: 3                            # Nivel máximo alcanzable del encantamiento
+enabled: true                           # Si el encantamiento se encuentra activo en el servidor
+
+# ==============================================================
+# Objetivos y Ranuras de Activación
+# Consulta targets.yml para la lista de categorías (sword, bow, armor, etc.)
+# ==============================================================
+targets:
+  - sword
+
+# Lista de IDs de otros encantamientos incompatibles con este
+conflicts:
+  - "fire_aspect"
+
+# ==============================================================
+# Métodos de obtención en supervivencia
+# ==============================================================
+availability:
+  enchanting-table: true # ¿Puede obtenerse en la mesa de encantamientos?
+  villager-trade: true   # ¿Puede ofrecerse en aldeanos libreros?
+  loot-chest: true       # ¿Aparece en cofres de mazmorras y estructuras?
+
+# ==============================================================
+# Descripción mostrada en el libro y en el lore del ítem
+# Soporta MiniMessage y placeholders definidos abajo
+# ==============================================================
+description:
+  - "<gray>Al golpear a un enemigo, desata una ráfaga de fuerza"
+  - "<gray>otorgando <green>Fuerza %strength_level%</green> durante <green>%duration%s</green>."
+  - "<dark_gray>Probabilidad de activación: <yellow>%chance%%</yellow>"
+
+# ==============================================================
+# Placeholders dinámicos escalables por nivel (%level%)
+# Soporta fórmulas matemáticas evaluadas en tiempo de ejecución
+# ==============================================================
+placeholders:
+  chance: "20 + (%level% * 10)"           # Nivel 1: 30%, Nivel 2: 40%, Nivel 3: 50%
+  duration: "3 + (%level% * 2)"           # Nivel 1: 5s, Nivel 2: 7s, Nivel 3: 9s
+  strength_level: "%level%"               # Nivel numérico del efecto
+
+# ==============================================================
+# Efectos impulsados por el motor ZenCore
+# ==============================================================
+effects:
+  # Efecto 1: Aplica el efecto de poción de Fuerza al atacante
+  # Documentación: /docs/effects/potion_effect
+  - id: potion_effect
+    args:
+      target: "ATTACKER"                 # Objetivo del efecto (ATTACKER, VICTIM, SELF)
+      effect: "STRENGTH"                 # Nombre de la poción en Bukkit PotionEffectType
+      duration: "%duration% * 20"        # Duración en ticks (1 segundo = 20 ticks)
+      amplifier: "%level% - 1"           # Amplificador (0 = Nivel I, 1 = Nivel II)
+      chance: "%chance%"                 # Probabilidad evaluada con la fórmula de placeholders
+      cooldown: 12                       # Tiempo de espera en segundos entre activaciones
+      cooldown_group: "soul_storm_cd"    # Grupo de cooldown para evitar acumulación
+    # Disparador: Se activa cuando el jugador ataca cuerpo a cuerpo con la espada
+    # Documentación: /docs/triggers/melee_attack
+    triggers:
+      - melee_attack
+    # Condiciones: Solo se activa si la víctima está viva y es un jugador o monstruo
+    # Documentación: /docs/conditions/victim_is_alive
+    conditions:
+      - id: victim_is_alive
+      - id: is_sneaking
+        args:
+          inverted: true                 # Solo si el jugador NO está agachado
+
+  # Efecto 2: Reproduce un sonido y partículas visuales
+  # Documentación: /docs/effects/sound y /docs/effects/particle
+  - id: sound
+    args:
+      sound: "ENTITY_WARDEN_HEARTBEAT"
+      volume: 1.0
+      pitch: 1.2
+    triggers:
+      - melee_attack
+    conditions:
+      - id: victim_is_alive
+
+  - id: particle
+    args:
+      particle: "SOUL_FIRE_FLAME"
+      count: 20
+      speed: 0.1
+      offset_x: 0.5
+      offset_y: 1.0
+      offset_z: 0.5
+    triggers:
+      - melee_attack
+```
+
+---
+
+## Ejemplo: Encantamiento Defensivo para Armaduras
+
+Los encantamientos de armadura utilizan disparadores como `take_damage` o `defend`. El siguiente ejemplo otorga regeneración y empuja a los atacantes cuando el portador recibe daño crítico:
+
+```yaml
+id: "phoenix_aegis"
+display-name: "<gradient:#ff4500:#ffd700>Phoenix Aegis</gradient>"
+rarity: "mythic"
+max-level: 2
 enabled: true
 
 targets:
- - sword
-
-conflicts: []
+  - chestplate
 
 availability:
-  enchanting-table: true
-  villager-trade: true
+  enchanting-table: false # Solo obtenible en cofres especiales o crafteo
+  villager-trade: false
   loot-chest: true
 
 description:
- - "<gray>Otorga un bono de <green>%bonus%%</green> de</gray>"
- - "<gray>daño de ataque durante <green>%duration%</green> segundos.</gray>"
+  - "<gray>Al recibir daño teniendo menos del <red>30%</red> de vida,"
+  - "<gray>desata un estallido ígneo que cura tus heridas y empuja enemigos."
 
 placeholders:
-  bonus: "100 + (%level% * 75)"
-  duration: "15 + (%level% * 5)"
+  heal_amount: "%level% * 4" # 2 corazones en nivel 1, 4 corazones en nivel 2
 
 effects:
- - id: potion_effect
+  # Efecto de Curación instantánea
+  # Documentación: /docs/effects/heal
+  - id: heal
     args:
-      target: "ATTACKER"
-      effect: "STRENGTH"
-      duration: "%duration% * 20"
-      amplifier: "%level% - 1"
-      chance: 100
-      cooldown: 15
-      cooldown_group: "soul_storm_cd"
+      target: "SELF"
+      amount: "%heal_amount%"
+      cooldown: 45
+      cooldown_group: "phoenix_cd"
     triggers:
- - melee_attack
+      - take_damage # Documentación: /docs/triggers/take_damage
     conditions:
- - id: victim_is_alive
+      - id: health_below # Documentación: /docs/conditions/health_below
+        args:
+          percentage: 30
+
+  # Efecto de Rayo visual (sin fuego en bloques)
+  # Documentación: /docs/effects/strike_lightning
+  - id: strike_lightning
+    args:
+      effect_only: true
+    triggers:
+      - take_damage
+    conditions:
+      - id: health_below
+        args:
+          percentage: 30
 ```
+
+---
+
+## Consejos de Optimización y Buenas Prácticas
+
+1. **Uso de Cooldown Groups**: Asigna siempre un `cooldown_group` a efectos de pociones o partículas para evitar que múltiples golpes por segundo sobrecarguen el servidor o al cliente.
+2. **Nombres de Partículas y Sonidos**: Usa siempre nombres válidos de Paper 1.21+ (por ejemplo `ENTITY_PLAYER_ATTACK_CRIT` o `SOUL_FIRE_FLAME`).
+3. **Fórmulas Matemáticas**: En la sección `placeholders:`, puedes utilizar operadores estándar `+`, `-`, `*`, `/` y paréntesis combinados con `%level%` para escalar automáticamente con los niveles del encantamiento.

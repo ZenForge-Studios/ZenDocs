@@ -1,0 +1,251 @@
+---
+title: "Creación de Ítems"
+description: "Guía paso a paso para crear ítems personalizados con componentes modernos, crafteos y habilidades con efectos del motor ZenCore."
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import Link from 'next/link';
+
+# Creación de Ítems (`items/*.yml`)
+
+Cada ítem personalizado en **ZenCustomItems** se define en su propio archivo de configuración dentro del directorio `plugins/ZenCustomItems/items/`. 
+
+El sistema utiliza la arquitectura unificada del motor **ZenCore**, permitiéndote configurar visuales en Adventure (MiniMessage), componentes modernos de Minecraft 1.20.5+ y 1.21+, recetas de crafteo y cadenas de habilidades compuestas por **Efectos**, **Disparadores (Triggers)** y **Condiciones**.
+
+---
+
+## Enlaces Rápidos a la Documentación del Motor ZenCore
+
+Al definir las habilidades y comportamientos de tus ítems en las secciones `effects:`, `triggers:` y `conditions:`, consulta las referencias completas del motor:
+
+<Cards>
+  <Card title="Catálogo de Efectos (255)" href="/docs/effects" description="Consulta todos los efectos de combate, daño, pociones, partículas, sonidos y proyectiles." />
+  <Card title="Catálogo de Triggers (111)" href="/docs/triggers" description="Disparadores de eventos: clic derecho, daño cuerpo a cuerpo, disparos de flecha, minería y más." />
+  <Card title="Catálogo de Condiciones (74)" href="/docs/conditions" description="Validaciones lógicas: vida del jugador, estar agachado, bioma, mundo, permisos o cooldowns." />
+  <Card title="Filtros y Mutadores" href="/docs/filters" description="Filtra entidades y bloques objetivo y altera dinámicamente ubicaciones y multiplicadores." />
+</Cards>
+
+---
+
+## Reglas de Nomenclatura e Identificadores
+
+1. **ID del Ítem**: El nombre del archivo sin la extensión `.yml` corresponde al identificador (`id`) del ítem. Por ejemplo, `inferno_blade.yml` tiene el ID `inferno_blade`.
+2. **Formato**: Los IDs solo deben contener caracteres en minúscula (`a-z`), dígitos (`0-9`) y guiones bajos (`_`). Evita mayúsculas, espacios y caracteres especiales.
+3. **Plantillas ignoradas**: Cualquier archivo que comience con un guion bajo `_` (como `_example.yml` o `_sword_base.yml`) se considera plantilla y no se cargará como ítem utilizable.
+
+---
+
+## Estructura Completa de un Ítem Comentada
+
+A continuación se muestra un ejemplo exhaustivo de una espada legendaria con componentes de atributo, crafteo y habilidades de combate:
+
+```yaml
+# ==============================================================
+# Identificador y metadatos de versión
+# ==============================================================
+id: "inferno_blade"
+schema-version: 1
+definition-version: 1 # Incrementar este número actualiza automáticamente los ítems de los jugadores
+type: WEAPON          # Categoría del ítem: WEAPON, ARMOR, TOOL, CONSUMABLE
+category: swords
+
+# ==============================================================
+# Base del Ítem (Ítem vanilla base y textura)
+# ==============================================================
+base:
+  material: NETHERITE_SWORD
+  amount: 1
+  custom-model-data: 10001 # Opcional: ID de modelo para Resource Pack / ItemsAdder / Oraxen
+  unbreakable: false
+
+# ==============================================================
+# Aspecto visual (Adventure MiniMessage & Legacy)
+# ==============================================================
+display:
+  name: "<gradient:#ff4500:#ffaa00><bold>Hoja del Infierno</bold></gradient>"
+  lore:
+    - "<gray>Forjada en el núcleo incandescente del Nether."
+    - "<gray>Canaliza el poder del fuego y desata rayos abrasadores."
+    - ""
+    - "<gold>✦ Habilidad: Ráfaga Ígnea <yellow>[Clic Derecho]</yellow>"
+    - "<gray>Dispara un haz de fuego que causa daño a enemigos a distancia."
+    - "<dark_gray>Cooldown: 4.5 segundos"
+    - ""
+    - "<yellow>⭐ Daño de Ataque: +12"
+  glow: true # Opcional: brillo de encantamiento sin mostrar encantamientos vanilla
+
+# ==============================================================
+# Componentes de Minecraft (Vanilla Components & Attributes)
+# ==============================================================
+components:
+  durability:
+    max: 2000
+  rarity: "LEGENDARY" # Rareza visual
+  
+  # Banderas de comportamiento (consulta /docs/zencustomitems/flags)
+  behavior-flags:
+    - NO_PLACE # Impide colocar si es un bloque
+    - NO_ANVIL # Impide modificarlo en yunques si se desea preservar su diseño
+
+  # Modificadores de atributos vanilla de Minecraft 1.21+
+  attribute-modifiers:
+    - attribute: "generic.attack_damage"
+      amount: 12.0
+      operation: "ADD_NUMBER"
+      slot: "MAINHAND"
+
+# ==============================================================
+# Ranura de activación y efectos pasivos constantes
+# ==============================================================
+slot: MAINHAND # MAINHAND, OFFHAND, HELMET, CHESTPLATE, LEGGINGS, BOOTS, ARMOR, ANY
+
+passive-effects:
+  # Otorga resistencia al fuego continua mientras se sostiene en mano
+  # Documentación: /docs/effects/potion_effect
+  - id: potion_effect
+    args:
+      target: "SELF"
+      effect: "FIRE_RESISTANCE"
+      duration: 100 # ticks
+      amplifier: 0
+    slots: ["MAINHAND", "OFFHAND"]
+
+# ==============================================================
+# Habilidades Activas y Reactivas (Motor ZenCore)
+# ==============================================================
+triggers:
+  # Habilidad 1: Clic derecho activa proyectil cinemático de fuego
+  - id: flame_strike
+    # Disparador: Se activa con clic derecho en el aire o sobre bloques
+    # Documentación: /docs/triggers/right_click
+    type: RIGHT_CLICK
+    cooldownSeconds: 4.5 # Cooldown en segundos específico para esta habilidad
+    
+    # Condiciones: Solo se activa si el jugador no está agachado y tiene al menos 5 corazones
+    # Documentación: /docs/conditions/is_sneaking y /docs/conditions/health_above
+    conditions:
+      - id: is_sneaking
+        args:
+          inverted: true
+      - id: health_above
+        args:
+          amount: 10.0
+
+    # Cadenas de efectos ejecutadas sucesivamente por ZenCore
+    effects:
+      # Efecto 1: Rayo cinemático que viaja en línea recta causando daño
+      # Documentación: /docs/effects/projectile_beam
+      - id: projectile_beam
+        args:
+          particle: "FLAME"
+          distance: 14.0
+          damage: 8.0 # 4 corazones de daño
+          piercing: true
+
+      # Efecto 2: Sonido de lanzamiento
+      # Documentación: /docs/effects/sound
+      - id: sound
+        args:
+          sound: "ENTITY_BLAZE_SHOOT"
+          volume: 1.0
+          pitch: 1.2
+
+      # Efecto 3: Partículas en la posición del jugador
+      # Documentación: /docs/effects/particle
+      - id: particle
+        args:
+          particle: "LAVA"
+          count: 15
+          offset_x: 0.3
+          offset_y: 0.5
+          offset_z: 0.3
+
+  # Habilidad 2: Efecto pasivo en combate cuerpo a cuerpo
+  - id: ignite_target
+    # Disparador: Cuando el jugador asesta un golpe cuerpo a cuerpo
+    # Documentación: /docs/triggers/melee_attack
+    type: MELEE_ATTACK
+    conditions:
+      - id: victim_is_alive # Documentación: /docs/conditions/victim_is_alive
+    effects:
+      # Efecto: Prender fuego a la víctima durante 4 segundos
+      # Documentación: /docs/effects/ignite
+      - id: ignite
+        args:
+          target: "VICTIM"
+          duration: 80 # 4 segundos (80 ticks)
+
+# ==============================================================
+# Receta de Crafteo Personalizada
+# ==============================================================
+recipes:
+  type: CRAFTING_TABLE # CRAFTING_TABLE, FURNACE, SMITHING_TABLE, ANVIL
+  permission: "zencustomitems.craft.inferno_blade" # Opcional
+  give-amount: 1
+  shape:
+    - " N "
+    - " N "
+    - " S "
+  ingredients:
+    N: "NETHERITE_INGOT"
+    S: "BLAZE_ROD"
+```
+
+---
+
+## Ejemplo: Herramienta de Minería con Efectos en Área
+
+El siguiente ejemplo demuestra cómo crear un pico con efecto de minería en área (`vein_mine`) y sonidos dinámicos:
+
+```yaml
+id: "drill_pickaxe"
+type: TOOL
+category: pickaxes
+
+base:
+  material: NETHERITE_PICKAXE
+
+display:
+  name: "<gradient:#00c6ff:#0072ff><bold>Taladro Arcano</bold></gradient>"
+  lore:
+    - "<gray>Rompe vetas completas de minerales al instante."
+    - "<dark_gray>Cooldown: 3 segundos"
+
+triggers:
+  - id: vein_break
+    # Disparador: Romper bloque
+    # Documentación: /docs/triggers/mine_block
+    type: MINE_BLOCK
+    cooldownSeconds: 3.0
+    # Filtro: Solo se activa en bloques que sean minerales
+    # Documentación: /docs/filters/blocks
+    filters:
+      blocks:
+        - "#ores"
+        - "ancient_debris"
+    effects:
+      # Efecto: Destrucción de la veta completa
+      # Documentación: /docs/effects/vein_mine
+      - id: vein_mine
+        args:
+          max_blocks: 16
+          drop_items: true
+      # Sonido metálico de quiebre
+      # Documentación: /docs/effects/sound
+      - id: sound
+        args:
+          sound: "BLOCK_ANVIL_USE"
+          volume: 0.8
+          pitch: 1.5
+```
+
+---
+
+## Comandos para Probar y Recargar tus Ítems
+
+Una vez guardado tu archivo en `plugins/ZenCustomItems/items/`:
+
+* `/zci reload`: Recarga todos los archivos `.yml` del disco al instante.
+* `/zci give <tu_nombre> <id>`: Entrega el ítem a tu inventario para probarlo.
+* `/zci editor <id>`: Abre el editor visual dentro del juego para ajustar lore, modelos o atributos sin tocar el archivo a mano.

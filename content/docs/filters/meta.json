@@ -1,0 +1,24 @@
+{
+  "title": "Filters",
+  "pages": [
+    "index",
+    "blocks",
+    "bosses",
+    "critical_hit",
+    "expression",
+    "hostile",
+    "item_in_hand",
+    "items",
+    "mobs",
+    "only_flying",
+    "only_monsters",
+    "only_raiders",
+    "only_undead",
+    "passive",
+    "projectiles",
+    "self",
+    "target",
+    "target_in_fov",
+    "target_player"
+  ]
+}

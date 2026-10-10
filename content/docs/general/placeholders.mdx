@@ -1,0 +1,32 @@
+---
+title: "Placeholders y Expresiones"
+description: "Variables dinámicas de contexto y fórmulas matemáticas soportadas en ZenCore."
+---
+
+ZenCore permite el uso de placeholders dinámicos y fórmulas matemáticas en cualquier parámetro numérico o de texto.
+
+---
+
+## Placeholders Universales
+
+| Placeholder | Descripción |
+| :--- | :--- |
+| `%player%` / `%player_name%` | Nombre del jugador que ejecuta la acción. |
+| `%player_health%` | Salud actual del jugador. |
+| `%player_max_health%` | Salud máxima del jugador. |
+| `%target%` / `%target_name%` | Nombre o tipo de la entidad objetivo. |
+| `%target_health%` | Salud actual del objetivo. |
+| `%damage%` | Valor numérico del daño en curso. |
+| `%variable_<nombre>%` | Valor de una variable persistente guardada en el ítem. |
+
+---
+
+## Expresiones Matemáticas
+
+Puedes emplear operadores matemáticos estándar (`+`, `-`, `*`, `/`, `^`, `%`) y funciones (`min`, `max`, `abs`, `round`) en valores numéricos:
+
+```yaml
+effects:
+  - type: DEAL_DAMAGE
+    amount: "10 + (%player_health% * 0.2)"
+```

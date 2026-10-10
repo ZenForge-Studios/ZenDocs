@@ -1,5 +1,5 @@
 {
-  "title": "ZenEnchants (New)",
+  "title": "ZenEnchants",
   "pages": [
     "index",
     "requisitos_del_sistema",
@@ -14,10 +14,6 @@
     "creacion_encantamientos",
     "menus",
     "mecanicas_especiales",
-    "effects",
-    "triggers",
-    "conditions",
-    "filters-and-mutators",
     "placeholders",
     "api"
   ]

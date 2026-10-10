@@ -1,0 +1,127 @@
+---
+title: "Triggers (Disparadores)"
+description: "Catálogo completo de los 111 eventos y disparadores nativos soportados por ZenCore."
+---
+
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { Callout } from 'fumadocs-ui/components/callout';
+
+Los **Triggers** son los eventos de Minecraft que activan la ejecución de las habilidades. Cada disparador provee un contexto seguro con acceso al jugador, objetivo, vector de daño y variables.
+
+---
+
+## Catálogo de Triggers (111)
+
+<Cards>
+  <Card title="arrow_headshot" href="/docs/triggers/arrow_headshot" description="Al impactar un disparo a la cabeza del oponente." />
+  <Card title="arrow_hit" href="/docs/triggers/arrow_hit" description="Al impactar una flecha contra cualquier objetivo." />
+  <Card title="arrow_hit_block" href="/docs/triggers/arrow_hit_block" description="Al clavarse una flecha en un bloque sólido." />
+  <Card title="arrow_hit_entity" href="/docs/triggers/arrow_hit_entity" description="Al impactar una flecha directamente a una criatura." />
+  <Card title="attack" href="/docs/triggers/attack" description="Se dispara cuando el jugador golpea a otra entidad viva." />
+  <Card title="block_break" href="/docs/triggers/block_break" description="Se dispara cuando el jugador destruye un bloque con la herramienta." />
+  <Card title="block_damage" href="/docs/triggers/block_damage" description="Se dispara continuamente mientras el jugador está picando un bloque." />
+  <Card title="block_interact" href="/docs/triggers/block_interact" description="Se dispara al interactuar con puertas, cofres, palancas o bloques mecánicos." />
+  <Card title="block_place" href="/docs/triggers/block_place" description="Se dispara cuando el jugador coloca este bloque en el mundo." />
+  <Card title="bow_charge" href="/docs/triggers/bow_charge" description="Al tensar la cuerda del arco." />
+  <Card title="break_log" href="/docs/triggers/break_log" description="Al talar bloques de madera/tronco." />
+  <Card title="break_ore" href="/docs/triggers/break_ore" description="Al picar cualquier tipo de mineral del subsuelo." />
+  <Card title="consume" href="/docs/triggers/consume" description="Se dispara cuando el jugador termina de comer o beber un alimento o consumible." />
+  <Card title="critical_hit" href="/docs/triggers/critical_hit" description="Al asestar un golpe crítico en caída de salto." />
+  <Card title="damage" href="/docs/triggers/damage" description="Se dispara cuando el jugador recibe cualquier tipo de daño (ambiental o por entidad)." />
+  <Card title="damage_taken" href="/docs/triggers/damage_taken" description="Se dispara cuando el portador del ítem o armadura recibe daño de cualquier fuente." />
+  <Card title="deal_damage" href="/docs/triggers/deal_damage" description="Se dispara al causar cualquier daño en el juego." />
+  <Card title="death" href="/docs/triggers/death" description="Al morir el jugador portador del encantamiento." />
+  <Card title="defend" href="/docs/triggers/defend" description="Al recibir cualquier tipo de daño en armadura o equipo." />
+  <Card title="disable_enemy_shield" href="/docs/triggers/disable_enemy_shield" description="Al deshabilitar el escudo del enemigo con un impacto." />
+  <Card title="double_jump" href="/docs/triggers/double_jump" description="Al saltar en el aire (mecánicas de doble salto)." />
+  <Card title="drop" href="/docs/triggers/drop" description="Se dispara cuando el jugador suelta el ítem al suelo (tecla Q)." />
+  <Card title="drown_damage" href="/docs/triggers/drown_damage" description="Al sufrir asfixia bajo el agua." />
+  <Card title="durability_change" href="/docs/triggers/durability_change" description="Se dispara cada vez que el ítem pierde o cambia durabilidad personalizada." />
+  <Card title="eat" href="/docs/triggers/eat" description="Al terminar de comer un alimento o beber poción." />
+  <Card title="enchant_item" href="/docs/triggers/enchant_item" description="Se dispara cuando el ítem es encantado en una mesa de encantamientos." />
+  <Card title="enderpearl_land" href="/docs/triggers/enderpearl_land" description="Al teletransportarse por impacto de perla." />
+  <Card title="enter_lava" href="/docs/triggers/enter_lava" description="Al caer en un pozo o corriente de lava." />
+  <Card title="enter_water" href="/docs/triggers/enter_water" description="Al sumergirse en un cuerpo de agua." />
+  <Card title="entity_death" href="/docs/triggers/entity_death" description="Se dispara en el evento de muerte de la entidad cuando el asesino empuña este ítem." />
+  <Card title="entity_death_nearby" href="/docs/triggers/entity_death_nearby" description="Cuando cualquier entidad muere en un radio cercano." />
+  <Card title="equip" href="/docs/triggers/equip" description="Se dispara cuando el jugador se equipa una pieza de armadura con este ítem." />
+  <Card title="exp_change" href="/docs/triggers/exp_change" description="Al absorber cualquier orbe de experiencia." />
+  <Card title="explosion_damage" href="/docs/triggers/explosion_damage" description="Al recibir daño por explosiones de TNT o mobs." />
+  <Card title="fall_damage" href="/docs/triggers/fall_damage" description="Al recibir daño por impacto de caída." />
+  <Card title="fire_damage" href="/docs/triggers/fire_damage" description="Al quemarse por fuego, lava o magma." />
+  <Card title="fish" href="/docs/triggers/fish" description="Se dispara durante cualquier acción con la caña de pescar." />
+  <Card title="fish_caught" href="/docs/triggers/fish_caught" description="Al pescar exitosamente un pez o tesoro con caña." />
+  <Card title="fish_caught_2" href="/docs/triggers/fish_caught_2" description="Se dispara cuando el jugador pesca un pez, tesoro o basura con la caña de pescar." />
+  <Card title="fly" href="/docs/triggers/fly" description="Se dispara cuando el jugador activa el vuelo (doble espacio o modo creativo/fly)." />
+  <Card title="freeze_damage" href="/docs/triggers/freeze_damage" description="Al sufrir congelamiento en nieve en polvo." />
+  <Card title="glide" href="/docs/triggers/glide" description="Al planear con élitros por los cielos." />
+  <Card title="harvest_crop" href="/docs/triggers/harvest_crop" description="Al cosechar un cultivo maduro (trigo, patatas, etc.)." />
+  <Card title="heal" href="/docs/triggers/heal" description="Se dispara cuando el jugador recupera puntos de salud." />
+  <Card title="interact_at" href="/docs/triggers/interact_at" description="Se dispara al interactuar con precisión de modelo sobre una entidad (e.g. soporte de armaduras o NPC)." />
+  <Card title="interact_entity" href="/docs/triggers/interact_entity" description="Se dispara al interactuar con clic derecho sobre cualquier entidad." />
+  <Card title="item_break" href="/docs/triggers/item_break" description="Cuando un ítem agota su durabilidad y se rompe." />
+  <Card title="item_damage" href="/docs/triggers/item_damage" description="Al sufrir desgaste de durabilidad una herramienta/armadura." />
+  <Card title="join" href="/docs/triggers/join" description="Se dispara cuando el jugador entra al servidor." />
+  <Card title="jump" href="/docs/triggers/jump" description="Al saltar en el suelo." />
+  <Card title="kill" href="/docs/triggers/kill" description="Se dispara cuando el portador elimina a una entidad viviente." />
+  <Card title="kill_animal" href="/docs/triggers/kill_animal" description="Al matar animales pacíficos (vacas, ovejas, etc.)." />
+  <Card title="kill_boss" href="/docs/triggers/kill_boss" description="Al abatir un Boss (Wither, Dragón, Warden, Elder Guardian)." />
+  <Card title="kill_entity" href="/docs/triggers/kill_entity" description="Al eliminar cualquier entidad viva del mundo." />
+  <Card title="kill_mob" href="/docs/triggers/kill_mob" description="Se dispara cuando el jugador mata a cualquier criatura que no sea un jugador." />
+  <Card title="kill_monster" href="/docs/triggers/kill_monster" description="Al eliminar un monstruo hostil (zombies, esqueletos, etc.)." />
+  <Card title="kill_player" href="/docs/triggers/kill_player" description="Al liquidar a otro jugador en PvP." />
+  <Card title="launch_trident" href="/docs/triggers/launch_trident" description="Al arrojar un tridente al aire o agua." />
+  <Card title="leave_water" href="/docs/triggers/leave_water" description="Al salir a tierra firme tras nadar." />
+  <Card title="left_click" href="/docs/triggers/left_click" description="Se dispara con clic izquierdo (ataque o golpe al aire)." />
+  <Card title="left_click_air" href="/docs/triggers/left_click_air" description="Se dispara al hacer clic izquierdo al aire sin golpear entidades ni bloques." />
+  <Card title="left_click_block" href="/docs/triggers/left_click_block" description="Se dispara al hacer clic izquierdo contra un bloque." />
+  <Card title="level_change" href="/docs/triggers/level_change" description="Al subir o bajar de nivel de experiencia." />
+  <Card title="lightning_damage" href="/docs/triggers/lightning_damage" description="Al recibir el impacto de un rayo." />
+  <Card title="magic_damage" href="/docs/triggers/magic_damage" description="Al recibir daño por pociones mágicas o espinas." />
+  <Card title="melee_attack" href="/docs/triggers/melee_attack" description="Al golpear cuerpo a cuerpo a una criatura o jugador." />
+  <Card title="melee_damage" href="/docs/triggers/melee_damage" description="Se dispara al calcular el daño final de un ataque cuerpo a cuerpo (permite usar mutadores de daño)." />
+  <Card title="melee_defend" href="/docs/triggers/melee_defend" description="Al ser golpeado cuerpo a cuerpo por otra entidad." />
+  <Card title="mine_block" href="/docs/triggers/mine_block" description="Al romper un bloque con una herramienta válida." />
+  <Card title="pickup_item" href="/docs/triggers/pickup_item" description="Se dispara cuando el jugador recoge un ítem del suelo con el ítem equipado." />
+  <Card title="place_block" href="/docs/triggers/place_block" description="Al colocar un bloque en el mundo." />
+  <Card title="poison_damage" href="/docs/triggers/poison_damage" description="Al sufrir daño por veneno." />
+  <Card title="projectile_damage" href="/docs/triggers/projectile_damage" description="Al ser impactado por flechas o proyectiles." />
+  <Card title="projectile_hit" href="/docs/triggers/projectile_hit" description="Se dispara cuando el proyectil lanzado impacta contra un bloque o una entidad." />
+  <Card title="projectile_hit_block" href="/docs/triggers/projectile_hit_block" description="Se dispara cuando una flecha, tridente u otro proyectil disparado impacta en un bloque sólido." />
+  <Card title="projectile_hit_entity" href="/docs/triggers/projectile_hit_entity" description="Se dispara cuando el proyectil impacta con precisión en una entidad." />
+  <Card title="projectile_launch" href="/docs/triggers/projectile_launch" description="Se dispara cuando el jugador dispara una flecha, perla o proyectil con este arco o ítem." />
+  <Card title="quit" href="/docs/triggers/quit" description="Se dispara cuando el jugador sale del servidor (limpia automáticamente los cooldowns activos)." />
+  <Card title="respawn" href="/docs/triggers/respawn" description="Se dispara inmediatamente después de que el jugador reaparece tras morir." />
+  <Card title="right_click" href="/docs/triggers/right_click" description="Se dispara con clic derecho con el ítem en la mano principal (al aire o contra bloque)." />
+  <Card title="right_click_air" href="/docs/triggers/right_click_air" description="Se dispara exclusivamente al hacer clic derecho en el aire sin apuntar a ningún bloque." />
+  <Card title="right_click_block" href="/docs/triggers/right_click_block" description="Se dispara exclusivamente al hacer clic derecho sobre un bloque." />
+  <Card title="right_click_entity" href="/docs/triggers/right_click_entity" description="Se dispara al hacer clic derecho con el ítem sobre cualquier entidad viva." />
+  <Card title="riptide" href="/docs/triggers/riptide" description="Al propulsarse usando el encantamiento Riptide." />
+  <Card title="shear_block" href="/docs/triggers/shear_block" description="Al podar hojas, enredaderas o colmenas con tijeras." />
+  <Card title="shear_sheep" href="/docs/triggers/shear_sheep" description="Al esquilar una oveja con tijeras." />
+  <Card title="shield_block" href="/docs/triggers/shield_block" description="Al bloquear exitosamente un ataque con escudo." />
+  <Card title="shield_break" href="/docs/triggers/shield_break" description="Cuando el escudo del jugador es deshabilitado por hacha." />
+  <Card title="shoot_bow" href="/docs/triggers/shoot_bow" description="Al disparar una flecha con arco." />
+  <Card title="shoot_crossbow" href="/docs/triggers/shoot_crossbow" description="Al disparar una ballesta cargada." />
+  <Card title="sneak" href="/docs/triggers/sneak" description="Al agacharse / presionar Shift." />
+  <Card title="splash_potion" href="/docs/triggers/splash_potion" description="Al detonar una poción de salpicadura en el suelo." />
+  <Card title="sprint" href="/docs/triggers/sprint" description="Al iniciar carrera continua." />
+  <Card title="start_glide" href="/docs/triggers/start_glide" description="Al abrir los élitros en caída libre." />
+  <Card title="stop_glide" href="/docs/triggers/stop_glide" description="Al tocar tierra y cerrar los élitros." />
+  <Card title="stop_sprint" href="/docs/triggers/stop_sprint" description="Al detenerse de correr." />
+  <Card title="strip_log" href="/docs/triggers/strip_log" description="Al descortezar un tronco con un hacha." />
+  <Card title="swap_hands" href="/docs/triggers/swap_hands" description="Se dispara cuando el jugador intercambia el ítem a la mano secundaria (tecla F)." />
+  <Card title="sweep_attack" href="/docs/triggers/sweep_attack" description="Al ejecutar el ataque de barrido de espada." />
+  <Card title="swim" href="/docs/triggers/swim" description="Al nadar en agua." />
+  <Card title="take_damage" href="/docs/triggers/take_damage" description="Se dispara al recibir daño de cualquier procedencia." />
+  <Card title="throw_enderpearl" href="/docs/triggers/throw_enderpearl" description="Al lanzar una Ender Pearl." />
+  <Card title="throw_potion" href="/docs/triggers/throw_potion" description="Al lanzar una poción arrojadiza." />
+  <Card title="till_soil" href="/docs/triggers/till_soil" description="Al arar tierra con una azada." />
+  <Card title="totem_pop" href="/docs/triggers/totem_pop" description="Al consumirse un Tótem de la Inmortalidad salvando la vida." />
+  <Card title="trample_farmland" href="/docs/triggers/trample_farmland" description="Al pisar y destruir un bloque de tierra arada." />
+  <Card title="trident_hit" href="/docs/triggers/trident_hit" description="Al clavar un tridente arrojado en una entidad." />
+  <Card title="unequip" href="/docs/triggers/unequip" description="Se dispara cuando el jugador se quita o desequipa la pieza de armadura." />
+  <Card title="unsneak" href="/docs/triggers/unsneak" description="Al levantarse de agacharse." />
+  <Card title="use" href="/docs/triggers/use" description="Disparador genérico de uso de ítem (clic derecho o activación)." />
+  <Card title="wither_damage" href="/docs/triggers/wither_damage" description="Al recibir tick de daño por efecto Wither." />
+</Cards>
