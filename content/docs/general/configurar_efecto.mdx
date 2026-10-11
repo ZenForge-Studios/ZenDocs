@@ -1,0 +1,204 @@
+---
+title: "Configuración de Efectos"
+description: "Aprende a estructurar efectos, diferenciar entre disparados y permanentes, y dominar argumentos opcionales como cooldowns, repeticiones y precios."
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import Link from 'next/link';
+
+# Configuración de Efectos (Effects)
+
+Los **Effects** son las acciones finales que el motor **ZenCore** ejecuta: proyectiles cinemáticos, rayos visuales, curación, impulsos de velocidad, manipulación de inventarios o comandos de servidor.
+
+Esta guía explica en profundidad cómo estructurar cualquier efecto, la diferencia fundamental entre efectos **disparados (triggered)** y **permanentes (permanent)**, y la totalidad de **argumentos opcionales** que puedes utilizar para crear mecánicas únicas.
+
+---
+
+## Tipos de Efectos
+
+Existen dos tipos de efectos en el motor:
+1. **Disparados (`triggered`)**: Requieren obligatoriamente al menos un disparador (`triggers:`) para activarse (por ejemplo: clics, asestar un golpe crítico, disparar con arco o recibir daño).
+2. **Permanentes (`permanent`)**: Siempre se encuentran activos mientras el ítem se encuentre equipado en su ranura correspondiente y se cumplan sus condiciones (por ejemplo: velocidad pasiva o visión nocturna). No llevan la sección `triggers:`.
+
+---
+
+## Ejemplo: Habilidad de Golpe Sísmico
+
+A continuación se muestra una habilidad completa que crea una onda de choque expansiva al asestar un golpe crítico en combate:
+
+```yaml
+effects:
+  - id: shockwave              # ID del efecto (consulta /docs/effects/shockwave)
+    args:
+      radius: 4.5              # Radio de impacto en bloques
+      damage: 7.0              # 3.5 corazones de daño a enemigos cercanos
+      knockback: 1.2           # Potencia de empuje vertical y horizontal
+      chance: 35               # 35% de probabilidad de éxito
+      cooldown: 8              # 8 segundos de enfriamiento
+      cooldown_group: "earth_shatter"
+    triggers:
+      - critical_hit           # Disparador: Se activa solo en golpes críticos
+    filters:
+      entities:                # Filtro: Solo se aplica si el objetivo es un monstruo o jugador
+        - player
+        - zombie
+        - skeleton
+        - piglin
+    mutators:
+      - id: set_location_to_victim # Centra la onda expansiva en la posición del enemigo golpeado
+    conditions:
+      - id: is_gliding
+        args:
+          inverted: true       # Solo funciona si el jugador no está planeando con Elytra
+```
+
+Este efecto comprueba que el atacante aseste un golpe crítico contra un monstruo o jugador, desplazando la coordenada central hacia la víctima para detonar una onda expansiva de 4.5 bloques con 35% de probabilidad cada 8 segundos.
+
+---
+
+## Componentes de un Efecto
+
+### 1. `id` y `args` (Acción Central)
+El identificador define qué acción ejecutará el motor. Cada efecto cuenta con sus propios parámetros obligatorios documentados en el catálogo.
+
+```yaml
+effects:
+  - id: projectile_beam # Dispara un haz cinemático de partículas
+    args:
+      particle: CRIT
+      distance: 16.0
+      damage: 9.0
+```
+
+### 2. `triggers` (Disparadores)
+Determinan el evento de Bukkit/Paper que inicia la ejecución. Un efecto disparado puede tener uno o varios disparadores en lista.
+
+```yaml
+    triggers:
+      - right_click
+      - alt_click
+```
+
+### 3. `filters` (Filtros de Objetivo)
+Acotan con exactitud a qué bloques, entidades o tipos de daño aplica el disparador.
+
+```yaml
+    filters:
+      blocks:
+        - ancient_debris
+        - nether_gold_ore
+      damage_sources:
+        - projectile
+        - entity_attack
+```
+
+### 4. `conditions` (Condiciones Lógicas)
+Requisitos que deben cumplirse para permitir la ejecución (salud del jugador, mundo actual, permisos, etc.).
+
+```yaml
+    conditions:
+      - id: world_is
+        args:
+          world: "world_nether"
+```
+
+### 5. `mutators` (Mutadores de Contexto)
+Modifican los datos que recibe el efecto antes de ejecutarse (por ejemplo, desplazar las coordenadas o alternar el objetivo de atacante a víctima).
+
+```yaml
+    mutators:
+      - id: translate_location
+        args:
+          add_x: 0.0
+          add_y: 1.5           # Eleva el punto de origen al nivel de los ojos
+          add_z: 0.0
+```
+
+---
+
+## Argumentos Opcionales Universales
+
+Todos estos argumentos se configuran dentro de la sección `args:` de **cualquier efecto**:
+
+```yaml
+args:
+  chance: 40                        # Porcentaje de probabilidad de activación (0 a 100, default: 100)
+  cost: 150                         # Coste monetario mediante Vault al ejecutarse
+  every: 4                          # Se activa solo 1 vez cada 4 ejecuciones válidas
+  require: '%player_food% >= 14'    # Expresión booleana (requiere al menos 7 muslos de comida)
+  delay: 15                         # Retraso en ticks antes del disparo (15 ticks = 0.75s)
+  run-order: early                  # Prioridad de ejecución: start, early, normal, late, end
+```
+
+### Tiempos de Recarga (`cooldown`)
+
+Permite limitar la frecuencia de uso del efecto o agruparlo con otras habilidades:
+
+```yaml
+args:
+  cooldown: 12                      # Cooldown en segundos (default: 0)
+  cooldown_group: tempest_burst     # Grupo compartido para que varias armas compartan el enfriamiento
+  send_cooldown_message: true       # Avisar al jugador si intenta usar la habilidad antes de tiempo
+  cooldown_message: "<red>⚡ La tempestad se está recargando. Espera <yellow>%seconds%s</yellow>."
+  cooldown_effects:                 # Sonido o efecto que avisa del fallo al jugador en cooldown
+    - id: sound
+      args:
+        sound: BLOCK_FIRE_EXTINGUISH
+        volume: 0.7
+        pitch: 1.4
+```
+
+### Repeticiones en Bucle (`repeat`)
+
+Permite ejecutar el mismo efecto múltiples veces a intervalos regulares para crear ráfagas o estelas:
+
+```yaml
+args:
+  delay: 4                          # Intervalo de 4 ticks entre cada disparo de la ráfaga
+  repeat:
+    times: 6                        # Disparará 6 proyectiles o pulsos
+    start: 1                        # Valor inicial del placeholder %repeat_count%
+    increment: 1                    # Incremento en cada ciclo
+```
+
+> [!NOTE]
+> Al utilizar repeticiones (`repeat`), los mutadores asignados se recalculan en cada ciclo. Esto permite proyectar trayectorias o desplazar partículas progresivamente en cada pulso usando `%repeat_count%`.
+
+### Precios Dinámicos (`price`)
+
+Permite exigir un coste configurable de monedas, gemas o materiales de inventario:
+
+```yaml
+args:
+  price:
+    value: "50 + (%player_level% * 10)" # Fórmula que escala según el nivel de experiencia del jugador
+    type: vault                         # vault, ecobits, o ítems
+    display: "<green>$%value% monedas</green>"
+```
+
+---
+
+## Placeholders y Expresiones Matemáticas
+
+Cualquier valor numérico en `args:` soporta operaciones matemáticas (`+`, `-`, `*`, `/`, `^`, `%`) y placeholders contextuales del evento:
+
+| Placeholder | Descripción | Alias |
+| :--- | :--- | :--- |
+| `%trigger_value%` | Valor numérico del evento (ej: cantidad de daño asestado o bloqueado) | `%value%`, `%tv%`, `%v%` |
+| `%player%` | Nombre del usuario que ejecutó la acción | - |
+| `%victim_health%` | Vida actual de la entidad que recibió el impacto | - |
+| `%victim_max_health%` | Vida máxima del enemigo | - |
+| `%distance%` | Distancia en bloques entre el jugador y el objetivo | - |
+| `%hits%` | Número consecutivo de golpes acertados | - |
+| `%location_x%`, `%location_y%`, `%location_z%` | Coordenadas espaciales exactas del evento | `%x%`, `%y%`, `%z%` |
+
+---
+
+## Enlaces Relacionados
+
+<Cards>
+  <Card title="Configuración de Condiciones" href="/docs/general/configurar_condicion" description="Aprende a validar requisitos, invertir condiciones y configurar mensajes not-met." />
+  <Card title="Configuración de Cadenas (Chains)" href="/docs/general/configurar_cadena" description="Agrupa múltiples efectos bajo una sola probabilidad o ciclo de ejecución." />
+  <Card title="Catálogo de Efectos" href="/docs/effects" description="Explora los 255 efectos disponibles en el motor." />
+</Cards>

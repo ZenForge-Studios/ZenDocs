@@ -6,19 +6,32 @@ description: "Motor central declarativo de efectos, disparadores, condiciones y 
 import { Card, Cards } from 'fumadocs-ui/components/card';
 import { Callout } from 'fumadocs-ui/components/callout';
 
-**ZenCore** es el motor declarativo central que potencia todo el ecosistema de plugins de ZenForge (incluyendo **ZenCustomItems**, **ZenEnchants**, y futuros sistemas). Inspirado en la arquitectura modular de estándares como *Libreforge / Eco*, unifica la lógica de ejecución de habilidades, mecánicas de combate, cálculo de variables y sincronización de eventos de Minecraft.
+**ZenCore** es el motor declarativo central que potencia todo el ecosistema de plugins de ZenForge (incluyendo **ZenCustomItems**, **ZenEnchants**, y futuros sistemas). Unifica la lógica de ejecución de habilidades, mecánicas de combate, cálculo de variables y sincronización de eventos de Minecraft.
 
 ---
 
-## Módulos del Motor
+## Guías de Configuración del Motor
+
+Aprende a estructurar tus habilidades y cadenas de efectos con nuestras guías paso a paso:
 
 <Cards>
-  <Card title="Effects (Efectos)" href="/docs/effects" description="Acciones y habilidades ejecutables: daño, partículas, pociones, empuje, sonidos y utilidades." />
-  <Card title="Conditions (Condiciones)" href="/docs/conditions" description="Validaciones lógicas y requisitos de contexto: salud, biomas, permisos y variables." />
-  <Card title="Triggers (Disparadores)" href="/docs/triggers" description="Eventos de Minecraft que inician la ejecución de habilidades del jugador o entorno." />
-  <Card title="Filters (Filtros)" href="/docs/filters" description="Filtros precisos de entidades, bloques y orígenes de daño." />
-  <Card title="Mutators (Mutadores)" href="/docs/mutators" description="Operaciones matemáticas y cinemáticas para transformar valores de daño y variables." />
+  <Card title="Configurar un Efecto" href="/docs/general/configurar_efecto" description="Estructura de efectos, disparados vs permanentes, cooldowns, delays, repeticiones y precios." />
+  <Card title="Configurar una Condición" href="/docs/general/configurar_condicion" description="Validaciones lógicas, inversión con inverse, líneas de lore not-met y victim_conditions." />
+  <Card title="Configurar una Cadena (Chain)" href="/docs/general/configurar_cadena" description="Cadenas reutilizables en chains.yml e inline, probabilidades compartidas y modos normal, cycle y random ponderado." />
+  <Card title="Arquitectura del Motor" href="/docs/general/arquitectura" description="Funcionamiento interno, ciclo de vida de eventos y persistencia en memoria." />
   <Card title="Placeholders y Expresiones" href="/docs/general/placeholders" description="Placeholders universales y soporte de fórmulas matemáticas evaluadas en tiempo real." />
+</Cards>
+
+---
+
+## Catálogos de Referencia
+
+<Cards>
+  <Card title="Effects (Efectos)" href="/docs/effects" description="Catálogo de 255 acciones ejecutables: combate, partículas, pociones, empuje, sonidos y utilidades." />
+  <Card title="Conditions (Condiciones)" href="/docs/conditions" description="Catálogo de 74 validaciones lógicas: salud, biomas, permisos, inventario y variables." />
+  <Card title="Triggers (Disparadores)" href="/docs/triggers" description="Catálogo de 111 eventos de Minecraft: ataques, minería, interacciones y movimiento." />
+  <Card title="Filters (Filtros)" href="/docs/filters" description="Catálogo de 19 filtros precisos de entidades, bloques y orígenes de daño." />
+  <Card title="Mutators (Mutadores)" href="/docs/mutators" description="Catálogo de 22 operaciones matemáticas y transformaciones de contexto." />
 </Cards>
 
 ---

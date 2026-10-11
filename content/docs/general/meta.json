@@ -3,6 +3,9 @@
   "pages": [
     "index",
     "arquitectura",
+    "configurar_efecto",
+    "configurar_condicion",
+    "configurar_cadena",
     "placeholders"
   ]
 }

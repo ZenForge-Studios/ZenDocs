@@ -1,0 +1,220 @@
+---
+title: "Configuración de Cadenas (Chains)"
+description: "Aprende a agrupar múltiples efectos en cadenas reutilizables o inline, y a dominar los modos de ejecución normal, cycle y random con pesos."
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import Link from 'next/link';
+
+# Configuración de Cadenas de Efectos (Chains)
+
+Las **Cadenas de Efectos (Effect Chains)** son agrupaciones de múltiples acciones que se despachan y coordinan como una sola unidad atómica.
+
+Esta funcionalidad es fundamental cuando diseñas habilidades complejas que dependen de un porcentaje de probabilidad (`chance`). Sin cadenas, cada efecto calcula su probabilidad de forma individual e independiente, lo que ocasionaría desajustes (por ejemplo: las partículas y sonidos se activan, pero el daño o la curación fallan su porcentaje). Al utilizar una cadena, **toda la secuencia comparte exactamente la misma tirada de probabilidad y cooldown**.
+
+---
+
+## Tipos de Cadenas
+
+1. **Cadenas Reutilizables (`chains.yml`)**: Se declaran de forma centralizada en el motor y pueden ser invocadas desde cualquier plugin (`ZenCustomItems`, `ZenEnchants`, armas, armaduras o eventos) usando el efecto `run_chain`.
+2. **Cadenas Inline (`inline chains`)**: Se definen de manera anidada directamente dentro del ítem o habilidad sin necesidad de registrarlas en archivos externos.
+
+---
+
+## Cadenas Reutilizables (`chains.yml`)
+
+Las cadenas reutilizables se configuran en el directorio de **ZenCore**. No incluyen disparadores (`triggers:`) dentro de su propia definición; los disparadores se eligen en el momento en que se invoca la cadena:
+
+```yaml
+# En plugins/ZenCore/chains.yml
+chains:
+  - id: frost_nova
+    effects:
+      # 1. Reproducir sonido de congelamiento
+      - id: sound
+        args:
+          sound: BLOCK_GLASS_BREAK
+          pitch: 0.5
+          volume: 2.0
+
+      # 2. Explosión visual de nieve y escarcha
+      - id: particle
+        args:
+          particle: SNOWFLAKE
+          count: 35
+          speed: 0.15
+        mutators:
+          - id: set_location_to_victim # Centra la explosión en la víctima
+
+      # 3. Ralentizar al objetivo atacado
+      - id: potion_effect
+        args:
+          target: "VICTIM"
+          effect: "SLOWNESS"
+          duration: 80 # 4 segundos
+          amplifier: 2
+
+      # 4. Infligir daño gélido extra
+      - id: damage
+        args:
+          target: "VICTIM"
+          amount: 5.0
+```
+
+### Invocación de una Cadena con `run_chain`
+
+Para ejecutar la cadena anterior desde una espada o un encantamiento:
+
+```yaml
+effects:
+  - id: run_chain
+    args:
+      chain: frost_nova                 # ID de la cadena configurada en chains.yml
+      chance: 25                       # 25% de probabilidad conjunta para TODA la secuencia
+      cooldown: 6                      # 6 segundos de enfriamiento compartido
+      cooldown_group: "cryo_burst"
+    triggers:
+      - melee_attack
+    filters:
+      entities:
+        - player
+        - zombie
+        - skeleton
+```
+
+### Paso de Argumentos Dinámicos (`chain_args`)
+
+Puedes inyectar variables calculadas dinámicamente desde el ítem hacia la cadena, que estarán disponibles como `%<clave>%`:
+
+```yaml
+effects:
+  - id: run_chain
+    args:
+      chain: divine_smite
+      chain_args:
+        smite_power: "%player_level% * 1.5" # Disponible como %smite_power% en los efectos de la cadena
+```
+
+---
+
+## Cadenas Inline
+
+Si la secuencia de efectos es propia de un único ítem y no necesitas reutilizarla en otros elementos, puedes estructurarla de forma inline anidando la lista `effects:` dentro del disparador:
+
+```yaml
+effects:
+  - triggers:
+      - break_block
+    filters:
+      blocks:
+        - ancient_debris
+    args:
+      chance: 50                       # Probabilidad única compartida
+      cooldown: 10
+    effects:
+      - id: sound
+        args:
+          sound: UI_TOAST_CHALLENGE_COMPLETE
+          pitch: 1.2
+      - id: particle
+        args:
+          particle: TOTEM_OF_UNDYING
+          count: 25
+      - id: give_money
+        args:
+          amount: 500
+      - id: send_title
+        args:
+          title: "<gold>¡VETA ARCANITA!</gold>"
+          subtitle: "<gray>Has descubierto escombros ancestrales puros."
+```
+
+---
+
+## Modos de Selección y Ejecución (`run-type`)
+
+Las cadenas soportan el argumento `run-type` dentro de su bloque `args:`, permitiendo alterar radicalmente el orden y selección de sus efectos:
+
+| Modo (`run-type`) | Comportamiento |
+| :--- | :--- |
+| `normal` | Todos los efectos se ejecutan de manera secuencial, uno tras otro (comportamiento por defecto). |
+| `cycle` | Ejecuta un solo efecto en cada disparo, alternando al siguiente en cada uso sucesivo. |
+| `random` | Selecciona y ejecuta un único efecto de la lista al azar en cada activación. |
+
+### Ejemplo: Báculo con Rotación Elemental (`run-type: cycle`)
+```yaml
+effects:
+  - triggers:
+      - right_click
+    args:
+      run-type: cycle                  # Rota cíclicamente: Fuego -> Hielo -> Rayo en cada clic
+      cooldown: 1.5
+    effects:
+      # Clic 1: Orbe de Fuego
+      - id: projectile_beam
+        args:
+          particle: FLAME
+          damage: 6.0
+      # Clic 2: Haz de Escarcha
+      - id: projectile_beam
+        args:
+          particle: SNOWFLAKE
+          damage: 5.0
+      # Clic 3: Descarga Eléctrica
+      - id: strike_lightning
+        args:
+          effect_only: true
+```
+
+---
+
+## Cadenas Aleatorias Ponderadas (Weighted Random)
+
+Al utilizar `run-type: random`, puedes asignar un peso relativo (`weight`) a cada efecto para determinar matemáticamente su frecuencia de aparición:
+
+```text
+Probabilidad de Selección = (Peso del efecto) / (Suma total de pesos)
+```
+
+### Ejemplo: Orbe del Destino con Recompensas Misteriosas
+```yaml
+effects:
+  - triggers:
+      - right_click
+    args:
+      run-type: random                 # Elige solo un resultado al azar según los pesos
+      cooldown: 30
+      cooldown_group: "orb_destiny"
+    effects:
+      # Resultado Común (Peso 70 de 100 -> 70% de probabilidad)
+      - id: potion_effect
+        args:
+          effect: SPEED
+          duration: 200
+          amplifier: 1
+        weight: 70
+
+      # Resultado Raro (Peso 25 de 100 -> 25% de probabilidad)
+      - id: heal
+        args:
+          amount: 10.0 # 5 corazones completos
+        weight: 25
+
+      # Resultado Legendario (Peso 5 de 100 -> 5% de probabilidad)
+      - id: give_item
+        args:
+          material: ENCHANTED_GOLDEN_APPLE
+          amount: 1
+        weight: 5
+```
+
+---
+
+## Enlaces Relacionados
+
+<Cards>
+  <Card title="Configuración de Efectos" href="/docs/general/configurar_efecto" description="Conoce todos los parámetros de cooldown, delay y mutadores de efectos individuales." />
+  <Card title="Configuración de Condiciones" href="/docs/general/configurar_condicion" description="Restringe la ejecución de cadenas mediante validaciones lógicas." />
+  <Card title="Catálogo de Efectos" href="/docs/effects" description="Explora las más de 250 acciones disponibles para tus cadenas." />
+</Cards>

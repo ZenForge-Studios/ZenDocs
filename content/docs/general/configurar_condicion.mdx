@@ -1,0 +1,141 @@
+---
+title: "Configuración de Condiciones"
+description: "Aprende a condicionar la activación de habilidades, invertir evaluaciones con inverse, añadir mensajes informativos y comprobar víctimas."
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import Link from 'next/link';
+
+# Configuración de Condiciones (Conditions)
+
+Las **Conditions** son validaciones lógicas que deben cumplirse estrictamente para que una habilidad pueda activarse. Te permiten restringir efectos según salud, mundo, biomas, permisos, distancias o variables personalizadas de Minecraft.
+
+Esta guía cubre el uso del modificador universal **`inverse`**, líneas descriptivas en el lore del ítem (**`not-met-lines`**), efectos automáticos de fallo (**`not-met-effects`**) y comprobación de estados en el objetivo atacado (**`victim_conditions`**).
+
+---
+
+## Estructura Básica de una Condición
+
+Cada condición consta de un identificador `id` y sus argumentos correspondientes en `args:`:
+
+```yaml
+conditions:
+  - id: health_below
+    args:
+      percentage: 25.0 # Solo se cumple si el usuario tiene menos del 25% de su salud máxima
+```
+
+---
+
+## El Modificador Universal `inverse`
+
+Todas las condiciones del motor aceptan el argumento opcional `inverse: true`. Este parámetro invierte la lógica del validador, haciéndolo válido únicamente cuando la regla original es falsa.
+
+### Ejemplo: Evitar activación si el objetivo es inmune al fuego
+```yaml
+conditions:
+  - id: has_potion_effect
+    args:
+      effect: FIRE_RESISTANCE
+      inverse: true # Se cumple solo si la víctima NO posee resistencia al fuego
+```
+
+### Ejemplo: Solo en tierra firme
+```yaml
+conditions:
+  - id: in_water
+    args:
+      inverse: true # Solo se activa si el jugador NO está sumergido en agua
+```
+
+---
+
+## Líneas de Requisito en el Lore (`not-met-lines`)
+
+En ítems personalizados y encantamientos, puedes añadir líneas en color rojo que se incrustarán automáticamente en el lore del ítem cuando el jugador **no** cumpla las condiciones requeridas para blandirlo:
+
+```yaml
+conditions:
+  - id: has_permission
+    args:
+      permission: "zenforge.mastery.paladin"
+      not-met-lines: # Aparece en el lore si el usuario carece del rango o maestría
+        - "<red>✖ Requiere Maestría Paladín para empuñar esta reliquia"
+        - "<dark_gray>Completa las misiones sagradas en el coliseo"
+```
+
+---
+
+## Efectos al Fallar Requisitos (`not-met-effects`)
+
+Si colocas una condición dentro de un efecto específico (dentro de su sección `conditions:` interna), puedes definir **`not-met-effects`**. Estas acciones se ejecutarán cuando el jugador intente disparar el efecto pero no cumpla la condición requerida:
+
+```yaml
+effects:
+  - id: launch_projectile
+    args:
+      projectile: WITHER_SKULL
+      speed: 1.8
+    conditions:
+      - id: is_sneaking
+        args:
+          inverted: false # Requiere que el jugador esté agachado para canalizar el disparo
+        not-met-effects:  # Se ejecuta si el jugador intenta disparar de pie
+          - id: send_action_bar
+            args:
+              message: "<yellow>⚠ Debes agacharte para concentrar la energía de la calavera."
+          - id: sound
+            args:
+              sound: BLOCK_BEACON_DEACTIVATE
+              volume: 0.6
+              pitch: 1.8
+    triggers:
+      - right_click
+```
+
+En este caso, los jugadores agachados disparan el proyectil con éxito, mientras que los jugadores que hacen clic de pie reciben una advertencia en la Action Bar junto con un sonido de descarga mágica.
+
+---
+
+## Comprobar Estados en la Víctima (`victim_conditions`)
+
+Cuando un evento involucra combate (como `melee_attack`, `arrow_hit` o `projectile_damage`), puedes evaluar requisitos no solo en el atacante, sino directamente en la entidad defensora o víctima.
+
+Para evaluar condiciones en el enemigo, se utiliza el filtro especial **`victim_conditions`**:
+
+```yaml
+effects:
+  # Inflige daño perforante directo
+  - id: true_damage
+    args:
+      amount: 8.0 # Ignora mitigaciones de armadura
+    # Comprueba condiciones en el enemigo receptor del golpe
+    filters:
+      victim_conditions:
+        - id: entity_type
+          args:
+            types:
+              - ENDER_DRAGON
+              - WITHER
+              - WARDEN
+    # Comprueba condiciones en el jugador atacante
+    conditions:
+      - id: holding_item
+        args:
+          material: NETHERITE_SWORD
+    triggers:
+      - melee_attack
+```
+
+En este ejemplo, el arma inflige 8 puntos de daño puro e inderrotable **únicamente** si el enemigo al que se ataca es un jefe mayor (Ender Dragon, Wither o Warden) y el portador empuña una espada de netherite.
+
+---
+
+## Enlaces Relacionados
+
+<Cards>
+  <Card title="Catálogo de Condiciones (74)" href="/docs/conditions" description="Explora todas las condiciones lógicas disponibles en el motor." />
+  <Card title="Configuración de Efectos" href="/docs/general/configurar_efecto" description="Conoce cómo estructurar efectos, disparadores y cooldowns." />
+  <Card title="Configuración de Cadenas (Chains)" href="/docs/general/configurar_cadena" description="Agrupa y ejecuta cadenas completas de habilidades." />
+</Cards>
