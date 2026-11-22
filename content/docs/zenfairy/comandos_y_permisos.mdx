@@ -1,6 +1,6 @@
 ---
-title: "Comandos y Permisos"
-description: "Guía y detalles de configuración del módulo."
+title: "Comandos, Varita de Edición y Permisos"
+description: "Comandos de exploración para jugadores, controles de la varita de edición y permisos de administración."
 ---
 
 import { Callout } from 'fumadocs-ui/components/callout';
@@ -9,11 +9,27 @@ import { Callout } from 'fumadocs-ui/components/callout';
 
 ---
 
-| Comando | Alias | Permiso | Descripción |
-| :--- | :--- | :--- | :--- |
-| `/zf menu [tipo]` | `/zenfairy`, `/souls` | `zenfairy.command.use` | Abre el menú de recompensas del tipo indicado (por defecto `fairy`). |
-| `/zf set <tipo>` | — | `zenfairy.admin` | Establece un alma del tipo indicado en el bloque mirado. |
-| `/zf remove` | — | `zenfairy.admin` | Elimina el alma del bloque mirado. |
-| `/zf location <tipo>` | `/zf locations` | `zenfairy.admin` | Abre el menú interactivo para ver y teletransportarse a las almas. |
-| `/zf reload` | — | `zenfairy.admin` | Recarga todas las configuraciones y tipos de almas en caliente. |
-| `/zf reset <jugador> <tipo>` | — | `zenfairy.admin.reset` | Reinicia todo el progreso de un jugador para ese tipo de alma. |
+El comando principal es `/zenfairy` (con los alias `/zf` y `/souls`), registrado dinámicamente mediante `ZenCommand`.
+
+| Comando | Permiso | Descripción |
+| :--- | :--- | :--- |
+| `/zf` | `zenfairy.command.use` | Muestra la ayuda de comandos según los permisos del usuario. |
+| `/zf menu [tipo]` | `zenfairy.command.use` | Abre el menú de canjes e hitos (por defecto: `fairy`). |
+| `/zf hint [tipo]` | `zenfairy.command.use` | Muestra distancia aproximada (±5 bloques), dirección cardinal y zona del alma sin encontrar más cercana. |
+| `/zf top [tipo]` | `zenfairy.command.use` | Muestra el Top 10 de exploradores desde la caché en memoria. |
+| `/zf set <tipo> [zona]` | `zenfairy.admin` | Marca el bloque mirado como alma y le asigna una zona (default: `default`). |
+| `/zf remove` | `zenfairy.admin` | Elimina el alma del bloque mirado. |
+| `/zf wand <tipo> [zona]` | `zenfairy.admin` | Entrega la **Varita de Edición Administrativa** (PDC). |
+| `/zf location [tipo]` | `zenfairy.admin` | Abre el menú interactivo de ubicaciones con teletransporte seguro. |
+| `/zf reset <jugador> <tipo>` | `zenfairy.admin.reset` | Resetea progreso, almas gastadas e hitos de un jugador (asíncrono, online u offline). |
+| `/zf reload` | `zenfairy.admin` | Recarga configuraciones, tipos de almas, hologramas y rankings. |
+
+---
+
+### Controles de la Varita de Edición (`/zf wand <tipo> [zona]`)
+
+La varita de edición permite configurar almas sobre el terreno sin necesidad de escribir comandos repetitivos:
+
+- **Clic Derecho en bloque**: Coloca un alma con el tipo y zona configurados en la varita.
+- **Shift + Clic Izquierdo en bloque**: Elimina el alma de dicho bloque.
+- **Shift + Clic Derecho al aire**: Emite partículas brillantes en todas las almas colocadas dentro de 3 chunks a la redonda para ubicarlas rápidamente.

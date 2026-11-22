@@ -1,6 +1,6 @@
 ---
 title: "Configuración (config.yml)"
-description: "Controla el comportamiento global del motor de chat y las menciones."
+description: "Controla las integraciones, opciones generales, burbujas de chat, menciones y mensajes de entrada y salida."
 ---
 
 import { Callout } from 'fumadocs-ui/components/callout';
@@ -9,48 +9,101 @@ import { Callout } from 'fumadocs-ui/components/callout';
 
 ---
 
-Controla el comportamiento global del motor de chat y las menciones.
+El archivo `config.yml` define las directivas principales de ZenChat, gestionando desde la interacción con otros plugins hasta el renderizado de burbujas sobre la cabeza y el sistema de menciones.
 
 ```yaml
 # ------------------------------------------------------------
-# INTEGRACIONES
+# INTEGRACIONES EXTERNAS
 # ------------------------------------------------------------
 integrations:
   combatlogx:
-    enabled: true                  # Habilita el hook con CombatLogX
-    block-inventory-view: true     # Bloquea abrir [inv] / [ec] durante el combate
-    block-private-messages: false  # Si es true, impide enviar /msg en combate
+    enabled: true                  # Si está presente CombatLogX, protege la integridad del combate
+    block-inventory-view: true     # Impide abrir vistas de [inv], [ec] o [item] en combate
+    block-private-messages: false  # Si es true, impide enviar o recibir /msg durante el combate
 
 # ------------------------------------------------------------
-# OPCIONES GENERALES
+# OPCIONES GENERALES Y FUENTE DE NOMBRES
 # ------------------------------------------------------------
 options:
-  use-placeholderapi: true         # Habilita el soporte de PlaceholderAPI
-  debug: false                     # Modo depuración en la consola
-  player-cache-ttl-ms: 5000        # Tiempo de expiración del caché de datos del jugador (milisegundos)
-  log-chat-to-file: true           # Guarda un historial diario de chat en logs/chat-YYYY-MM-DD.log
-  player-click-action: "SUGGEST_COMMAND" # Acción al clickear el nombre: SUGGEST_COMMAND o RUN_COMMAND
+  use-placeholderapi: true             # Habilita el reemplazo de Placeholders de PAPI
+  debug: false                         # Logs adicionales en consola para diagnóstico
+  player-cache-ttl-ms: 5000            # Tiempo de expiración del caché de datos del jugador (milisegundos)
+  log-chat-to-file: true               # Guarda un historial diario de chat en logs/chat/
+  player-click-action: "SUGGEST_COMMAND" # Acción al hacer clic en el nombre: SUGGEST_COMMAND o RUN_COMMAND
   player-click-value: "/msg {player} "   # Comando ejecutado o sugerido al dar clic
 
- # Placeholders que el plugin reconoce como "nombre del jugador" en los formatos.
- # Se transforman en el componente interactivo con Tooltip/Hover y Clic.
+  # Fuente principal del nickname del jugador en los componentes interactivos
+  name-source: "%essentials_nickname%"
+
+  # Lista de placeholders que ZenChat identifica como "nombre del jugador"
+  # para inyectarle el Tooltip (hover) interactivo y la acción de clic configurable.
   name-placeholders:
- - "%player_name%"
- - "%player%"
- - "%cmi_user_nickname%"
- - "%cmi_user_displayname%"
- - "%cmi_user_nick%"
- - "%essentials_nickname%"
- - "%essentials_displayname%"
+    - "%player_name%"
+    - "%player%"
+    - "%cmi_user_nickname%"
+    - "%cmi_user_display_name%"
+    - "%cmi_user_name%"
+    - "%cmi_user_nick%"
+    - "%essentials_nickname%"
 
 # ------------------------------------------------------------
-# CONFIGURACION DE MENCIONES EN CHAT
+# BURBUJAS DE CHAT SOBRE LA CABEZA (CHAT-BUBBLES)
+# ------------------------------------------------------------
+# Utiliza entidades nativas TextDisplay de Minecraft 1.20+ (sin ArmorStands)
+chat-bubbles:
+  enabled: true                    # Activar o desactivar burbujas de chat
+  duration-seconds: 4              # Tiempo en segundos antes de remover la burbuja
+  max-characters-per-line: 35      # Salto de línea inteligente automático
+  format: "<gradient:#00d2ff:#3a7bd5>{message}</gradient>"
+
+# Permiso de omisión: zenchat.bubble.bypass (oculta la burbuja del jugador emisor)
+
+# ------------------------------------------------------------
+# SISTEMA DE MENCIONES (@Jugador y @staff)
 # ------------------------------------------------------------
 mentions:
-    enabled: true                    # Activa el detector de menciones @Jugador
-  highlight: "&e&l@{player}&r"     # Formato visual con el que se resalta en el mensaje
+  enabled: true
+  highlight: "&e&l@{player}&r"     # Formato con el que se resalta en el mensaje global
   sound: "BLOCK_NOTE_BLOCK_PLING"  # Sonido reproducido al jugador mencionado
-  volume: 1.0                      # Volumen del sonido
-  pitch: 1.5                       # Tono del sonido (pitch)
-  notify: "&e✦ &fHas sido mencionado por &e{sender}" # Mensaje privado en el chat (vacío para desactivar)
+  volume: 1.0
+  pitch: 1.5
+  notify: "&e✦ &fHas sido mencionado por &e{sender}" # Notificación en chat privado
+
+  staff-mention:
+    enabled: true                  # Permite a usuarios autorizados alertar a todo el Staff
+    tag: "@staff"
+    permission: "zenchat.mention.staff"
+    highlight: "<gradient:#ff416c:#ff4b2b><b>@STAFF</b></gradient>"
+    sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
+    notify: "&c🚨 &fAtención Staff: Mención grupal por &e{sender}"
+
+# ------------------------------------------------------------
+# MENSAJES DE ENTRADA Y SALIDA (JOIN / QUIT)
+# ------------------------------------------------------------
+join-quit:
+  join:
+    enabled: true
+    # Mensaje por defecto. Variables: {player}, {name}, {prefix}, {suffix}, {world}, {online}
+    message: "&8(&a+&8) {prefix}{player} &7ha entrado al servidor."
+    sound: "ENTITY_PLAYER_LEVELUP" # Sonido al entrar (dejar vacío para deshabilitar)
+    sound-global: false            # true = reproducir a todos, false = solo a quien entra
+    # Formatos específicos por grupo de LuckPerms o permiso (zenchat.join.<grupo>)
+    groups:
+      dev: "&8(&a+&8) &1&lDEV &f{player}"
+      admin: "&8(&a+&8) &4&lADMIN &f{player}"
+      vip: "&8(&a+&8) &6&lVIP &f{player}"
+  quit:
+    enabled: true
+    message: "&8(&c-&8) {prefix}{player} &7ha salido del servidor."
+    sound: ""
+    sound-global: false
+    groups:
+      dev: "&8(&c-&8) &1&lDEV &f{player}"
+      admin: "&8(&c-&8) &4&lADMIN &f{player}"
+      vip: "&8(&c-&8) &6&lVIP &f{player}"
+
+  # Interacción en el componente del nombre (hover y click)
+  hover: "&7Click para enviar mensaje a &f{name}"
+  click-action: "SUGGEST_COMMAND"
+  click-value: "/msg {name} "
 ```

@@ -8,6 +8,7 @@
     "estructura_de_archivos",
     "config-yml",
     "targets-yml",
+    "types-yml",
     "items-yml",
     "messages-yml",
     "rarities-yml",

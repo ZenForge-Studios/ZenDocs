@@ -1,6 +1,6 @@
 ---
 title: "Configuración (config.yml)"
-description: "Todos los mensajes enviados por el plugin son personalizables:"
+description: "Mensajes del sistema, leaderboard, menús de ubicaciones y persistencia."
 ---
 
 import { Callout } from 'fumadocs-ui/components/callout';
@@ -9,87 +9,71 @@ import { Callout } from 'fumadocs-ui/components/callout';
 
 ---
 
-### Mensajes (`messages`)
-Todos los mensajes enviados por el plugin son personalizables:
+`config.yml` es gestionado automáticamente por **`ZenConfig`**: al actualizar el plugin, cualquier clave nueva se inyecta sin sobrescribir tus personalizaciones existentes.
 
 ```yaml
 messages:
- # Prefijo global del plugin (disponible con %prefix% en acciones y mensajes)
   prefix: "<gradient:#ff70a6:#ff9770><bold>ZenFairy</bold></gradient> <dark_gray>» </dark_gray>"
-  
- # Mensajes de comandos
-  reload: "<green>Configuraciones recargadas correctamente.</green>"
-  no-permission: "<red>No tienes permiso para ejecutar este comando.</red>"
-  player-only: "<red>Este comando solo puede ser ejecutado por un jugador.</red>"
-  unknown-command: "<red>Comando desconocido. Usa /zf para ver la ayuda.</red>"
-  invalid-soul-type: "<red>El tipo de alma '<yellow>{soul_type}</yellow>' no existe.</red>"
-  set-usage: "<red>Uso: /zf set <tipo_de_alma></red>"
-  reset-usage: "<red>Uso: /zf reset <jugador> <tipo_de_alma></red>"
-  player-not-found: "<red>El jugador <yellow>{player}</yellow> no fue encontrado.</red>"
-  data-reset-success: "<green>El progreso de <yellow>{player}</yellow> para <yellow>{soul_type}</yellow> fue reiniciado.</green>"
+  reload: "<green>Configurations successfully reloaded.</green>"
+  no-permission: "<red>You don’t have permission to run this command.</red>"
+  player-only: "<red>This command can only be executed by a player.</red>"
 
- # Interacción con almas
-  soul-already-exists: "<red>Ya existe un alma en este bloque. Usa /zf remove primero.</red>"
-  look-at-block: "<red>Debes estar mirando a un bloque sólido.</red>"
-  soul-found: "<green>¡Has encontrado un {soul_display_name}<green>! <gray>({found}/{total})</gray></green>"
-  soul-already-found: "<red>Ya has recolectado esta alma anteriormente.</red>"
-  soul-set: "<green>Has colocado un alma de tipo <yellow>{soul_type}</yellow> en este bloque.</green>"
-  soul-remove: "<green>Has eliminado el alma del bloque que estabas mirando.</green>"
-  soul-not-found-at-loc: "<red>No hay ninguna alma en el bloque que miras.</red>"
-  
- # Mensajes de GUI
-  no-menu-configured: "<red>Este tipo de alma no tiene un menú de recompensas configurado.</red>"
-  not-enough-souls: "<red>No tienes suficientes almas disponibles para realizar este canje.</red>"
-  teleporting-to-soul: "<green>Teletransportándote a la ubicación del alma...</green>"
-```
+  # Mensajes de comandos
+  unknown-command: "<red>Unknown command. Use /zf to see help.</red>"
+  invalid-soul-type: "<red>The soul type '<yellow>{soul_type}</yellow>' does not exist.</red>"
+  set-usage: "<red>Usage: /zf set <soul_type> [zone]</red>"
+  reset-usage: "<red>Usage: /zf reset <player> <soul_type></red>"
+  player-not-found: "<red>The player <yellow>{player}</yellow> was not found or has never played on the server.</red>"
+  data-reset-success: "<green>The data of <yellow>{player}</yellow> for the soul type <yellow>{soul_type}</yellow> has been reset.</green>"
+  wand-given: "<green>Received Admin Edit Wand for <yellow>{soul_type}</yellow> (zone: <aqua>{zone}</aqua>).</green>"
 
-### Menú de Localizaciones de Almas (`location-menu`)
-Permite a los administradores visualizar y teletransportarse a todas las almas de un tipo mediante `/zf location <tipo>`:
+  # Interacción y protección de almas
+  soul-already-exists: "<red>There is already a soul in this block. Use /zf remove first.</red>"
+  look-at-block: "<red>You must be looking at a block.</red>"
+  soul-found: "<green>You have found a {soul_display_name}<green>! <gray>({found}/{total})</gray></green>"
+  soul-already-found: "<red>You had already found this soul.</red>"
+  soul-set: "<green>You have placed a soul of type <yellow>{soul_type}</yellow> on the block you are looking at.</green>"
+  soul-remove: "<green>You have removed the soul you were looking at.</green>"
+  soul-not-found-at-loc: "<red>There is no soul on the block you are looking at.</red>"
+  soul-protected-admin: "<yellow>Este bloque contiene un alma (<aqua>{soul_type}</aqua>). Usa Shift + Romper en Creativo o /zf remove.</yellow>"
 
-```yaml
-location-menu:
- title: "&8Ubicaciones: {soul_type_display_name} &8(Pág. {current_page}/{max_pages})"
-  rows: 6 # Tamaño del menú (filas de 9 slots, entre 1 y 6)
+  # Sistema de pistas (/zf hint)
+  hint-found: "<aqua>Un {soul_display_name} <aqua>sin descubrir resuena aprox. a <yellow>{distance} bloques</yellow> hacia el <gold>{direction}</gold> (zona: <white>{zone}</white>).</aqua>"
+  hint-none-remaining: "<green>¡Ya has encontrado todos los {soul_display_name} <green>de este mundo!</green>"
 
-  location-item:
-    material: COMPASS
-    display-name: "<green>Alma #{index}</green>"
-    lore:
- - "<gray>Mundo: <white>{world}</white></gray>"
- - "<gray>Coordenadas: <yellow>{x}, {y}, {z}</yellow></gray>"
- - ""
- - "<yellow>¡Click para teletransportarte!</yellow>"
+  # Mensajes de GUI
+  no-menu-configured: "<red>This soul type doesn’t have a configured menu.</red>"
+  not-enough-souls: "<red>You don’t have enough souls available.</red>"
+  milestone-already-claimed: "<yellow>You have already claimed this milestone reward.</yellow>"
+  conditions-not-met: "<red>You do not meet the required conditions for this reward.</red>"
+  teleporting-to-soul: "<green>Teleporting to the soul’s location...</green>"
 
-    control-items:
-    previous-page:
-      material: ARROW
-      display-name: "<green><-- Página Anterior</green>"
-      slot: 48
-    next-page:
-      material: ARROW
-      display-name: "<green>Página Siguiente --></green>"
-      slot: 50
-    close-menu:
-      material: BARRIER
-      display-name: "<red>✖ Cerrar Menú ✖</red>"
-      slot: 49
-    filler-item:
-      material: BLACK_STAINED_GLASS_PANE
-      display-name: " "
-      slots: [45, 46, 47, 51, 52, 53]
-```
+  help-message:
+    - "<gradient:#ff70a6:#ff9770><bold>ZenFairy</bold></gradient> <gray>- Commands:</gray>"
+    - "<light_purple>/zf menu [type]</light_purple> <gray>- Opens the soul menu.</gray>"
+    - "<light_purple>/zf hint [type]</light_purple> <gray>- Gets a directional hint to the nearest soul.</gray>"
+    - "<light_purple>/zf top [type]</light_purple> <gray>- Shows the top soul explorers.</gray>"
+  admin-help-message:
+    - "<light_purple>/zf reload</light_purple> <gray>- Reloads the configuration.</gray>"
+    - "<light_purple>/zf set <type> [zone]</light_purple> <gray>- Marks the block you are looking at as a soul.</gray>"
+    - "<light_purple>/zf remove</light_purple> <gray>- Unmarks the soul you are looking at.</gray>"
+    - "<light_purple>/zf wand <type> [zone]</light_purple> <gray>- Gives the Admin Edit Wand.</gray>"
+    - "<light_purple>/zf location <type></light_purple> <gray>- Displays the soul locations.</gray>"
+    - "<light_purple>/zf reset <player> <type></light_purple> <gray>- Resets a player’s data.</gray>"
 
-### Configuración de Base de Datos (`database`)
-Soporta almacenamiento local mediante SQLite con modo WAL o sincronización en red de múltiples servidores con MySQL / MariaDB a través de HikariCP:
+# Intervalo de actualización asíncrona de los rankings en memoria (mínimo 10s)
+leaderboard:
+  refresh-seconds: 60
 
-```yaml
+# Menú paginado de ubicaciones (/zf location <tipo>)
+locations-menu:
+  title: "<dark_purple>Ubicaciones de Almas</dark_purple>"
+  rows: 6
+  items-per-page: 45
+
+# Base de datos gestionada por ZenDatabaseEngine
 database:
-  type: "sqlite" # Opciones: "sqlite" o "mysql"
-  mysql:
-    host: "localhost"
-    port: 3306
-    database: "zenfairy"
-    username: "root"
-    password: "tu_password_aqui"
-    ssl: false
+  type: SQLITE          # SQLITE o MYSQL
+  sqlite:
+    file: "zenfairy.db"
 ```

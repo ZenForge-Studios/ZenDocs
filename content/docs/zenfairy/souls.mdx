@@ -1,138 +1,134 @@
 ---
 title: "Configuración de Almas (souls/)"
-description: "Cada archivo .yml en la carpeta souls/ representa un tipo de alma único e independiente. El nombre del..."
+description: "Configuración completa de tipos de almas, radar auditivo y visual, hologramas TextDisplay y menús ZenMenu."
 ---
 
 import { Callout } from 'fumadocs-ui/components/callout';
 
-# Configuración de Almas (souls/)
+# Configuración de Almas (`souls/<tipo>.yml`)
 
 ---
 
-Cada archivo `.yml` en la carpeta `souls/` representa un tipo de alma único e independiente. El nombre del archivo define el identificador del alma (ejemplo: `fairy.yml` -> id: `fairy`).
+Cada archivo `.yml` dentro de `plugins/ZenFairy/souls/` define un tipo de alma independiente. El nombre del archivo determina su ID (ej: `dragon.yml` → ID `dragon`).
 
-### Parámetros Generales y Sonidos
+### Estructura Completa
 
 ```yaml
 display-name: '<gradient:#da22ff:#9733ee>Fairy Soul</gradient>'
 
-# Sonido al encontrar un alma por primera vez
+# Sonidos configurables (respetan volume y pitch; soportan enums Bukkit y Resource Packs namespace:key)
 soul-found-sound:
-    enabled: true
+  enabled: true
   sound: ENTITY_EXPERIENCE_ORB_PICKUP
-  volume: 0.8
+  volume: 0.6
   pitch: 1.2
-
-# Sonido si el jugador hace click en un alma que ya había recolectado
 soul-already-found-sound:
-    enabled: true
-  sound: BLOCK_NOTE_BLOCK_BASS
-  volume: 0.5
-  pitch: 0.8
-
-# Sonido al encontrar TODAS las almas existentes de este tipo
+  enabled: true
+  sound: BLOCK_ANVIL_DESTROY
+  volume: 0.3
+  pitch: 1.0
 all-souls-found-sound:
-    enabled: true
-  sound: UI_TOAST_CHALLENGE_COMPLETE
-  volume: 1.0
+  enabled: true
+  sound: ENTITY_PLAYER_LEVELUP
+  volume: 0.8
   pitch: 1.0
 
-# Partícula al recolectar el alma
-found-soul-particle: ENCHANTMENT_TABLE
+# Partícula al encontrar el alma
+found-soul-particle: WITCH
 
-# Acciones a ejecutar según eventos
+# Acciones por evento
 first-soul-found-actions:
- - '[CONSOLE] eco give %player% 5000'
- - '[MESSAGE] <green>¡Has encontrado tu primera alma mágica! Recompensa desbloqueada.</green>'
-
+  - '[ZEN-ECO] vault 50000'
 soul-found-actions:
- - '[CONSOLE] eco give %player% 500'
-
+  - '[ZEN-ECO] vault 3000'
 all-souls-found-actions:
- - '[BROADCAST] <gold>%player% <green>ha encontrado <yellow>TODAS</yellow> las almas de hada del servidor.</green>'
- - '[SOUND] UI_TOAST_CHALLENGE_COMPLETE'
-```
+  - '[ZEN-ECO] vault 10000'
+  - '[BROADCAST] <gold>%player%</gold> <green>ha encontrado todas las Fairy Souls!</green>'
+  - '[SOUND] UI_TOAST_CHALLENGE_COMPLETE 1.0 1.0'
 
-### Animación con Display Entities (`found-soul-animation`)
-Genera un `ItemDisplay` nativo de 1.21 que flota y gira suavemente al descubrir el alma:
+# Efectos nativos opcionales de ZenCore ZenEngine
+soul-found-effects: []
+all-souls-found-effects: []
 
-```yaml
+# Animación fluida con ItemDisplay nativo de 1.21 (interpolación en cliente, isPersistent = false)
 found-soul-animation:
-    enabled: true
- # Textura en formato Base64 de la cabeza que flotará
-  texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjk2OTIzYWQyNDczMTAwMDdmNmFlNWQzMjZkODQ3YWQ1Mzg2NGNmMTZjMzU2NWExODFkYzhlNmIyMGJlMjM4NyJ9fX0="
-  duration: 40    # Duración en ticks (40 ticks = 2 segundos)
-  spin-speed: 12  # Velocidad de rotación en grados por tick
-  rise-speed: 0.05 # Velocidad de elevación vertical por tick
-```
+  enabled: true
+  texture: "eyJ0ZXh0dXJlcyI6..."
+  duration: 40
+  spin-speed: 10
+  rise-speed: 0.05
 
-### Indicadores de Proximidad y Efecto Radar (`indicators`)
-Emite partículas y sonidos exclusivos para los jugadores que aún **no** hayan encontrado el alma cuando se acercan a su ubicación:
+# Holograma flotante opcional sobre cada alma (ZenHologramEngine - TextDisplay)
+hologram:
+  enabled: false
+  y-offset: 1.35
+  lines:
+    - '{soul_display_name}'
+    - '<gray>Zona: <aqua>{zone}</aqua></gray>'
 
-```yaml
+# Notificación a compañeros cercanos de Party (requiere ZenPartys)
+party-share:
+  enabled: true
+  radius: 32.0
+  notify-members: true
+
+# Indicadores de proximidad con efecto Radar (más rápido y pitch más agudo al acercarse)
 indicators:
   visual:
     enabled: true
-    particle: VILLAGER_HAPPY
+    particle: HAPPY_VILLAGER
     amount: 5
-    interval-ticks: 40 # Intervalo base en ticks
-    radius: 15.0       # Radio en bloques
+    interval-ticks: 40
+    radius: 15.0
   auditory:
     enabled: true
     sound: BLOCK_NOTE_BLOCK_CHIME
-    volume: 0.6
+    volume: 0.5
     pitch: 1.0
-    interval-ticks: 60 # Intervalo base en ticks
-    radius: 10.0       # Radio en bloques
-```
+    interval-ticks: 60
+    radius: 10.0
 
-> **Efecto Proximidad Radar:** El sistema incrementa automáticamente la cadencia de emisión y aumenta el pitch del sonido (de 1.0 hasta 1.8) cuanto más cerca esté el jugador del bloque.
-
-### Menú de Canje y Recompensas (`menu`)
-Configuración de la tienda/interfaz gráfica del alma (`/zf menu <tipo>`). Los items se actualizan dinámicamente sin parpadeos:
-
-```yaml
+# Menú interactivo (ZenMenu) con refresco in-place sin parpadeos
 menu:
- title: '<gradient:#da22ff:#9733ee>Fairy Souls Rewards</gradient>'
+  title: '<gradient:#da22ff:#9733ee>Fairy Souls</gradient>'
   rows: 6
   filler:
     material: GRAY_STAINED_GLASS_PANE
     name: ' '
-    items:
-    exchange_souls:
-      display-name: '<green><bold>Canjear Almas</bold></green>'
+  items:
+    # Modo 1: Canje (gasta almas disponibles)
+    soul_exchange:
+      display-name: '<green>Canjear 5 Almas</green>'
       material: PLAYER_HEAD
-      texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjk2OTIzYWQyNDczMTAwMDdmNmFlNWQzMjZkODQ3YWQ1Mzg2NGNmMTZjMzU2NWExODFkYzhlNmIyMGJlMjM4NyJ9fX0="
-      slot: 22
-      souls-required: 5 # Cantidad de almas que consume el canje
-
+      texture: "eyJ0ZXh0dXJlcyI6..."
+      slot: 21
+      souls-required: 5
       available-lore:
- - '<gray>¡Tienes suficientes almas!</gray>'
- - ''
- - '<gray>Disponibles: <yellow>{souls_available}</yellow>/<purple>{souls_required}</purple></gray>'
- - ''
- - '<yellow>▶ Click para canjear</yellow>'
-
+        - '<gray>Disponibles: <yellow>{souls_available}</yellow>/<dark_purple>{souls_required}</dark_purple>'
+        - '<yellow>▶ Click para canjear'
       unavailable-lore:
- - '<gray>Necesitas más almas para este canje.</gray>'
- - ''
- - '<gray>Disponibles: <yellow>{souls_available}</yellow>/<purple>{souls_required}</purple></gray>'
- - ''
- - '<red> Almas insuficientes</red>'
-
+        - '<gray>Disponibles: <yellow>{souls_available}</yellow>/<dark_purple>{souls_required}</dark_purple>'
+        - '<red>✖ Almas insuficientes'
       actions:
- - '[MESSAGE] %prefix% <green>Has canjeado <yellow>5 almas</yellow> por recompensas mágicas.</green>'
- - '[CONSOLE] eco give %player% 2500'
- - '[AURA-STAT] strength 2'
- - '[SOUND] ENTITY_PLAYER_LEVELUP'
+        - '[ZEN-ECO] vault 10000'
+        - '[ZEN-STAT] max_health 2'
+        - '[SOUND] ENTITY_PLAYER_LEVELUP 1.0 1.2'
 
-    close_button:
-      display-name: '<red>Cerrar</red>'
-      material: BARRIER
-      slot: 49
-      lore:
- - '<gray>Click para salir del menú.</gray>'
+    # Modo 2: Milestone / Hito acumulativo (NO gasta almas, reclamable 1 sola vez)
+    milestone_10:
+      display-name: '<gold><bold>Hito: 10 Almas</bold></gold>'
+      material: NETHER_STAR
+      slot: 23
+      milestone-required: 10
+      one-time: true
+      available-lore:
+        - '<gray>Encontradas: <yellow>{souls_found}</yellow>/<gold>{souls_required}</gold>'
+        - '<green>▶ Click para reclamar'
+      unavailable-lore:
+        - '<gray>Encontradas: <yellow>{souls_found}</yellow>/<gold>{souls_required}</gold>'
+        - '<red>✖ Bloqueado'
+      claimed-lore:
+        - '<green>✔ Ya reclamado'
       actions:
- - '[CLOSE]'
- - '[SOUND] UI_BUTTON_CLICK'
+        - '[ZEN-ECO] vault 25000'
 ```

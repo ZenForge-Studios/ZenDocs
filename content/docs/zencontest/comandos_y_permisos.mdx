@@ -1,0 +1,45 @@
+---
+title: "Comandos y Permisos"
+description: "Comandos para jugadores, tienda de medallas y herramientas de administración."
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Comandos y Permisos
+
+---
+
+El comando raíz es `/contest` (con los alias `/concurso`, `/concursos` y `/jacob`).
+
+### Comandos de Jugador:
+
+| Comando | Permiso | Descripción |
+| :--- | :--- | :--- |
+| `/contest` | `zencontest.use` | Abre la interfaz gráfica interactiva con los torneos activos, próximos eventos y tu posición actual. |
+| `/contest list` | `zencontest.use` | Lista en el chat los concursos programados para las próximas horas. |
+| `/contest info [id]` | `zencontest.use` | Muestra detalles del concurso indicado (o del concurso activo actualmente). |
+| `/contest top [id]` | `zencontest.use` | Muestra la tabla de clasificación actual del concurso. |
+| `/contest shop` | `zencontest.shop` | Abre el mercado de intercambio de medallas y tickets agrícolas. |
+| `/contest claim` | `zencontest.use` | Reclama recompensas pendientes de concursos anteriores finalizados. |
+
+---
+
+### Comandos de Administrador:
+
+| Comando | Permiso | Descripción |
+| :--- | :--- | :--- |
+| `/contest start <id> [minutos]` | `zencontest.admin.start` | Inicia manualmente un concurso forzando una duración específica (por defecto usa la del archivo). |
+| `/contest stop [id]` | `zencontest.admin.stop` | Detiene inmediatamente un concurso en curso calculando las recompensas finales. |
+| `/contest cancel [id]` | `zencontest.admin.cancel` | Cancela un concurso activo **sin** otorgar premios ni registrar récords. |
+| `/contest reload` | `zencontest.admin.reload` | Recarga todas las configuraciones YAML, mensajes y calendarios en caliente. |
+| `/contest givemedal <jugador> <tipo> <cantidad>` | `zencontest.admin.give` | Acredita medallas (`bronze`, `silver`, `gold`, `platinum`, `diamond`) directamente al jugador. |
+| `/contest giveticket <jugador> <cantidad>` | `zencontest.admin.give` | Acredita tickets de participación agrícola al inventario o saldo virtual del jugador. |
+
+---
+
+### Nodos de Permisos:
+
+- `zencontest.use`: Acceso a comandos informativos y menús (Otorgado a usuarios por defecto).
+- `zencontest.shop`: Acceso a la tienda de medallas agrícolas.
+- `zencontest.participate`: Permite que las acciones del jugador sumen puntos en los concursos activos.
+- `zencontest.admin`: Otorga todos los permisos administrativos del plugin.

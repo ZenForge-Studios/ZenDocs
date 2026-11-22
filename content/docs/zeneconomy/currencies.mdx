@@ -1,6 +1,6 @@
 ---
 title: "Configuración de Monedas (currencies/)"
-description: "Cada archivo dentro de la carpeta currencies/ representa una moneda completamente independiente. Puedes crear..."
+description: "Cada archivo dentro de currencies/ define una moneda independiente con sus propios comandos, impuestos, límites, cheques y boosters."
 ---
 
 import { Callout } from 'fumadocs-ui/components/callout';
@@ -9,67 +9,76 @@ import { Callout } from 'fumadocs-ui/components/callout';
 
 ---
 
-Cada archivo dentro de la carpeta `currencies/` representa una moneda completamente independiente. Puedes crear tantos archivos como desees (por ejemplo: `tokens.yml`, `souls.yml`, `coins.yml`).
+Cada archivo `.yml` dentro de `plugins/ZenEconomy/currencies/` representa una moneda completamente independiente. Puedes crear tantas monedas como requiera tu servidor (por ejemplo: `gems.yml`, `crystals.yml`, `coins.yml`, `tokens.yml`).
 
-### Ejemplo Explicado: `currencies/crystals.yml`
+### Ejemplo Completo Explicado: `currencies/nexcoin.yml`
 
 ```yaml
-# Identificador único de la divisa (en minúsculas)
-id: crystals
-
-# Nombre descriptivo de la divisa
-name: "Crystals"
-
-# Símbolo que identifica a la moneda
-symbol: "❖"
-
-# Prefijo que se antepone a los mensajes de esta moneda (dejar en blanco para usar el del plugin)
+id: nexcoin
+name: "NexCoin"
+name-singular: "NexCoin"
+name-plural: "NexCoins"
+symbol: "⛁"
+color: "#9238c9"
 prefix: ""
+suffix: "<#9238c9>NexCoins</#9238c9>"
 
-# Saldo con el que empieza cada nuevo jugador
 default: 0
-
-# Saldo máximo que un jugador puede almacenar (-1 para sin límite)
-max: -1
-
-# Si los jugadores pueden transferirse fondos entre sí mediante /<comando> pay
+max: -1                  # -1 = sin límite
 payable: true
+decimal: false
+max-decimals: 0          # Máximo 4 decimales soportados
 
-# Si se permiten cantidades decimales en los comandos
-decimal: true
-
-# Cantidad máxima de decimales permitidos en comandos y formateos
-max-decimals: 2
-
-# Si esta divisa debe registrarse en Vault (Solo una divisa puede registrarse en Vault)
-# Si usas EssentialsX o CMI como dinero principal, mantén esto en false.
+# Solo UNA moneda local puede tener vault: true (si usas EssentialsX/CMI déjalo en false)
 vault: false
 
-# Si el comando directo /crystals <jugador> debe actuar como atajo para consultar saldo
+# Si es true, /nexcoin <jugador> funciona como atajo de /nexcoin bal <jugador>
 balance-shorthand: false
 
-# Formato largo de visualización del balance (Placeholders: %currency%, %amount%, %symbol%)
-format: "<aqua>%symbol%</aqua><green>%amount%</green> <aqua>%currency%</aqua>"
+format: "<#9238c9>%amount% %suffix%</#9238c9>"
+format-short: "<#9238c9>%symbol% %amount%</#9238c9>"
+decimal-format: "#,##0"
+decimal-format-short: "#,##0"
 
-# Formato corto o abreviado (Placeholders: %currency%, %amount%, %symbol%)
-format-short: "<aqua>%symbol%</aqua> <green>%amount%</green>"
-
-# Patrón de formato decimal estándar (Java DecimalFormat)
-decimal-format: "#,##0.00"
-
-# Patrón de formato decimal abreviado
-decimal-format-short: "#,##0.00"
-
-# Lista de comandos que se registrarán dinámicamente para esta divisa
 commands:
- - crystals
- - ecocrystals
+  - nexcoin
+  - nexcoins
+  - nc
 
-# Icono representativo para el menú de Billetera (/wallet)
 icon:
-  material: "AMETHYST_SHARD"
-    custom-model-data: 0
-  display-name: "<aqua><bold>Cristales</bold></aqua>"
+  material: "NETHER_STAR"
+  custom-model-data: 0
+  display-name: "<#9238c9><bold>NexCoins</bold></#9238c9>"
   lore:
- - "<gray>Moneda especial obtenida en eventos y misiones."
+    - "<gray>Moneda exclusiva del servidor."
+
+# Casa de Cambio (Exchange)
+exchange:
+  enabled: true
+  tax-percent: 2.5       # Comisión porcentual del intercambio (0.0 a 99.0)
+  daily-limit: 5000.0    # Límite diario de gasto por jugador (-1 = sin límite)
+  rates:
+    gems: 0.5
+    vault: 100.0
+
+# Impuestos en pagos entre jugadores (/nexcoin pay)
+tax:
+  pay-percent: 5.0       # 5% de impuesto retenido al enviar pagos
+
+# Límites por transacción en /pay
+limits:
+  min-pay: 1.0
+  max-pay: 100000.0      # -1 = sin límite
+
+# Cheques físicos (/nexcoin note <cantidad>)
+notes:
+  enabled: true
+
+# Multiplicadores automáticos de ZenCore Boosters
+boosters:
+  enabled: true
 ```
+
+<Callout type="tip">
+Los comandos listados en `commands:` se registran dinámicamente en tiempo de ejecución. Los jugadores pueden consultar su balance, transferir dinero o crear cheques utilizando cualquiera de los alias asignados.
+</Callout>

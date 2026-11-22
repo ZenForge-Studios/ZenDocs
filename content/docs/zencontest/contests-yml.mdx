@@ -1,0 +1,69 @@
+---
+title: "Configuración de Concursos (contests/*.yml)"
+description: "Estructura de archivos individuales de concursos, objetivos, brackets y premios."
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Configuración de Concursos (`contests/*.yml`)
+
+---
+
+Cada concurso se define en un archivo independiente dentro de `plugins/ZenContest/contests/`.
+
+### Ejemplo Completo: `contests/wheat.yml`
+
+```yaml
+id: "wheat"
+name: "<gradient:#FFE000:#799F0C><bold>Cosecha de Trigo</bold></gradient>"
+discipline: "FARMING"
+duration-minutes: 20
+
+# Icono para la interfaz gráfica
+icon:
+  material: "WHEAT"
+  custom-model-data: 0
+  display-name: "<gradient:#FFE000:#799F0C><bold>Concurso de Trigo</bold></gradient>"
+  lore:
+    - "<gray>Cosecha todo el trigo que puedas antes"
+    - "<gray>de que el tiempo se agote."
+
+# Objetivos válidos que suman puntos
+targets:
+  WHEAT:
+    points-per-unit: 1
+    # Solo otorga puntos si el cultivo está 100% maduro
+    require-fully-grown: true
+
+# Umbrales fijos de respaldo (usados si hay pocos participantes)
+benchmark-fallback:
+  diamond: 2500
+  platinum: 1800
+  gold: 1200
+  silver: 600
+  bronze: 200
+
+# Recompensas por bracket
+rewards:
+  diamond:
+    medals:
+      diamond: 1
+    tickets: 100
+    commands:
+      - "eco give {player} 50000"
+      - "zencustomitems give {player} hoz_dorada 1"
+  gold:
+    medals:
+      gold: 1
+    tickets: 30
+    commands:
+      - "eco give {player} 15000"
+  silver:
+    medals:
+      silver: 1
+    tickets: 15
+  bronze:
+    medals:
+      bronze: 1
+    tickets: 5
+```

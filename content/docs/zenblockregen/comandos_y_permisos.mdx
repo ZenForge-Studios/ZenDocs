@@ -1,0 +1,47 @@
+---
+title: "Comandos y Permisos"
+description: "Comandos generales, varita de selección y administración de minas."
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Comandos y Permisos
+
+---
+
+El comando raíz del plugin es `/zbr` (con alias `/zenblockregen`, `/blockregen`).
+
+### Permisos Principales
+
+| Permiso | Tipo | Descripción |
+| :--- | :--- | :--- |
+| `zenblockregen.admin` | Staff | Acceso a todos los comandos de administración y recarga. |
+| `zenblockregen.bypass` | Staff/VIP | Permite romper bloques regenerables sin activar el temporizador (el bloque se rompe permanentemente). |
+| `zenblockregen.mine.admin` | Staff | Permiso para crear, editar, resetear y eliminar minas. |
+| `zenblockregen.tools.wand` | Staff | Permiso para recibir y utilizar la varita de selección de regiones. |
+
+---
+
+### Comandos Generales
+
+| Comando | Permiso | Descripción |
+| :--- | :--- | :--- |
+| `/zbr help` | Ninguno | Muestra la guía de comandos disponibles según los permisos del jugador. |
+| `/zbr reload` | `zenblockregen.admin` | Recarga todos los archivos de configuración (`config.yml`, `blocks.yml`, `messages.yml`, `regions.yml` y minas). |
+| `/zbr wand` | `zenblockregen.admin` | Entrega la varita de selección para delimitar regiones y minas cuboides. |
+| `/zbr bypass [jugador]` | `zenblockregen.admin` | Alterna el modo bypass de regeneración para uno mismo o para otro jugador. |
+| `/zbr check` | `zenblockregen.admin` | Muestra en el chat las propiedades del bloque al que se está mirando (material, delay configurado, breaking power). |
+
+---
+
+### Comandos de Minas Prison / SkyBlock
+
+| Comando | Permiso | Descripción |
+| :--- | :--- | :--- |
+| `/zbr mine list` | `zenblockregen.mine.admin` | Lista todas las minas registradas y su estado actual. |
+| `/zbr mine info <nombre>` | `zenblockregen.mine.admin` | Muestra el estado, porcentaje de bloques rotos y tiempo restante para el reseteo de una mina. |
+| `/zbr mine create <nombre>` | `zenblockregen.mine.admin` | Crea una nueva mina utilizando los puntos previamente marcados con la varita (`/zbr wand`). |
+| `/zbr mine delete <nombre>` | `zenblockregen.mine.admin` | Elimina una mina registrada y borra su archivo de configuración. |
+| `/zbr mine reset <nombre>` | `zenblockregen.mine.admin` | Fuerza el reseteo inmediato de todos los bloques de la mina. |
+| `/zbr mine setspawn <nombre>` | `zenblockregen.mine.admin` | Establece el punto de teletransporte seguro para los jugadores cuando la mina se reinicia. |
+| `/zbr mine redefine <nombre>` | `zenblockregen.mine.admin` | Actualiza los límites espaciales de la mina con los puntos de la varita seleccionados. |

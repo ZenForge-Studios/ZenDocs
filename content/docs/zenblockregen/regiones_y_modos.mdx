@@ -1,0 +1,34 @@
+---
+title: "Sistema de Regiones y Modos"
+description: "Delimitación espacial y modos de operación WHITELIST, BLACKLIST y ALL-WORLDS."
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Sistema de Regiones y Modos (`regions.yml`)
+
+---
+
+ZenBlockRegen puede limitar su funcionamiento a regiones específicas o ejecutarse en todo el servidor mediante tres modos de operación configurables en `config.yml`:
+
+```yaml
+region-mode: "WHITELIST" # WHITELIST, BLACKLIST o ALL
+```
+
+1. **`WHITELIST`**: Los bloques solo se regenerarán si se encuentran dentro de alguna de las regiones declaradas en `regions.yml`. En el resto del mundo, los bloques se comportan de forma vanilla.
+2. **`BLACKLIST`**: Los bloques se regeneran en todas partes, excepto dentro de las regiones marcadas en la lista negra.
+3. **`ALL`**: La regeneración aplica a todos los mundos habilitados sin importar regiones.
+
+### Ejemplo de `regions.yml`:
+
+```yaml
+regions:
+  mina_vip:
+    world: "world"
+    pos1: { x: 500, y: 40, z: 500 }
+    pos2: { x: 550, y: 70, z: 550 }
+  zona_farm:
+    world: "survival"
+    pos1: { x: -200, y: 60, z: -200 }
+    pos2: { x: -100, y: 80, z: -100 }
+```

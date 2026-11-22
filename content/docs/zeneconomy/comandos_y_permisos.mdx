@@ -1,6 +1,6 @@
 ---
 title: "Comandos y Permisos"
-description: "Por cada moneda configurada en currencies/, se registran sus comandos asociados (por ejemplo /crystals,..."
+description: "Referencia completa de comandos para jugadores y administradores."
 ---
 
 import { Callout } from 'fumadocs-ui/components/callout';
@@ -9,29 +9,39 @@ import { Callout } from 'fumadocs-ui/components/callout';
 
 ---
 
-### Comandos Dedicados por Divisa
-Por cada moneda configurada en `currencies/`, se registran sus comandos asociados (por ejemplo `/crystals`, `/gems`).
+### Comandos Dedicados por Moneda (`/<moneda>`)
+
+Cada moneda creada en `currencies/` cuenta con sus propios subcomandos independientes:
 
 | Comando | Descripción | Permiso |
 | :--- | :--- | :--- |
 | `/<moneda>` | Muestra tu saldo actual | `zeneconomy.currency.<id>` |
-| `/<moneda> [jugador]` | Consulta el saldo de otro jugador | `zeneconomy.currency.<id>.balance.others` |
-| `/<moneda> bal [jugador]` | Consulta el saldo de un jugador | `zeneconomy.currency.<id>.balance.others` |
-| `/<moneda> pay <jugador> <cantidad>` | Envía saldo a otro jugador | `zeneconomy.currency.<id>` |
-| `/<moneda> top [pagina]` | Muestra el ranking de jugadores más ricos en el chat | `zeneconomy.currency.<id>` |
-| `/<moneda> top gui` | Abre una interfaz gráfica con las cabezas de los jugadores | `zeneconomy.currency.<id>` |
-| `/<moneda> give <jugador> <cantidad>` | Acredita fondos a un jugador | `zeneconomy.currency.<id>.admin` o `zeneconomy.admin` |
-| `/<moneda> take <jugador> <cantidad>` | Retira fondos a un jugador | `zeneconomy.currency.<id>.admin` o `zeneconomy.admin` |
-| `/<moneda> set <jugador> <cantidad>` | Establece el saldo exacto de un jugador | `zeneconomy.currency.<id>.admin` o `zeneconomy.admin` |
-| `/<moneda> reset <jugador>` | Reinicia el saldo al valor por defecto | `zeneconomy.currency.<id>.admin` o `zeneconomy.admin` |
+| `/<moneda> bal [jugador]` | Consulta tu saldo o el de otro jugador | `zeneconomy.currency.<id>` / `.balance.others` |
+| `/<moneda> <jugador>` | Atajo para ver saldo ajeno (solo si `balance-shorthand: true`) | `zeneconomy.currency.<id>.balance.others` |
+| `/<moneda> pay <jugador> <cant>` | Envía saldo (online u offline, aplica impuestos/límites) | `zeneconomy.currency.<id>.pay` |
+| `/<moneda> paytoggle` | Activa o desactiva la recepción de pagos de otros jugadores | `zeneconomy.currency.<id>` |
+| `/<moneda> note <cant>` | Convierte saldo en un cheque físico canjeable anti-dupe | `zeneconomy.currency.<id>.note` |
+| `/<moneda> exchange [destino] [cant]` | Abre la Casa de Cambio visual o convierte directamente | `zeneconomy.currency.<id>` |
+| `/<moneda> top [página]` | Ranking en chat con paginación interactiva | `zeneconomy.currency.<id>` |
+| `/<moneda> top gui` | Menú interactivo visual `ZenMenu` con el Top 10 | `zeneconomy.currency.<id>` |
+| `/<moneda> give / take / set <jugador> <cant>` | Modifica el saldo de un jugador | `zeneconomy.currency.<id>.admin` o `zeneconomy.admin` |
+| `/<moneda> reset <jugador>` | Restablece el saldo al valor por defecto | `zeneconomy.currency.<id>.admin` o `zeneconomy.admin` |
 
-### Comandos Generales
+---
+
+### Comandos Generales y Administración
+
 | Comando | Alias | Descripción | Permiso |
 | :--- | :--- | :--- | :--- |
-| `/wallet` | `/billetera` | Abre el menú visual con todas las monedas del jugador | `zeneconomy.command.wallet` (Default: Todos) |
+| `/wallet` | `/billetera` | Menú interactivo `ZenMenu` con todas tus monedas | `zeneconomy.command.wallet` |
+| `/exchange [orig] [dest] [cant]` | `/cambio`, `/intercambio` | Menú visual de Casa de Cambio o conversión rápida | `zeneconomy.command.exchange` |
 | `/zeneconomy currencies` | `/ze list` | Lista todas las monedas cargadas y sus propiedades | `zeneconomy.admin` |
-| `/zeneconomy reload` | `/ze reload` | Recarga configuraciones, monedas y mensajes | `zeneconomy.admin` |
-| `/zeneconomy give <jugador> <cant> <moneda>` | | Acredita saldo en cualquier moneda | `zeneconomy.admin` |
-| `/zeneconomy take <jugador> <cant> <moneda>` | | Retira saldo en cualquier moneda | `zeneconomy.admin` |
-| `/zeneconomy set <jugador> <cant> <moneda>` | | Fija el balance en cualquier moneda | `zeneconomy.admin` |
-| `/zeneconomy reset <jugador> <moneda>` | | Reinicia saldo en cualquier moneda | `zeneconomy.admin` |
+| `/zeneconomy reload` | `/ze reload` | Recarga segura (atómica) de configs, monedas y comandos | `zeneconomy.admin` |
+| `/zeneconomy give / take / set <jug> <cant> <moneda>` | | Modifica saldo en cualquier moneda | `zeneconomy.admin` |
+| `/zeneconomy reset <jug> <moneda>` | | Reinicia saldo en cualquier moneda | `zeneconomy.admin` |
+| `/zeneconomy logs <jug> [moneda / all] [pág]` | `/ze history` | Consulta el ledger/auditoría de transacciones | `zeneconomy.admin` |
+| `/zeneconomy import <origen> <moneda>` | `/ze migrate` | Migra saldos desde Vault, Essentials, PlayerPoints o CoinsEngine | `zeneconomy.admin` |
+
+<Callout type="info">
+**Permiso de Alertas**: `zeneconomy.admin.alerts` permite al personal del staff recibir avisos en tiempo real cuando se detectan transacciones por encima del umbral de anomalías.
+</Callout>

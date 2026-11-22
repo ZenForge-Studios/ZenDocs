@@ -1,6 +1,6 @@
 ---
 title: "Estructura de Archivos"
-description: "plugins/ZenEconomy/"
+description: "Distribución de carpetas y archivos generados por ZenEconomy v2.0."
 ---
 
 import { Callout } from 'fumadocs-ui/components/callout';
@@ -9,12 +9,15 @@ import { Callout } from 'fumadocs-ui/components/callout';
 
 ---
 
+Al iniciar el servidor, ZenEconomy genera y administra la siguiente estructura en `plugins/ZenEconomy/`:
+
 ```
 plugins/ZenEconomy/
-├── config.yml              # Configuración general y de base de datos
-├── messages.yml            # Mensajes del plugin en formato MiniMessage
-├── zeneconomy.db           # Base de datos SQLite (si se usa SQLite)
-└── currencies/             # Definición de cada moneda individual
+├── config.yml              # Configuración principal, pool de base de datos, ledger y sincronización
+├── messages.yml            # Mensajes del plugin en formato Adventure MiniMessage
+├── zeneconomy.db           # Base de datos SQLite local (si storage.type es SQLITE)
+└── currencies/             # Definición de cada moneda individual e independiente
     ├── crystals.yml        # Moneda de ejemplo (Cristales)
-    └── gems.yml            # Moneda de ejemplo (Gemas)
+    ├── gems.yml            # Moneda de ejemplo (Gemas)
+    └── nexcoin.yml         # Moneda avanzada con cheques, límites e impuestos
 ```

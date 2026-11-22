@@ -1,6 +1,6 @@
 ---
 title: "Requisitos del Sistema"
-description: "- Servidor: Paper / Purpur 1.21 o superior."
+description: "Requisitos técnicos para ejecutar ZenFairy v2.0."
 ---
 
 import { Callout } from 'fumadocs-ui/components/callout';
@@ -9,10 +9,10 @@ import { Callout } from 'fumadocs-ui/components/callout';
 
 ---
 
-- **Servidor:** Paper / Purpur 1.21 o superior.
-- **Java:** Java 17 o Java 21+.
-- **Dependencias Obligatorias:**
- - *Ninguna* (HikariCP y Triumph-GUI vienen sombreados e integrados en el núcleo del plugin).
-- **Dependencias Opcionales:**
- - **PlaceholderAPI**: Para el uso de variables en scoreboards, menús y chat.
- - **AuraSkills**: Para recompensar estadísticas pasivas de rol (`[AURA-STAT]`).
+- **Plataforma**: Servidor Paper, Purpur o forks derivados en versión **1.21 o superior**.
+- **Java**: **Java 21** o superior.
+- **Dependencia Obligatoria**: **ZenCore** (`ZenCore-1.0.0.jar` o superior) para pools de base de datos `ZenDatabaseEngine`, menús interactivos `ZenMenu`, hologramas nativos `ZenHologramEngine`, stats `ZenStatEngine` y protecciones `ZenProtectionHub`.
+- **Dependencias Opcionales**:
+  - `PlaceholderAPI`: Para placeholders de almas en Scoreboards, TAB y menús.
+  - `Vault` / `ZenEconomy`: Para recompensas monetarias automáticas al encontrar almas o completar hitos.
+  - `ZenPartys`: Para compartir y notificar hallazgos de almas entre miembros cercanos del grupo.

@@ -1,28 +1,29 @@
 ---
 title: "ZenEconomy"
-description: "Documentación oficial, guías de configuración y arquitectura de ZenEconomy."
+description: "Documentación oficial, guías de configuración y arquitectura de ZenEconomy v2.0."
 ---
 
 import { Card, Cards } from 'fumadocs-ui/components/card';
 import { Callout } from 'fumadocs-ui/components/callout';
 
-# ZenEconomy
+# ZenEconomy (v2.0)
 
-Bienvenido a la documentación oficial de configuración y uso de **ZenEconomy**.  
-ZenEconomy es un sistema de múltiples economías modulares para servidores de Minecraft **Paper 1.21+ (Java 21)**, optimizado con persistencia asíncrona (HikariCP), Adventure API nativo (MiniMessage) y comandos dedicados dinámicos por moneda al estilo de EcoBits.
+Bienvenido a la documentación oficial de configuración y arquitectura de **ZenEconomy v2.0 (ZenCore Native)**.  
+ZenEconomy es un motor de economía modular de alto rendimiento para servidores de Minecraft **Paper 1.21+ (Java 21)**, optimizado con persistencia asíncrona, pools dedicados HikariCP, comandos dinámicos por divisa, sistema de cheques físicos anti-dupe y auditoría de transacciones en tiempo real.
 
 ---
 
 ## Secciones de la Documentación
 
 <Cards>
- <Card title="Requisitos del Sistema" href="/docs/zeneconomy/requisitos_del_sistema" description="- Plataforma: Servidor Paper, Purpur o forks modernos de 1.21 en adelante." />
- <Card title="Instalación" href="/docs/zeneconomy/instalacion" description="1. Descarga el archivo compilado ZenEconomy-1.0.0.jar." />
- <Card title="Estructura de Archivos" href="/docs/zeneconomy/estructura_de_archivos" description="plugins/ZenEconomy/" />
- <Card title="Configuración (config.yml)" href="/docs/zeneconomy/config-yml" description="database:" />
- <Card title="Configuración de Monedas (currencies/)" href="/docs/zeneconomy/currencies" description="Cada archivo dentro de la carpeta currencies/ representa una moneda completamente independiente. Puedes crear..." />
- <Card title="Mensajes (messages.yml)" href="/docs/zeneconomy/messages-yml" description="ZenEconomy utiliza la librería nativa Adventure MiniMessage. Admite gradientes, colores HEX, negritas,..." />
- <Card title="Comandos y Permisos" href="/docs/zeneconomy/comandos_y_permisos" description="Por cada moneda configurada en currencies/, se registran sus comandos asociados (por ejemplo /crystals,..." />
- <Card title="Integraciones y Dependencias" href="/docs/zeneconomy/integraciones" description="- Por defecto ninguna moneda sobreescribe Vault (vault: false), permitiendo la compatibilidad directa con..." />
- <Card title="API para Desarrolladores" href="/docs/zeneconomy/api" description="Guía completa para desarrolladores y referencia de la API de ZenEconomy." />
+  <Card title="Requisitos del Sistema" href="/docs/zeneconomy/requisitos_del_sistema" description="Requisitos técnicos, Java 21 y dependencia de ZenCore." />
+  <Card title="Instalación y Actualización" href="/docs/zeneconomy/instalacion" description="Instalación inicial y migración automática desde versiones previas." />
+  <Card title="Estructura de Archivos" href="/docs/zeneconomy/estructura_de_archivos" description="Distribución de archivos y carpetas en plugins/ZenEconomy/." />
+  <Card title="Configuración (config.yml)" href="/docs/zeneconomy/config-yml" description="Ajustes de almacenamiento, caché, baltop, ledger y sync multi-servidor." />
+  <Card title="Configuración de Monedas" href="/docs/zeneconomy/currencies" description="Configuración individual de monedas, impuestos, límites e intercambio." />
+  <Card title="Sistemas Avanzados" href="/docs/zeneconomy/sistemas_avanzados" description="Ledger, alertas anti-dupe, cheques físicos y pagos offline." />
+  <Card title="Mensajes (messages.yml)" href="/docs/zeneconomy/messages-yml" description="Formatos de texto, colores HEX y etiquetas Adventure MiniMessage." />
+  <Card title="Comandos y Permisos" href="/docs/zeneconomy/comandos_y_permisos" description="Comandos dedicados por divisa y comandos globales de administración." />
+  <Card title="Integraciones y Dependencias" href="/docs/zeneconomy/integraciones" description="Compatibilidad con Vault, PlaceholderAPI y la suite ZenCore." />
+  <Card title="API para Desarrolladores" href="/docs/zeneconomy/api" description="Referencia técnica completa para desarrolladores y ZenEconomyProvider." />
 </Cards>

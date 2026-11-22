@@ -1,0 +1,71 @@
+---
+title: "Sistema de Minas Cuboides (Prison / SkyBlock)"
+description: "Configuración de minas cuboides con reseteo porcentual, teletransporte seguro y porcentajes de composición."
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Sistema de Minas Cuboides
+
+---
+
+Las minas cuboides permiten gestionar zonas de minería masiva para modalidades tipo Prison, SkyBlock o RPG. Cada mina se almacena en su propio archivo dentro de `plugins/ZenBlockRegen/mines/<nombre>.yml`.
+
+### Ejemplo Completo de Configuración (`mines/mina_a.yml`):
+
+```yaml
+enabled: true
+world: "world"
+pos1:
+  x: 100
+  y: 60
+  z: 100
+pos2:
+  x: 120
+  y: 70
+  z: 120
+
+# Intervalo en segundos para el reinicio automático (300 = 5 minutos)
+reset-delay: 300
+
+# Reinicio por porcentaje: si se mina el 80% de los bloques, reinicia de inmediato
+reset-percentage: 80.0
+
+# Segundos antes del reinicio en los que se enviará aviso sonoro y en chat a los mineros
+warning-seconds:
+  - 60
+  - 30
+  - 10
+  - 5
+
+# Punto de teletransporte seguro (si no se define, se envía a la superficie del cuboid)
+spawn-point:
+  x: 110.5
+  y: 72.0
+  z: 110.5
+  yaw: 0.0
+  pitch: 0.0
+
+# Composición porcentual de la mina
+composition:
+  STONE: 70.0
+  COAL_ORE: 15.0
+  IRON_ORE: 10.0
+  GOLD_ORE: 4.0
+  DIAMOND_ORE: 1.0
+
+# Opciones adicionales de regeneración
+settings:
+  # Si es true, el reinicio se procesa en lotes asíncronos para evitar congelamientos de tick
+  async-fill: true
+  batch-size: 500
+  # Sonido al regenerar la mina completa
+  reset-sound: "ENTITY_PLAYER_LEVELUP"
+  # Efecto de partículas en los bloques rellenados
+  reset-particles: true
+  particle-type: "HAPPY_VILLAGER"
+```
+
+<Callout type="tip">
+La suma de los porcentajes en `composition:` debe redondear al 100.0%. Si no totaliza 100, el plugin rellenará el porcentaje sobrante con el bloque de mayor peso relativo.
+</Callout>

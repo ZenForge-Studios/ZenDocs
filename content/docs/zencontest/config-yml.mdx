@@ -1,0 +1,60 @@
+---
+title: "Configuración (config.yml)"
+description: "Configuración general, programador de cron y opciones globales."
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Configuración (`config.yml`)
+
+---
+
+```yaml
+# ------------------------------------------------------------
+# CONFIGURACIÓN GENERAL
+# ------------------------------------------------------------
+general:
+  # Zona horaria para la programación de eventos (ej: America/New_York, UTC, Europe/Madrid)
+  timezone: "UTC"
+  # Intervalo de autoguardado en minutos
+  autosave-interval: 5
+  # Formato de tiempo mostrado
+  time-format: "HH:mm:ss"
+
+# ------------------------------------------------------------
+# PROGRAMACIÓN AUTOMÁTICA (SCHEDULER CRON)
+# ------------------------------------------------------------
+scheduler:
+  enabled: true
+  # Expresión cron: inicia un concurso cada 2 horas al minuto 00
+  cron: "0 */2 * * *"
+  # Duración predeterminada si el archivo del concurso no especifica una (en minutos)
+  default-duration-minutes: 20
+  # Lista de concursos en rotación aleatoria
+  pool:
+    - "wheat"
+    - "carrot"
+    - "potato"
+    - "nether_wart"
+    - "mining"
+
+# ------------------------------------------------------------
+# ANTI-EXPLOIT Y VALIDACIONES (ZENCORE)
+# ------------------------------------------------------------
+security:
+  # Exige que el bloque roto NO haya sido colocado por un jugador (vía PDC de ZenCore)
+  block-tracker-check: true
+  # Impide que jugadores en modo Creativo o Espectador acumulen puntos
+  ignore-non-survival: true
+  # Respeta las protecciones de terreno (WorldGuard, GriefPrevention, Towny)
+  respect-claims: true
+
+# ------------------------------------------------------------
+# INTEGRACIÓN CON HUD Y SCOREBOARDS
+# ------------------------------------------------------------
+scoreboard:
+  enabled: true
+  # Prioridad: TAB > Bukkit nativo
+  use-tab-plugin: true
+  tab-scoreboard-name: "zencontest-active"
+```

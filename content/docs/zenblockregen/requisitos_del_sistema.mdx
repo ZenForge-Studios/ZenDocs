@@ -1,0 +1,47 @@
+---
+title: "Requisitos e Instalación"
+description: "Requisitos del sistema, dependencias y pasos de instalación de ZenBlockRegen."
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Requisitos e Instalación
+
+---
+
+### Requisitos Técnicos
+- **Servidor**: Paper, Purpur o forks derivados en versión **1.21 o superior**.
+- **Java**: **Java 21** o superior.
+- **Plugin Requerido**: **ZenCore** (`ZenCore-1.0.0.jar` o superior) para anti-exploit de bloques (`ZenBlockTracker`), persistencia de estados de regeneración y hooks unificados.
+
+### Plugins Opcionales Compatibles
+- **Economía**: Vault, ZenEconomy.
+- **Encantamientos Custom**: ZenEnchants.
+- **Ítems Personalizados**: ZenCustomItems, ItemsAdder, Oraxen, Nexo, MMOItems.
+- **Protección de Regiones**: WorldGuard, GriefPrevention, Towny (vía `ZenProtectionHub`).
+- **Placeholders**: PlaceholderAPI.
+
+---
+
+### Pasos de Instalación
+1. Descarga el archivo compilado `ZenBlockRegen-1.0.0.jar`.
+2. Asegúrate de tener instalado `ZenCore.jar` en la carpeta `plugins/`.
+3. Coloca `ZenBlockRegen-1.0.0.jar` en la carpeta `plugins/` de tu servidor.
+4. Inicia o reinicia el servidor. Se generará automáticamente la siguiente estructura de archivos:
+
+```
+plugins/
+└── ZenBlockRegen/
+    ├── config.yml
+    ├── blocks.yml
+    ├── messages.yml
+    ├── regions.yml
+    ├── mines/
+    │   └── (archivos .yml de cada mina)
+    └── data/
+        └── pending_blocks.yml
+```
+
+<Callout type="info">
+Si el servidor se reinicia o se apaga mientras hay bloques en espera de regeneración, ZenBlockRegen guarda las ubicaciones exactas en `data/pending_blocks.yml` y los restaura automáticamente al iniciar.
+</Callout>

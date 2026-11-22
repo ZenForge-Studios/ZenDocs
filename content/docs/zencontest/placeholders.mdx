@@ -1,0 +1,29 @@
+---
+title: "Placeholders de PlaceholderAPI"
+description: "Identificadores para Scoreboards, TAB y marcadores en pantalla."
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Placeholders de PlaceholderAPI
+
+---
+
+ZenContest expone variables contextuales de alto rendimiento actualizadas asíncronamente:
+
+| Placeholder | Descripción | Ejemplo de Retorno |
+| :--- | :--- | :--- |
+| `%zencontest_has_active%` | Si existe al menos un concurso activo en este momento | `true` / `false` |
+| `%zencontest_active_name%` | Nombre formateado del concurso en progreso | `Trigo Dorado` |
+| `%zencontest_active_time_left%` | Tiempo restante del concurso en curso | `14m 23s` |
+| `%zencontest_next_name%` | Nombre del próximo concurso según el calendario | `Zanahoria Silvestre` |
+| `%zencontest_next_time%` | Tiempo que falta para el inicio del próximo evento | `01h 45m` |
+| `%zencontest_player_score%` | Puntos obtenidos por el jugador en el concurso activo | `1,420` |
+| `%zencontest_player_position%` | Puesto del jugador en la tabla de clasificación | `#3` |
+| `%zencontest_player_bracket%` | Bracket estimado actual del jugador | `<gold>Oro</gold>` |
+| `%zencontest_bracket_needed_<bracket>%` | Puntos aproximados requeridos para subir al bracket indicado | `1,850` |
+| `%zencontest_medals_diamond%` | Saldo de medallas de Diamante del jugador | `2` |
+| `%zencontest_medals_gold%` | Saldo de medallas de Oro del jugador | `15` |
+| `%zencontest_medals_silver%` | Saldo de medallas de Plata del jugador | `43` |
+| `%zencontest_medals_bronze%` | Saldo de medallas de Bronce del jugador | `102` |
+| `%zencontest_tickets%` | Saldo de tickets agrícolas acumulados | `520` |

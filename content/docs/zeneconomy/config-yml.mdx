@@ -1,26 +1,26 @@
 ---
 title: "Configuración (config.yml)"
-description: "database:"
+description: "Ajustes globales de ZenEconomy v2.0: base de datos, ledger anti-dupe, cooldowns, sincronización y puente Vault."
 ---
 
 import { Callout } from 'fumadocs-ui/components/callout';
 
 # Configuración (config.yml)
 
----
+El archivo `config.yml` controla el motor de persistencia HikariCP, el ledger transaccional anti-dupe, cooldowns gestionados por **ZenCore**, sincronización de red y el puente con la economía externa de Vault.
 
 ```yaml
-# ZenEconomy Main Configuration
-# Diseñado para Paper 1.21+ (Java 21)
+# ==============================================================
+# ZenEconomy Main Configuration (v2.0 - ZenCore Native)
+# Diseñado para Paper 1.21+ (Java 21) + ZenCore
+# ==============================================================
 
-# Configuración del motor de almacenamiento
+# Motor de almacenamiento (con pool dedicado ZenEconomy-DB)
 database:
- # Opciones disponibles: SQLITE, MYSQL, MARIADB
+  # Opciones disponibles: SQLITE, MYSQL, MARIADB
   type: SQLITE
-  
   sqlite:
     file: "zeneconomy.db"
-    
   mysql:
     host: "localhost"
     port: 3306
@@ -29,21 +29,64 @@ database:
     password: "password"
     ssl: false
     table-prefix: "ze_"
-    
- # Opciones del Pool de conexiones HikariCP
   pool:
     maximum-pool-size: 10
     minimum-idle: 5
     max-lifetime: 1800000       # 30 minutos
     connection-timeout: 10000   # 10 segundos
 
-# Frecuencia del auto-guardado en background de las cuentas en memoria (en segundos)
+# Auto-guardado periódico de cuentas en caché (segundos)
 auto-save-interval: 300
 
-# Ajustes del comando y GUI de mejores balances (Top Balances)
+# Tiempo de expiración en RAM para cuentas offline consultadas (segundos)
+offline-cache-ttl: 300
+
+# Ajustes de Baltop
 baltop:
- # Intervalo de actualización del caché en segundos para no sobrecargar la base de datos
   cache-update-interval: 180
- # Cantidad de jugadores mostrados por página
   page-size: 10
+
+# Ledger / Auditoría de Transacciones y Alertas Anti-Dupe
+ledger:
+  enabled: true
+  # Alerta a admins con 'zeneconomy.admin.alerts' si una transacción >= umbral (0 desactiva)
+  anomaly-alert-threshold: 1000000.0
+
+# Cooldowns (en milisegundos, gestionados con ZenCooldownManager)
+cooldowns:
+  pay-ms: 1500
+  exchange-gui-ms: 350
+  note-ms: 1000
+
+# Sincronización Multi-Servidor (para networks BungeeCord / Velocity con MySQL/MariaDB compartido)
+sync:
+  enabled: false
+  mode: PLUGIN_MESSAGING
+  server-id: "survival-1"
+
+# Puente con la Economía Externa de Vault (EssentialsX, CMI, etc.)
+vault-integration:
+  enabled: true
+  currency-id: "vault"
+  name: "Dinero"
+  symbol: "$"
+  prefix: ""
+  suffix: "<gold>Dinero</gold>"
+  format: "<gold>%symbol%%amount%</gold>"
+  format-short: "<gold>%symbol%%amount%</gold>"
+  # Vacío por defecto para NO sobreescribir /money ni /eco de EssentialsX/CMI
+  commands: []
+  icon:
+    material: "GOLD_INGOT"
+    custom-model-data: 0
+    display-name: "<gold><bold>Dinero (Vault)</bold></gold>"
+    lore:
+      - "<gray>Economía principal del servidor (Essentials / CMI)."
+  exchange:
+    enabled: true
+    tax-percent: 0.0
+    daily-limit: -1.0
+    rates:
+      gems: 0.01
+      crystals: 0.1
 ```

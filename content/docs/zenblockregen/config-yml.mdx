@@ -1,0 +1,53 @@
+---
+title: "Configuración (config.yml)"
+description: "Opciones globales, base de datos, autoguardado e integraciones externas."
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Configuración (`config.yml`)
+
+---
+
+```yaml
+# ------------------------------------------------------------
+# CONFIGURACIÓN GENERAL
+# ------------------------------------------------------------
+general:
+  debug: false
+  # Idioma predeterminado para mensajes
+  language: "es"
+  # Intervalo de autoguardado de bloques pendientes (en minutos)
+  autosave-interval: 5
+
+# ------------------------------------------------------------
+# MODOS DE OPERACIÓN ESPACIAL
+# ------------------------------------------------------------
+regions:
+  # Opciones: WHITELIST, BLACKLIST, ALL
+  mode: "ALL"
+  # Mundos habilitados
+  enabled-worlds:
+    - "world"
+    - "world_nether"
+    - "world_the_end"
+
+# ------------------------------------------------------------
+# COMPATIBILIDAD CON PROTECCIÓN DE TERRENOS
+# ------------------------------------------------------------
+protections:
+  # Respeta las protecciones de WorldGuard, GriefPrevention y Towny vía ZenCore
+  respect-claims: true
+  # Si un jugador no puede construir en la región, cancela la regeneración y la rotura
+  deny-untrusted-breaks: true
+
+# ------------------------------------------------------------
+# INTEGRACIONES EXTERNAS
+# ------------------------------------------------------------
+integrations:
+  zencore: true
+  zencustomitems: true
+  zenenchants: true
+  placeholderapi: true
+  vault: true
+```

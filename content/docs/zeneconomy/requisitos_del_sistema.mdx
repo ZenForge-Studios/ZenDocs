@@ -1,6 +1,6 @@
 ---
 title: "Requisitos del Sistema"
-description: "- Plataforma: Servidor Paper, Purpur o forks modernos de 1.21 en adelante."
+description: "Requisitos técnicos para ejecutar ZenEconomy v2.0."
 ---
 
 import { Callout } from 'fumadocs-ui/components/callout';
@@ -9,8 +9,11 @@ import { Callout } from 'fumadocs-ui/components/callout';
 
 ---
 
-- **Plataforma**: Servidor Paper, Purpur o forks modernos de 1.21 en adelante.
-- **Java**: Java 21 o superior.
+Para asegurar el rendimiento óptimo y el funcionamiento correcto de **ZenEconomy v2.0**, tu servidor debe cumplir con los siguientes requisitos:
+
+- **Plataforma**: Servidor Paper, Purpur o forks derivados en versión **1.21 o superior**.
+- **Java**: **Java 21** o superior (requerido por Paper 1.21 y características modernas de concurrencia).
+- **Dependencia Obligatoria**: **ZenCore** (`ZenCore-1.0.0.jar` o superior) para pools de conexiones `ZenDatabaseEngine`, interfaz de menús `ZenMenu`, protecciones `ZenProtectionHub`, sincronización multi-servidor y compatibilidad con `ZenBoosterEngine`.
 - **Dependencias Opcionales**:
- - `PlaceholderAPI`: Para placeholders en Scoreboards, TAB, chat y menús.
- - `Vault`: Solo requerido si configuras alguna divisa secundaria para registrarse como proveedor de economía de Vault (`vault: true`). Si usas EssentialsX o CMI como economía principal, déjalo en `vault: false`.
+  - `PlaceholderAPI`: Para mostrar saldos y rankings en Scoreboards, TAB, chat y menús externos.
+  - `Vault`: Requerido si deseas conectar la economía clásica con ZenEconomy (mediante `vault: true` en una divisa o usando el puente bidireccional con EssentialsX/CMI).

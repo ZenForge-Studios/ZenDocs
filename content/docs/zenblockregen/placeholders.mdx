@@ -1,0 +1,34 @@
+---
+title: "Placeholders y Variables"
+description: "Identificadores de PlaceholderAPI y variables para mensajes."
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Placeholders y Variables
+
+---
+
+ZenBlockRegen se integra de forma nativa con **PlaceholderAPI** para exponer estadísticas en Scoreboards, TAB, hologramas y menús interactivos:
+
+| Placeholder | Descripción | Ejemplo de Salida |
+| :--- | :--- | :--- |
+| `%zenblockregen_mine_blocks_left_<mina>%` | Cantidad de bloques restantes sin minar | `1,250` |
+| `%zenblockregen_mine_blocks_mined_<mina>%` | Cantidad de bloques minados | `750` |
+| `%zenblockregen_mine_percentage_mined_<mina>%` | Porcentaje de la mina que ha sido roto | `37.5%` |
+| `%zenblockregen_mine_percentage_left_<mina>%` | Porcentaje de la mina aún intacto | `62.5%` |
+| `%zenblockregen_mine_time_left_<mina>%` | Tiempo restante formateado para el próximo reseteo | `04:15` |
+| `%zenblockregen_mine_time_left_seconds_<mina>%` | Tiempo restante en segundos brutos | `255` |
+| `%zenblockregen_pending_blocks%` | Total de bloques actualmente en cola de regeneración en el servidor | `42` |
+| `%zenblockregen_bypass_status%` | Estado actual de bypass del jugador (`true` / `false`) | `false` |
+
+---
+
+### Variables en Mensajes del Sistema (`messages.yml`)
+- `{mine}`: Nombre del identificador de la mina.
+- `{time}`: Tiempo formateado para el reseteo.
+- `{percent}`: Porcentaje actual de bloques minados.
+- `{block}`: Nombre legible del bloque interactuado.
+- `{player}`: Nombre del jugador ejecutor.
+- `{power}`: Breaking Power del objeto en mano.
+- `{required_power}`: Breaking Power mínimo exigido por el bloque.

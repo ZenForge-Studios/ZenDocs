@@ -1,0 +1,42 @@
+---
+title: "ZenBlockRegen"
+description: "Documentación oficial, guías de configuración y arquitectura de ZenBlockRegen."
+---
+
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# ZenBlockRegen
+
+Bienvenido a la documentación oficial de **ZenBlockRegen**, el plugin avanzado de regeneración de bloques, minas automáticas cuboides (estilo Prison/SkyBlock), bloques de acción interactivos, dureza personalizada con *Breaking Power* (estilo Hypixel SkyBlock), granjas con crecimiento progresivo y protección de terrenos para servidores **Paper / Purpur (1.21+)**.
+
+---
+
+## Flujo de Trabajo
+
+ZenBlockRegen opera en dos modalidades complementarias:
+1. **Regeneración de Bloque por Bloque (`blocks.yml`):**
+   - Cuando un jugador mina un bloque configurado (o cosecha un cultivo), este es reemplazado inmediatamente por un bloque temporal de transición (por ejemplo, `BEDROCK` o `COBBLESTONE`).
+   - Tras cumplirse el temporizador de retraso (`delay`), el bloque original reaparece con partículas visuales y efectos de sonido.
+   - En caso de cultivos (`WHEAT`, `CARROTS`, `POTATOES`), el plugin puede replantarlos en etapa cero (`age=0`) y acelerar su crecimiento progresivo hasta alcanzar la madurez.
+2. **Minas Cuboides Automáticas (`mines/*.yml`):**
+   - Áreas poligonales o cuboides delimitadas por dos esquinas (`pos1` y `pos2`).
+   - Todos los bloques minados dentro de la región se regeneran en lote al transcurrir un intervalo de tiempo o al alcanzarse un porcentaje de bloques rotos.
+   - Cuenta con teletransporte seguro automático de jugadores para evitar asfixias o caídas al vacío.
+
+---
+
+## Secciones de la Documentación
+
+<Cards>
+  <Card title="Requisitos e Instalación" href="/docs/zenblockregen/requisitos_del_sistema" description="Requisitos técnicos, Java 21 y plugins compatibles." />
+  <Card title="Comandos y Permisos" href="/docs/zenblockregen/comandos_y_permisos" description="Comandos generales, varita de selección y gestión de minas." />
+  <Card title="Placeholders y Variables" href="/docs/zenblockregen/placeholders" description="Identificadores para PlaceholderAPI y mensajes del sistema." />
+  <Card title="Sistema de Minas Cuboides" href="/docs/zenblockregen/minas" description="Minas estilo Prison con reseteo porcentual y alertas." />
+  <Card title="Bloques de Acción" href="/docs/zenblockregen/bloques_de_accion" description="Bloques interactivos con recompensas, partículas y comandos." />
+  <Card title="Breaking Power y Dureza" href="/docs/zenblockregen/breaking_power" description="Requisitos de nivel de herramienta e inmunidad a insta-break." />
+  <Card title="Regiones y Modos" href="/docs/zenblockregen/regiones_y_modos" description="Modos BLACKLIST, WHITELIST y ALL-WORLDS." />
+  <Card title="Reglas de Bloques (blocks.yml)" href="/docs/zenblockregen/blocks-yml" description="Configuración de bloques, reemplazos, drops y herramientas requeridas." />
+  <Card title="Configuración (config.yml)" href="/docs/zenblockregen/config-yml" description="Opciones generales, autoguardado e integraciones externas." />
+  <Card title="Mensajes (messages.yml)" href="/docs/zenblockregen/messages-yml" description="Personalización completa con Adventure MiniMessage." />
+</Cards>

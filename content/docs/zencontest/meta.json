@@ -1,0 +1,15 @@
+{
+  "title": "ZenContest",
+  "pages": [
+    "index",
+    "requisitos_del_sistema",
+    "comandos_y_permisos",
+    "placeholders",
+    "disciplinas",
+    "mecanicas_jacob",
+    "config-yml",
+    "contests-yml",
+    "integracion_tab",
+    "faq"
+  ]
+}

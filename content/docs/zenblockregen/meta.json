@@ -1,0 +1,16 @@
+{
+  "title": "ZenBlockRegen",
+  "pages": [
+    "index",
+    "requisitos_del_sistema",
+    "comandos_y_permisos",
+    "placeholders",
+    "minas",
+    "bloques_de_accion",
+    "breaking_power",
+    "regiones_y_modos",
+    "blocks-yml",
+    "config-yml",
+    "messages-yml"
+  ]
+}

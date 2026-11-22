@@ -1,0 +1,62 @@
+---
+title: "Sistemas Avanzados"
+description: "Ledger y auditoría de transacciones, cheques físicos anti-dupe, pagos offline y sincronización de red."
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Sistemas Avanzados
+
+---
+
+ZenEconomy v2.0 incorpora tecnologías de grado empresarial para evitar duplicaciones, registrar todas las transacciones de los jugadores y permitir networks multi-servidor con sincronización en tiempo real.
+
+---
+
+## 1. Ledger y Auditoría de Transacciones
+Cada operación (`DEPOSIT`, `WITHDRAW`, `SET`, `TRANSFER_OUT`, `TRANSFER_IN`, `EXCHANGE`, `NOTE_CREATE`, `NOTE_REDEEM`, `TAX`, `MIGRATION`) se registra de forma asíncrona en la tabla `ze_transactions`.
+
+- **Consulta en Vivo**: Los administradores pueden inspeccionar el historial completo de cualquier jugador con:
+  ```bash
+  /zeneconomy logs <jugador> [moneda / all] [página]
+  ```
+- **Alertas de Anomalías**: Si una transacción supera el umbral configurado en `ledger.anomaly-alert-threshold`, se envía una alerta inmediata a la consola y a todo el personal conectado con el permiso `zeneconomy.admin.alerts`.
+
+---
+
+## 2. Cheques y Notas Físicas Anti-Dupe
+Con el comando `/<moneda> note <cantidad>` el jugador retira fondos de su cuenta y recibe un ítem físico firmado con datos de `PersistentDataContainer` (PDC):
+- UUID único de cheque.
+- Moneda asociada y monto.
+- Nombre y UUID del emisor.
+
+<Callout type="info">
+Al hacer clic derecho, el cheque se valida mediante una inserción atómica por clave primaria en `ze_redeemed_notes`. Si un jugador intenta duplicar el ítem mediante rollbacks o exploits de inventario, el UUID solo podrá ser canjeado **una única vez**.
+</Callout>
+
+---
+
+## 3. Pagos Offline, Buzón y PayToggle
+- **Transferencias Asíncronas**: El comando `/<moneda> pay <jugador> <cantidad>` resuelve destinatarios tanto si están conectados como si están desconectados directamente desde la base de datos `ze_accounts`.
+- **Buzón de Notificaciones**: Si el receptor no está en línea, la notificación del pago recibido se almacena en `ze_pending_notifications` y se entrega automáticamente 2 segundos después de su próximo inicio de sesión.
+- **PayToggle**: Cada jugador puede bloquear o habilitar la recepción de pagos ajenos en cualquier momento ejecutando `/<moneda> paytoggle`.
+
+---
+
+## 4. Sincronización Multi-Servidor (Networks)
+Para servidores interconectados mediante Velocity o BungeeCord con MySQL/MariaDB compartido:
+1. Activa `sync.enabled: true` en `config.yml`.
+2. Asigna un `server-id` único a cada instancia (ej. `survival-1`, `skyblock-1`).
+3. Cada cambio de balance emite un paquete en el canal de plugin messaging `zeneconomy:sync`, haciendo que todos los demás servidores refresquen su caché en memoria al instante.
+
+---
+
+## 5. Migradores Integrados
+ZenEconomy v2.0 permite importar datos de economías previas con una sola orden asíncrona:
+```bash
+/zeneconomy import <origen> <monedaDestino>
+```
+* **vault**: Importa saldos de todos los `OfflinePlayer` del proveedor activo de Vault.
+* **essentials**: Lee directamente los archivos `plugins/Essentials/userdata/*.yml`.
+* **playerpoints**: Lee la base de datos SQLite de `plugins/PlayerPoints/storage.db`.
+* **coinsengine**: Lee `plugins/CoinsEngine/data.db`.

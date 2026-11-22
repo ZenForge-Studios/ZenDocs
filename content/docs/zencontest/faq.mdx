@@ -1,0 +1,24 @@
+---
+title: "Preguntas Frecuentes y Solución de Problemas"
+description: "Dudas habituales sobre brackets, seguimiento PDC y recompensas."
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Preguntas Frecuentes y Solución de Problemas
+
+---
+
+### 1. ¿Por qué romper cultivos no suma puntos a algunos jugadores?
+- **Seguimiento PDC de ZenCore**: Si el cultivo fue colocado manualmente por un jugador o mediante granjas automáticas con dispensers, ZenCore lo detecta como bloque artificial y descarta el puntaje para evitar exploits.
+- **Madurez del cultivo**: Verifica en `contests/<cultivo>.yml` si la opción `require-fully-grown: true` está activa. Si el trigo o la zanahoria no alcanzaron la etapa máxima de crecimiento (`age=7`), no sumarán puntos.
+
+---
+
+### 2. ¿Cómo reclaman los jugadores las recompensas de concursos anteriores?
+Los participantes pueden escribir `/contest claim` en cualquier momento para abrir el panel de entregas pendientes. Si el inventario del jugador está lleno, ZenCore almacena los ítems sobrantes de forma segura en el buzón virtual de entregas.
+
+---
+
+### 3. ¿Cómo configurar rotaciones personalizadas de concursos?
+En `config.yml`, dentro de la sección `scheduler:`, ajusta la expresión `cron:` al intervalo deseado (por ejemplo, `"0 * * * *"` para cada hora en punto) y define en `pool:` la lista de concursos que deben alternarse.

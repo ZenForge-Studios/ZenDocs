@@ -1,15 +1,30 @@
 ---
-title: "Instalación"
-description: "1. Descarga el archivo compilado ZenEconomy-1.0.0.jar."
+title: "Instalación y Actualización"
+description: "Pasos de instalación y migración desde versiones anteriores."
 ---
 
 import { Callout } from 'fumadocs-ui/components/callout';
 
-# Instalación
+# Instalación y Actualización
 
 ---
 
-1. Descarga el archivo compilado `ZenEconomy-1.0.0.jar`.
-2. Colócalo dentro de la carpeta `plugins/` de tu servidor.
-3. Inicia o reinicia el servidor.
-4. Se generará la carpeta `plugins/ZenEconomy/` con sus configuraciones por defecto.
+### Instalación Inicial
+1. Descarga el archivo compilado `ZenEconomy-2.0.0.jar`.
+2. Asegúrate de tener instalado `ZenCore.jar` en la carpeta `plugins/`.
+3. Coloca `ZenEconomy-2.0.0.jar` dentro de la carpeta `plugins/` de tu servidor.
+4. Inicia o reinicia el servidor.
+5. Se generará la carpeta `plugins/ZenEconomy/` con la configuración predeterminada y monedas de ejemplo.
+
+<Callout type="info">
+Al usar **ZenCore**, ZenEconomy comparte el pool de conexiones optimizado HikariCP y la capa de datos asíncrona, garantizando cero lag en el hilo principal de Minecraft.
+</Callout>
+
+---
+
+### Actualización desde v1.0
+ZenEconomy v2.0 introduce tablas optimizadas (`ze_accounts`, `ze_transactions`, `ze_redeemed_notes`, `ze_pending_notifications`).  
+1. Detén el servidor por completo.
+2. Haz una copia de seguridad de tu carpeta `plugins/ZenEconomy/` y de tu base de datos SQLite/MySQL.
+3. Reemplaza el archivo `.jar` antiguo por `ZenEconomy-2.0.0.jar`.
+4. Inicia el servidor. El migrador interno de base de datos actualizará el esquema de forma totalmente automática.

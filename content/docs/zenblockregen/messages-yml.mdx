@@ -1,0 +1,38 @@
+---
+title: "Mensajes (messages.yml)"
+description: "Personalización completa de mensajes con Adventure MiniMessage."
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Personalización de Mensajes (`messages.yml`)
+
+---
+
+Todos los textos de ZenBlockRegen soportan la sintaxis moderna de **Adventure MiniMessage** (`<gradient>`, `<gold>`, `<hover>`, `<click>`, etc.):
+
+```yaml
+prefix: "<gradient:#00d2ff:#3a7bd5><bold>ZenBlockRegen</bold></gradient> <dark_gray>»</dark_gray> "
+
+general:
+  no-permission: "<red>No dispones de los permisos necesarios para ejecutar esta acción.</red>"
+  reload-success: "<green>Configuración, reglas de bloques y minas recargadas exitosamente.</green>"
+  player-only: "<red>Este comando solo puede ser ejecutado por un jugador en el servidor.</red>"
+
+bypass:
+  enabled: "<yellow>Modo bypass de regeneración <green><bold>ACTIVADO</bold></green>. Los bloques se romperán de forma permanente.</yellow>"
+  disabled: "<yellow>Modo bypass de regeneración <red><bold>DESACTIVADO</bold></red>.</yellow>"
+  other-enabled: "<yellow>Has activado el modo bypass para <gold>{player}</gold>.</yellow>"
+  other-disabled: "<yellow>Has desactivado el modo bypass para <gold>{player}</gold>.</yellow>"
+
+breaking-power:
+  insufficient: "<red>✖ Nivel de herramienta insuficiente. Se requiere <gold>Breaking Power {required_power}</gold>.</red>"
+
+mines:
+  reset-warning: "<yellow>⚠ La mina <gold>{mine}</gold> se reiniciará en <aqua>{time}</aqua>.</yellow>"
+  reset-broadcast: "<green>⛏ La mina <gold>{mine}</gold> ha sido regenerada por completo.</green>"
+  reset-forced: "<green>Has forzado el reinicio de la mina <gold>{mine}</gold>.</green>"
+  not-found: "<red>No existe ninguna mina registrada bajo el nombre '{mine}'.</red>"
+  created: "<green>Mina <gold>{mine}</gold> creada con éxito a partir de tu selección.</green>"
+  deleted: "<red>La mina <gold>{mine}</gold> ha sido eliminada.</red>"
+```

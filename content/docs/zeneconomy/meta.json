@@ -1,5 +1,5 @@
 {
-  "title": "ZenEconomy (New)",
+  "title": "ZenEconomy",
   "pages": [
     "index",
     "requisitos_del_sistema",
@@ -7,6 +7,7 @@
     "estructura_de_archivos",
     "config-yml",
     "currencies",
+    "sistemas_avanzados",
     "messages-yml",
     "comandos_y_permisos",
     "integraciones",

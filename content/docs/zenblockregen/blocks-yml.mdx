@@ -1,0 +1,71 @@
+---
+title: "Reglas de Bloques (blocks.yml)"
+description: "Configuración detallada de bloques individuales, demoras, reemplazos y herramientas requeridas."
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Reglas de Bloques (`blocks.yml`)
+
+---
+
+El archivo `blocks.yml` es el corazón de la configuración de regeneración bloque a bloque. Cada entrada corresponde al nombre de un `Material` de Bukkit/Paper en mayúsculas.
+
+### Ejemplo de Regla Completa:
+
+```yaml
+DIAMOND_ORE:
+  # Tiempo en segundos antes de que el bloque vuelva a aparecer
+  delay: 30
+
+  # Bloque temporal mientras se regenera (ej: BEDROCK, COBBLESTONE, STONE, AIR)
+  replace-block: STONE
+
+  # Herramientas permitidas para recolectar este mineral
+  required-tools:
+    - "IRON_PICKAXE"
+    - "DIAMOND_PICKAXE"
+    - "NETHERITE_PICKAXE"
+
+  # Nivel de Breaking Power mínimo exigido
+  breaking-power: 4
+
+  # Efectos audiovisuales al reaparecer el bloque
+  regen-sound: "BLOCK_STONE_PLACE"
+  regen-particle: "COMPOSTER"
+  regen-particle-count: 10
+
+  # Experiencia entregada al jugador directamente
+  experience: 5
+
+  # Caída de ítems personalizada (anula el drop vanilla si está configurado)
+  custom-drop:
+    enabled: false
+    material: "DIAMOND"
+    amount-min: 1
+    amount-max: 2
+
+  # Compatibilidad con fortuna
+  apply-fortune: true
+
+  # Si es true, el bloque debe tener soporte debajo para regenerarse (evita flotar)
+  require-support: false
+```
+
+---
+
+### Granjas y Cultivos Progresivos
+
+Para cultivos agrícolas (`WHEAT`, `CARROTS`, `POTATOES`, `BEETROOTS`), puedes configurar replantado automático con crecimiento gradual en ticks:
+
+```yaml
+WHEAT:
+  delay: 20
+  # En lugar de un bloque estático, replanta el cultivo en edad 0
+  crop-regen:
+    enabled: true
+    replant-age: 0
+    # Si es true, incrementa la etapa de crecimiento paulatinamente hasta madurar
+    progressive-growth: true
+    growth-step-interval-seconds: 5
+```

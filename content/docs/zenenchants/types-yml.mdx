@@ -1,0 +1,52 @@
+---
+title: "Sistema de Tipos y Límites (types.yml)"
+description: "Clasificación de encantamientos en tipos (normal, special, curse) y establecimiento de límites independientes por objeto."
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Sistema de Tipos y Límites (`types.yml`)
+
+---
+
+ZenEnchants permite clasificar los encantamientos en **tipos** (por ejemplo: `normal`, `special`, `curse`) y establecer **límites independientes por tipo** sobre un mismo objeto.
+
+De esta forma puedes permitir múltiples encantamientos estándar sobre una armadura o arma, pero limitar estrictamente a **1 solo encantamiento Especial**:
+
+```yaml
+types:
+  normal:
+    display-name: "<green>Normal</green>"
+    description: "<gray>Encantamientos estándar para mejorar objetos.</gray>"
+    limit: -1 # -1 = Ilimitado (solo sujeto al límite global del config.yml)
+
+  special:
+    display-name: "<gradient:#FF416C:#8A2387>Especial</gradient>"
+    description: "<gray>Encantamientos únicos de gran poder. Solo uno permitido por objeto.</gray>"
+    limit: 1  # Solo se puede tener 1 encantamiento especial en el objeto
+
+  curse:
+    display-name: "<red>Maldición</red>"
+    description: "<gray>Encantamientos perjudiciales con efectos adversos.</gray>"
+    limit: -1
+```
+
+---
+
+## Configuración en los Encantamientos (`enchants/*.yml`)
+
+En la cabecera de cualquier archivo YAML de encantamiento puedes especificar su tipo mediante la clave `type:`:
+
+```yaml
+id: "fenix"
+name: "Fénix"
+type: "special" # Si no se define, se autodetecta según rareza o si es maldición
+rarity: "special"
+max-level: 3
+targets:
+  - chestplate
+```
+
+<Callout type="info">
+Si un jugador intenta aplicar un libro especial a un ítem que ya posee el máximo permitido de ese tipo, ZenEnchants rechazará la combinación en el yunque y enviará el mensaje de límite correspondiente sin destruir el ítem ni los libros.
+</Callout>

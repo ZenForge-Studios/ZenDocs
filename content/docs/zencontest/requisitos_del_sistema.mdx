@@ -1,0 +1,44 @@
+---
+title: "Requisitos e Instalación"
+description: "Requisitos técnicos, Java 21 y pasos de puesta en marcha."
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Requisitos e Instalación
+
+---
+
+### Requisitos Técnicos:
+- **Servidor:** Paper, Purpur o forks compatibles con la versión **1.21.4 o superior**.
+- **Java:** **Java 21** o superior.
+- **Dependencias de la Suite Zen:**
+  - **ZenCore** *(Proporciona seguimiento PDC de bloques, claims, boosters y entrega segura de drops)*.
+- **Plugins Opcionales Recomendados:**
+  - **TAB** *(v5.0.0+ para renderizado limpio de scoreboards sin solapamientos)*.
+  - **PlaceholderAPI** *(Para marcadores en interfaces externas y HUDs)*.
+  - **ZenEconomy** / **Vault** *(Para recompensas monetarias al ganar medallas)*.
+  - **ZenCustomItems** *(Para premios en ítems especiales o azadas de concurso)*.
+
+---
+
+### Pasos de Instalación:
+1. Descarga el archivo compilado `ZenContest-1.0.0.jar`.
+2. Asegúrate de tener instalado `ZenCore.jar` en la carpeta `plugins/`.
+3. *(Opcional pero recomendado)* Instala `TAB.jar` y `PlaceholderAPI.jar`.
+4. Inicia o reinicia el servidor. Se generará automáticamente la siguiente estructura en `plugins/ZenContest/`:
+
+```
+plugins/ZenContest/
+├── config.yml           # Configuración general y cron scheduler
+├── messages.yml         # Mensajes del sistema en MiniMessage
+├── guis/
+│   ├── main.yml         # Menú interactivo principal (/contest)
+│   ├── shop.yml         # Tienda de medallas agrícolas (/contest shop)
+│   └── rewards.yml      # Reclamo de recompensas (/contest claim)
+└── contests/
+    ├── wheat.yml        # Concurso de Trigo
+    ├── carrot.yml       # Concurso de Zanahoria
+    ├── mining.yml       # Torneo de Minería
+    └── fishing.yml      # Torneo de Pesca
+```

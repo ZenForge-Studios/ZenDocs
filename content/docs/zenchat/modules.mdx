@@ -1,81 +1,86 @@
 ---
 title: "Módulos de Chat (modules/)"
-description: "Permite definir formatos independientes para cada rango de LuckPerms (basado en primary-group), además de un..."
+description: "Formatos por grupo, canales independientes, mensajería privada, etiquetas interactivas y moderación."
 ---
 
 import { Callout } from 'fumadocs-ui/components/callout';
 
-# Módulos de Chat (modules/)
+# Módulos de Configuración (`modules/`)
 
 ---
 
-### 4.1 Formatos de Chat (`formats.yml`)
-Permite definir formatos independientes para cada rango de LuckPerms (basado en `primary-group`), además de un tooltip personalizado en el nombre (`player-hover`) y un tooltip exclusivo al mencionar al jugador (`mention-hover`).
+Todos los subsistemas de ZenChat están modularizados en archivos YAML individuales dentro del directorio `plugins/ZenChat/modules/`.
 
-#### Variables Disponibles:
-- `{prefix}`: Prefijo del jugador (LuckPerms/Vault).
-- `{suffix}`: Sufijo del jugador (LuckPerms/Vault).
-- `{player}`: Nombre o nickname interactivo del jugador.
-- `{display}`: DisplayName del jugador.
-- `{world}`: Mundo donde se encuentra el jugador.
-- `{message}`: Mensaje enviado (soporta colores asignados o permisos).
-- **Placeholders de PAPI**: Cualquier placeholder como `%vault_eco_balance_formatted%`.
+---
 
-#### Ejemplo de Configuración:
+### 1. Formatos de Chat por Rangos (`formats.yml`)
+Permite asociar una plantilla visual según el grupo primario de LuckPerms del emisor (`primary-group`):
+
 ```yaml
 formats:
   default:
     chat: "{prefix}%cmi_user_nickname%{suffix}&8: &f{message}"
     player-hover:
- - "&7&m "
- - "&e&lNickname: &f%cmi_user_nickname%"
- - "&7Usuario real: &f{player}"
- - "&7Rango: &7Default"
- - "&7Mundo: &b%player_world%"
- - "&7&m "
- - "&8Click para enviar MP"
+      - "&7&m                              "
+      - "&e&lNickname: &f%cmi_user_nickname%"
+      - "&7Usuario real: &f{player}"
+      - "&7Rango: &7Default"
+      - "&7Mundo: &b%player_world%"
+      - "&7&m                              "
+      - "&8Click para enviar MP"
     mention-hover:
- - "&7&m "
- - "&e&lNickname: &f%cmi_user_nickname%"
- - "&7Mundo: &b{world}"
- - "&e Click para enviar MP "
- - "&7&m "
+      - "&7&m                              "
+      - "&e&lNickname: &f%cmi_user_nickname%"
+      - "&7Mundo: &b{world}"
+      - "&e✦ Click para enviar MP ✦"
+      - "&7&m                              "
 
   groups:
     admin:
       chat: "%supremetags_tag% %prefix%&4&l{player}&8: &f{message}"
       player-hover:
- - "&4&lSTAFF ADMINISTRADOR"
- - "&fUsuario: &e{player}"
+        - "&4&lSTAFF ADMINISTRADOR"
+        - "&fUsuario: &e{player}"
       mention-hover:
- - "&c¡Cuidado! Estás mencionando a un Admin"
+        - "&c¡Cuidado! Estás mencionando a un Admin"
 ```
+
+#### Variables Admitidas en Formatos:
+- `{prefix}`: Prefijo del jugador vía LuckPerms / Vault.
+- `{suffix}`: Sufijo del jugador vía LuckPerms / Vault.
+- `{player}`: Nickname interactivo del jugador (con hover y clic).
+- `{name}`: Nombre de usuario real de Minecraft.
+- `{display}`: DisplayName del jugador.
+- `{world}`: Nombre del mundo actual.
+- `{message}`: Mensaje procesado con filtros, emojis y colores autorizados.
+- **Placeholders de PlaceholderAPI**: Totalmente admitidos (ej: `%vault_eco_balance_formatted%`).
 
 ---
 
-### 4.2 Canales de Chat (`channels.yml`)
-Permite crear múltiples salas de conversación (ej. Local, Global, Comercio, Staff).
+### 2. Canales de Chat (`channels.yml`)
+
+Permite estructurar la comunicación en múltiples canales independientes con atajos, permisos, radios de alcance y cooldowns.
 
 ```yaml
 channels:
-  default-channel: "global" # Canal por defecto al conectarse
+  default-channel: "global"
 
   list:
     global:
       display-name: "&a[Global]"
-      permission: ""                    # Dejar vacío para permitir a todos
-      prefix: ""                        # Prefijo adicional al inicio
-      format: "{channel_prefix}{general_format}" # {general_format} hereda de formats.yml
-      radius: -1                        # -1 = Sin límite de distancia (todo el servidor)
-      cooldown: 0                       # Cooldown en segundos entre mensajes
-      prefix-shortcut: "!"              # Escribir "!hola" envía el mensaje directo a este canal
+      permission: ""                    # Vacío = abierto a todos
+      prefix: ""
+      format: "{channel_prefix}{general_format}"
+      radius: -1                        # -1 = Todo el servidor
+      cooldown: 0                       # Segundos entre mensajes
+      prefix-shortcut: "!"              # Escribir "!Hola" envía directamente al canal Global
 
     local:
       display-name: "&e[Local]"
       permission: ""
       prefix: "&e[L] "
       format: "{channel_prefix}{prefix}{player}{suffix} &8» &7{message}"
-      radius: 50                        # Solo jugadores en el mismo mundo a menos de 50 bloques
+      radius: 50                        # Solo jugadores en radio de 50 bloques
       cooldown: 0
       prefix-shortcut: ""
 
@@ -85,7 +90,7 @@ channels:
       prefix: "&6[Comercio] "
       format: "{channel_prefix}{prefix}{player}{suffix} &8» &e{message}"
       radius: -1
-      cooldown: 10                      # Cooldown de 10 segundos
+      cooldown: 10
       prefix-shortcut: "$"
 
     staff:
@@ -96,12 +101,26 @@ channels:
       radius: -1
       cooldown: 0
       prefix-shortcut: "#"
+
+    party:
+      display-name: "&9[Party]"
+      permission: ""
+      prefix: "&9[PARTY] "
+      format: "{channel_prefix}&b{player}&8: &f{message}"
+      radius: -1
+      cooldown: 0
+      prefix-shortcut: "@"
 ```
+
+<Callout type="info">
+**Integración con ZenCore**: El canal `party` detecta automáticamente si el emisor forma parte de una party de **ZenCore** (`ZenCoreAPI.partyHook`). Al escribir con el prefijo `@mensaje`, el texto se distribuye de forma privada únicamente a los miembros de su grupo.
+</Callout>
 
 ---
 
-### 4.3 Mensajes Privados y SocialSpy (`msg.yml`)
-Configuración de la mensajería directa entre usuarios y el sistema espía para moderadores.
+### 3. Mensajes Privados y SocialSpy (`msg.yml`)
+
+Gestiona `/msg`, `/tell`, `/w`, `/reply` y la supervisión de moderadores con `/socialspy`.
 
 ```yaml
 private-message:
@@ -110,40 +129,41 @@ private-message:
   socialspy-format: "&7[&cSPY&7] {sender} &8-> &c{target}&7: {message}"
 
 socialspy:
- # Comandos que activan el espía al ser ejecutados por cualquier usuario
-    listen-commands:
- - msg
- - tell
- - whisper
- - w
- - m
- - pm
- - dm
-    reply-commands:
- - r
- - reply
+  listen-commands:
+    - msg
+    - tell
+    - whisper
+    - w
+    - m
+    - pm
+    - dm
+  reply-commands:
+    - r
+    - reply
   format:       "&7[&cSPY&7] {sender} &8-> &c{target}&7: {message}"
   reply-format: "&7[&cSPY&7] {sender} &8-> &c{target}&7(reply): {message}"
 ```
 
 ---
 
-### 4.4 Tags Interactivas (`tags.yml`)
-Permite a los usuarios colocar etiquetas dinámicas en el chat que se transforman en botones interactivos con tooltips y eventos de clic.
+### 4. Etiquetas Interactivas (`tags.yml`)
 
-| Tag | Alias soportados | Permiso Requerido | Descripción |
+Permite a los usuarios insertar palabras clave entre corchetes para compartir información en vivo:
+
+| Etiqueta | Alias Aceptados | Permiso | Acción al Clic / Hover |
 | :--- | :--- | :--- | :--- |
-| `[inv]` | `[inventory]`, `[inventario]` | `zenchat.inv` | Abre una GUI con el inventario del usuario en tiempo real. |
-| `[ec]` | `[ender]`, `[enderchest]` | `zenchat.ec` | Abre una GUI con el EnderChest del jugador. |
-| `[item]` | `[i]`, `[hand]`, `[h]`, `[mano]` | `zenchat.item` / `zenchat.item.view` | Muestra el item que el jugador tiene en la mano principal (con su lore, encantamientos e inspección GUI). |
-| `[pos]` | `[x]`, `[coords]`, `[coord]`, `[ubicacion]` | `zenchat.pos` | Muestra coordenadas `X, Y, Z` y sugiere `/tp` al hacer clic. |
-| `[ping]` | `[p]` | `zenchat.ping` | Muestra la latencia actual en milisegundos con colores dinámicos según el retardo. |
-| `[balance]` | `[bal]`, `[money]`, `[eco]`, `[dinero]` | `zenchat.balance` | Muestra el balance monetario del jugador (requiere Vault) y sugiere `/pay`. |
+| `[inv]` | `[inventory]`, `[inventario]` | `zenchat.inv` | Abre una GUI de solo lectura con el inventario completo y armadura. |
+| `[ec]` | `[ender]`, `[enderchest]` | `zenchat.ec` | Abre una GUI de solo lectura con el cofre de ender del jugador. |
+| `[item]` | `[i]`, `[hand]`, `[h]`, `[mano]` | `zenchat.item` / `zenchat.item.view` | Muestra el ítem en mano con nombre, lore exacto y menú de inspección. |
+| `[pos]` | `[x]`, `[coords]`, `[coord]`, `[ubicacion]` | `zenchat.pos` | Muestra coordenadas `X, Y, Z` y el mundo; sugiere `/tp` al hacer clic. |
+| `[ping]` | `[p]` | `zenchat.ping` | Muestra la latencia en milisegundos con color dinámico. |
+| `[balance]` | `[bal]`, `[money]`, `[eco]`, `[dinero]` | `zenchat.balance` | Muestra el dinero del emisor (Vault) y sugiere `/pay` al hacer clic. |
 
 ---
 
-### 4.5 Interfaz Gráfica y ColorChat (`guis.yml`)
-Gestiona el diseño de las vistas de inventario y la paleta de colores del comando `/colorchat`.
+### 5. Interfaz Gráfica (`guis.yml`)
+
+Configura la apariencia visual de los menús generados por `[inv]`, `[ec]` y `[item]`:
 
 ```yaml
 gui:
@@ -153,37 +173,21 @@ gui:
   show-armor: true
   show-offhand: true
   filler-material: BLACK_STAINED_GLASS_PANE
-  read-only: true
+  read-only: true                  # Impide extraer o mover ítems
 
   item-view:
- title: "&8Item de &e{player}"
+    title: "&8Item de &e{player}"
     permission: zenchat.item.view
     filler-material: BLACK_STAINED_GLASS_PANE
-    center-slot: 4
-    cache-ttl-seconds: 600
-
-colorchat:
-    enabled: true
-  gui:
- title: "&8» &dColor de Chat &8«"
-  messages:
-    set: "&8[&dColorChat&8] &7Tu color de chat ahora es {color}&7."
-    cleared: "&8[&dColorChat&8] &7Tu color de chat ha sido &cquitado&7."
-    unknown: "&8[&dColorChat&8] &cColor desconocido: &f{input}"
-  colors:
-    white:        { code: "&f", display-name: "&fBlanco",      rgb: "FFFFFF" }
-    aqua:         { code: "&b", display-name: "&bAqua",        rgb: "55FFFF" }
-    dark_aqua:    { code: "&3", display-name: "&3Aqua Oscuro", rgb: "00AAAA" }
-    blue:         { code: "&9", display-name: "&9Azul",        rgb: "5555FF" }
-    red:          { code: "&c", display-name: "&cRojo",        rgb: "FF5555" }
-    green:        { code: "&a", display-name: "&aVerde Lima",  rgb: "55FF55" }
-    yellow:       { code: "&e", display-name: "&eAmarillo",    rgb: "FFFF55" }
+    center-slot: 13
+    cache-ttl-seconds: 600         # Duración en caché del snapshot del ítem (10 min)
 ```
 
 ---
 
-### 4.6 Placeholders y Emojis Personalizados (`emojiplaceholders.yml`)
-Sustituye cadenas de texto escritas por los jugadores por emojis, gradientes o componentes enriquecidos mediante **MiniMessage**.
+### 6. Emojis y Reemplazos Dinámicos (`emojiplaceholders.yml`)
+
+Reemplaza textos comunes por emojis y formatos enriquecidos:
 
 ```yaml
 placeholders:
@@ -205,60 +209,49 @@ placeholders-with-permission:
 
 ---
 
-### 4.7 AntiSpam y AntiAd (`punish.yml`)
-Protege el chat contra floods, mayúsculas excesivas, repeticiones y enlaces o IPs no autorizados.
+### 7. AntiSpam, AntiAd y Censura (`punish.yml`)
+
+Protege el servidor contra inundaciones de mensajes, repeticiones y enlaces maliciosos:
 
 ```yaml
 antispam:
-    enabled: true
-  cooldown: 2                   # Segundos entre cada mensaje
-  block-duplicates: true        # Evita repetir el mismo mensaje
-  max-similarity-percent: 80    # Porcentaje de similitud con el mensaje anterior
-  max-caps-percent: 70          # Porcentaje máximo de mayúsculas permitidas
+  enabled: true
+  cooldown: 2                   # Segundos mínimos entre mensajes
+  block-duplicates: true        # Bloquea mensajes idénticos consecutivos
+  max-similarity-percent: 80    # Bloquea mensajes con más del 80% de similitud
+  max-caps-percent: 70          # Porcentaje máximo de mayúsculas permitido
   caps-min-length: 6            # Longitud mínima de mensaje para evaluar mayúsculas
-  censor-char: "*"              # Carácter de censura
+  censor-char: "*"              # Reemplaza caracteres en palabras bloqueadas
   blocked-words:
- - "palabra_inapropiada"
+    - "palabra_inapropiada"
 
 antiad:
-    enabled: true
+  enabled: true
   patterns:
- - "\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}(?::\\d{1,5})?\\b" # Bloqueo de IPs numéricas
- - "(?i)\\b[a-z0-9-]+\\.(?:com|net|org|gg|es|tv|io|me|xyz|tk|ml|cf|ga|info|server|mc|play)\\b"
- - "(?i)\\b(?:discord\\.gg|discord\\.com/invite)/[a-z0-9]+\\b"
+    - "\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(?::\d{1,5})?\b"
+    - "(?i)\b[a-z0-9-]+\.(?:com|net|org|gg|es|tv|io|me|xyz|tk|ml|cf|ga|info|server|mc|play)\b"
+    - "(?i)\b(?:discord\.gg|discord\.com/invite)/[a-z0-9]+\b"
   whitelist:
- - "tuserver.net"
- - "minecraft.net"
-  action: BLOCK                 # Acción: BLOCK (cancela el mensaje)
+    - "tuserver.net"
+    - "minecraft.net"
+  action: BLOCK                 # Cancela el mensaje
 ```
 
 ---
 
-### 4.8 Webhooks de Discord (`webhooks.yml`)
-Envía notificaciones embed automáticas a Discord ante infracciones de chat.
+### 8. Webhooks de Discord (`webhooks.yml`)
+
+Envía alertas en tiempo real a tus canales de moderación de Discord:
 
 ```yaml
-discord-webhooks:
-    enabled: false
-  webhook-url: "https://discord.com/api/webhooks/TU_WEBHOOK_AQUI"
-  
- # Alerta cuando un jugador intenta decir una palabra prohibida
-  blocked-word:
-    enabled: true
- title: " Filtro de Antispam (Palabra Prohibida)"
-    color: "FFAA00"             # Color en HEX sin '#'
- description: "El jugador **{player}** ha intentado enviar un mensaje con palabras bloqueadas."
-    fields:
- - { name: "Mensaje Original", value: "`{message}`", inline: false }
- - { name: "Mundo", value: "*{world}*", inline: true }
- - { name: "Coordenadas", value: "X: {x}, Y: {y}, Z: {z}", inline: true }
-    footer: "Sistema de Seguridad ZenChat"
-
- # Alerta cuando un jugador publica publicidad (IP / Enlace)
-  antiad:
-    enabled: true
- title: " Filtro de AntiAd (Publicidad)"
-    color: "FF0000"
- description: "El jugador **{player}** ha intentado enviar un mensaje con enlaces no permitidos."
-    footer: "Sistema de Seguridad ZenChat"
+discord:
+  enabled: false
+  webhook-url: "https://discord.com/api/webhooks/..."
+  avatar-url: "https://mc-heads.net/avatar/{player}/100"
+  username: "ZenChat Logger"
+  events:
+    chat: true
+    staff-chat: true
+    mentions: false
+    antispam-triggers: true
 ```

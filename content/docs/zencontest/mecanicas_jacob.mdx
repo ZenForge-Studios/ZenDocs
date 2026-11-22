@@ -1,0 +1,33 @@
+---
+title: "Mecánicas Estilo Jacob (Hypixel Skyblock)"
+description: "Sistema de percentiles dinámicos, brackets de recompensas y Dynamic Benchmarks."
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Mecánicas Estilo Jacob
+
+---
+
+ZenContest implementa el sistema de evaluación competitiva de *Hypixel Skyblock*: los jugadores no compiten contra un objetivo fijo, sino entre sí.
+
+---
+
+### Sistema de Brackets Dinámicos
+
+Al concluir la competencia, la posición de los participantes determina su categoría de medalla según percentiles del total de jugadores que sumaron al menos 1 punto:
+
+| Rango | Percentil Requerido | Medalla Otorgada | Recompensas Típicas |
+| :--- | :--- | :--- | :--- |
+| **Diamante** | Top 1% o Top 3 absoluto | Medalla de Diamante | 100 Tickets + Ítem Exclusivo |
+| **Platino** | Top 5% de participantes | Medalla de Platino | 50 Tickets + Recompensa Monetaria |
+| **Oro** | Top 15% de participantes | Medalla de Oro | 30 Tickets + Monedas |
+| **Plata** | Top 35% de participantes | Medalla de Plata | 15 Tickets |
+| **Bronce** | Top 60% de participantes | Medalla de Bronce | 5 Tickets |
+
+---
+
+### Dynamic Benchmarks (Solución para Servidores Pequeños)
+En servidores con pocos jugadores simultáneos, un sistema de percentiles puro podría impedir alcanzar medallas de Oro o Platino.  
+ZenContest resuelve esto con **Dynamic Benchmarks**:
+- Si la cantidad de participantes es inferior a `min-players-for-percentiles` (ej. 10 jugadores), el plugin utiliza umbrales dinámicos calculados a partir de los récords históricos de las últimas 5 competencias del servidor.

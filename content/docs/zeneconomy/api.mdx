@@ -1,24 +1,21 @@
 ---
 title: "API para Desarrolladores"
-description: "Guía completa para desarrolladores y referencia de la API de ZenEconomy."
+description: "Guía completa para desarrolladores e integración de ZenEconomy v2.0."
 ---
 
 import { Callout } from 'fumadocs-ui/components/callout';
 
-# API para Desarrolladores
+# API para Desarrolladores (ZenEconomy v2.0)
 
 ---
 
-Esta guía explica detalladamente cómo integrar la API de **ZenEconomy** en tus propios plugins de Spigot/Paper utilizando **Maven**, **Gradle** y **JitPack**.
+Esta guía detalla cómo integrar **ZenEconomy v2.0** en tus plugins de Paper 1.21+ tanto mediante **`ZenEconomyAPI`** directa como de forma desacoplada a través de **`ZenCore` (`ZenEconomyProvider` & `ZenEngine`)**.
 
 ---
 
-## Dependencia (Maven & Gradle con JitPack)
+## Dependencia (Maven & Gradle)
 
-Dado que el código fuente estará alojado en GitHub, puedes importarlo directamente mediante [JitPack](https://jitpack.io).
-
-### Maven
-Añade el repositorio de JitPack a tu bloque `<repositories>`:
+### Maven (`pom.xml`)
 ```xml
 <repositories>
     <repository>
@@ -26,183 +23,134 @@ Añade el repositorio de JitPack a tu bloque `<repositories>`:
         <url>https://jitpack.io</url>
     </repository>
 </repositories>
-```
 
-Añade la dependencia de ZenEconomy a tu bloque `<dependencies>`:
-```xml
-<dependency>
-    <groupId>com.github.Angelrivle</groupId>
-    <artifactId>ZenEconomy</artifactId>
-    <version>1.0.0</version> <!-- O el tag/commit de tu release -->
-    <scope>provided</scope>
-</dependency>
-```
+<dependencies>
+    <!-- Opcional si usas ZenCore directamente -->
+    <dependency>
+        <groupId>com.cuac_xd.zencore</groupId>
+        <artifactId>zencore</artifactId>
+        <version>1.0.0</version>
+        <scope>provided</scope>
+    </dependency>
 
----
+    <dependency>
+        <groupId>com.cuac_xd.zeneconomy</groupId>
+        <artifactId>ZenEconomy</artifactId>
+        <version>2.0.0</version>
+        <scope>provided</scope>
+    </dependency>
+</dependencies>
+```
 
 ### Gradle (Kotlin DSL - `build.gradle.kts`)
 ```kotlin
 repositories {
     mavenCentral()
+    mavenLocal()
     maven("https://jitpack.io")
 }
 
 dependencies {
-    compileOnly("com.github.Angelrivle:ZenEconomy:1.0.0")
-}
-```
-
-### Gradle (Groovy DSL - `build.gradle`)
-```groovy
-repositories {
-    mavenCentral()
-    maven { url 'https://jitpack.io' }
-}
-
-dependencies {
-    compileOnly 'com.github.Angelrivle:ZenEconomy:1.0.0'
+    compileOnly("com.cuac_xd.zencore:zencore:1.0.0")
+    compileOnly("com.cuac_xd.zeneconomy:ZenEconomy:2.0.0")
 }
 ```
 
 ---
 
-## Configurar `plugin.yml` o `paper-plugin.yml`
-
-Añade ZenEconomy como dependencia blanda (`softdepend`) o dependencia estricta (`depend`) en el `plugin.yml` de tu plugin:
+## Configurar `plugin.yml`
 
 ```yaml
 name: MiPlugin
 version: 1.0.0
 main: com.miusuario.miplugin.MiPlugin
-depend: [ZenEconomy] # o softdepend si ZenEconomy es opcional
+depend: [ZenCore]
+softdepend: [ZenEconomy] # o depend si requieres ZenEconomyAPI directamente
 ```
 
 ---
 
-## Ejemplos de Uso de la API
+## Opción A: Uso Desacoplado vía ZenCore (Recomendado)
 
-### 1. Obtener la Instancia de la API
+Si tu plugin ya depende de **ZenCore**, no necesitas importar `ZenEconomy` como dependencia directa. ZenEconomy registra un `ZenEconomyProvider` tipado en `ZenCoreAPI.economy`:
+
+```java
+import com.cuac_xd.zencore.api.ZenCoreAPI;
+import com.cuac_xd.zencore.hooks.ZenHooksHub;
+
+// Consultar o cobrar cualquier moneda (Vault o ZenEconomy) de forma segura:
+if (ZenHooksHub.hasAny(player, "gems", 50.0)) {
+    boolean paid = ZenHooksHub.withdrawAny(player, "gems", 50.0);
+    if (paid) {
+        player.sendMessage("¡Compra completada!");
+    }
+}
+
+// Operaciones asíncronas directas sobre ZenEconomyProvider:
+ZenCoreAPI.getEconomy().depositAsync(player.getUniqueId(), "crystals", 100.0)
+        .thenAccept(ok -> { /* callback */ });
+
+// Repartir recompensa a toda la party del jugador:
+ZenHooksHub.depositPartyAny(partyId, "gems", 200.0, true);
+```
+
+### Condiciones y Efectos Nativos en YAML
+ZenEconomy registra automáticamente las siguientes reglas para `ZenEngine`:
+* **Condiciones**:
+  * `has_currency` — args: `{ currency: "gems", amount: 50 }`
+  * `currency_balance_above` — args: `{ currency: "crystals", amount: 1000 }`
+* **Efectos**:
+  * `give_currency` — args: `{ currency: "gems", amount: 25, boosted: true }` *(aplica boosters si `boosted: true`)*
+  * `take_currency` — args: `{ currency: "gems", amount: 10 }`
+  * `exchange_currency` — args: `{ from: "crystals", to: "gems", amount: 100 }`
+
+---
+
+## Opción B: Uso Directo de `ZenEconomyAPI`
+
+### 1. Obtener la Instancia
 ```java
 import com.cuac_xd.zeneconomy.api.ZenEconomyAPI;
 
 ZenEconomyAPI api = ZenEconomyAPI.get();
 ```
 
----
-
-### 2. Comprobar y Obtener Monedas
+### 2. Operaciones Síncronas (Fast-Path en Caché)
 ```java
-// Comprobar si una divisa está registrada en el servidor
-if (api.currencyExists("crystals")) {
-    // Obtener modelo de la divisa
-    api.getCurrency("crystals").ifPresent(currency -> {
-        getLogger().info("Moneda: " + currency.name());
-        getLogger().info("Símbolo: " + currency.symbol());
-        getLogger().info("¿Permite decimales?: " + currency.decimal());
-    });
+// Consultar saldo (acepta Player, OfflinePlayer o UUID)
+double balance = api.getBalanceSync(player, "nexcoin");
+
+// Comprobar y retirar
+if (api.hasSync(player, "nexcoin", 100.0)) {
+    boolean withdrawn = api.withdrawSync(player.getUniqueId(), "nexcoin", 100.0);
 }
+
+// Depósito y set síncrono
+api.depositSync(player.getUniqueId(), "nexcoin", 50.0);
+api.setBalanceSync(player.getUniqueId(), "nexcoin", 1000.0);
 ```
 
----
-
-### 3. Operaciones Síncronas (Rápidas en Memoria / Jugadores Online)
-Si el jugador está conectado, su saldo está cargado en memoria de alta velocidad:
-
+### 3. Operaciones Asíncronas
 ```java
-Player player = ...;
+UUID uuid = player.getUniqueId();
 
-// Consultar saldo síncrono
-double balance = api.getBalanceSync(player, "crystals");
-
-// Verificar si el jugador tiene suficiente saldo
-if (api.hasSync(player, "crystals", 50.0)) {
-    player.sendMessage("¡Tienes fondos suficientes!");
-}
+api.getBalance(uuid, "nexcoin").thenAccept(bal -> { /* ... */ });
+api.deposit(uuid, "nexcoin", 100.0).thenAccept(ok -> { /* ... */ });
+api.withdraw(uuid, "nexcoin", 25.0).thenAccept(ok -> { /* ... */ });
+api.transfer(senderUuid, receiverUuid, "nexcoin", 50.0).thenAccept(ok -> { /* ... */ });
 ```
 
----
-
-### 4. Operaciones Asíncronas (Recomendadas para Cualquier Jugador / Base de Datos)
-Para jugadores que puedan estar desconectados o para transacciones seguras sin congelar el hilo principal:
-
-#### Consultar saldo:
+### 4. Depositar Recompensas con Boosters de ZenCore
 ```java
-UUID playerUuid = player.getUniqueId();
-
-api.getBalance(playerUuid, "crystals").thenAccept(balance -> {
-    player.sendMessage("Tu balance es: " + balance);
-});
-```
-
-#### Depositar fondos:
-```java
-api.deposit(playerUuid, "crystals", 100.0).thenAccept(success -> {
-    if (success) {
-        player.sendMessage("¡Se han depositado 100 cristales en tu cuenta!");
-    } else {
-        player.sendMessage("No se pudo completar el depósito (límite máximo alcanzado o cantidad inválida).");
+api.depositWithBoosters(uuid, "gems", 50.0, "quest-reward").thenAccept(finalAmount -> {
+    if (finalAmount > 0) {
+        player.sendMessage("¡Recibiste " + api.format("gems", finalAmount) + " (con boosters)!");
     }
 });
 ```
 
-#### Retirar fondos / Cobrar:
-```java
-api.withdraw(playerUuid, "crystals", 25.0).thenAccept(success -> {
-    if (success) {
-        player.sendMessage("¡Compra realizada! Se han retirado 25 cristales.");
-    } else {
-        player.sendMessage("Fondos insuficientes para realizar esta compra.");
-    }
-});
-```
-
-#### Transferir entre jugadores:
-```java
-UUID remitente = player1.getUniqueId();
-UUID receptor = player2.getUniqueId();
-
-api.transfer(remitente, receptor, "crystals", 50.0).thenAccept(success -> {
-    if (success) {
-        player1.sendMessage("Enviaste 50 cristales con éxito.");
-    } else {
-        player1.sendMessage("Transferencia fallida.");
-    }
-});
-```
-
----
-
-### 5. Formateo y Adventure Components
-Puedes aprovechar los patrones configurados en `currencies/*.yml` para formatear montos en texto o componentes de Adventure listos para enviar al jugador:
-
-```java
-// Formato largo en texto: ej. "❖1,500.00 Crystals"
-String formattedText = api.format("crystals", 1500.0);
-
-// Formato corto abreviado: ej. "❖1.5k"
-String formattedShort = api.formatShort("crystals", 1500.0);
-
-// Componente Adventure nativo con colores/gradientes:
-net.kyori.adventure.text.Component component = api.formatComponent("crystals", 1500.0);
-player.sendMessage(component);
-```
-
----
-
-### 6. Consultar Top Balances (Rankings)
-```java
-// Obtener los 10 mejores balances de una moneda
-api.getTopBalances("crystals", 10).thenAccept(entries -> {
-    for (TopEntry entry : entries) {
-        getLogger().info("#" + entry.rank() + " " + entry.username() + " - " + entry.balance());
-    }
-});
-```
-
----
-
-### 7. Escuchar Eventos de Transacciones
-ZenEconomy dispara el evento `EconomyTransactionEvent` en cada depósito, retiro o transferencia:
+### 5. Evento de Transacciones (`EconomyTransactionEvent`)
+Se dispara **antes** de aplicar cualquier cambio y es 100% cancelable. Tipos: `DEPOSIT`, `WITHDRAW`, `SET`, `TRANSFER`, `EXCHANGE`, `NOTE_CREATE`, `NOTE_REDEEM`, `TAX`, `MIGRATION`.
 
 ```java
 import com.cuac_xd.zeneconomy.api.events.EconomyTransactionEvent;
@@ -216,9 +164,8 @@ public class TransactionListener implements Listener {
         UUID uuid = event.getPlayerUuid();
         String currency = event.getCurrencyId();
         double amount = event.getAmount();
-        EconomyTransactionEvent.TransactionType type = event.getTransactionType();
 
-        // Puedes cancelar la transacción si lo deseas:
+        // Cancelar si la transacción no cumple reglas del servidor:
         // event.setCancelled(true);
     }
 }

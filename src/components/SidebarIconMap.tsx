@@ -36,6 +36,7 @@ import {
   Activity,
   Award,
   BookOpen,
+  Pickaxe,
 } from 'lucide-react';
 
 export function getSidebarIcon(slug: string, isFolder: boolean = false): React.ReactNode {
@@ -54,6 +55,8 @@ export function getSidebarIcon(slug: string, isFolder: boolean = false): React.R
     if (s.includes('economy')) return <Coins className="size-4 text-zinc-400 group-hover:text-zinc-200" />;
     if (s.includes('chat')) return <MessageSquare className="size-4 text-zinc-400 group-hover:text-zinc-200" />;
     if (s.includes('rankups')) return <Award className="size-4 text-zinc-400 group-hover:text-zinc-200" />;
+    if (s.includes('blockregen')) return <Pickaxe className="size-4 text-zinc-400 group-hover:text-zinc-200" />;
+    if (s.includes('contest')) return <Trophy className="size-4 text-zinc-400 group-hover:text-zinc-200" />;
     return <Box className="size-4 text-zinc-400 group-hover:text-zinc-200" />;
   }
 

@@ -1,0 +1,44 @@
+---
+title: "Dureza de Bloques y Breaking Power"
+description: "Sistema de nivel de minería al estilo Hypixel SkyBlock e inmunidad a insta-break."
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Dureza de Bloques y Breaking Power
+
+---
+
+El sistema de **Breaking Power** emula las mecánicas de *Hypixel SkyBlock*: asigna a cada bloque un nivel mínimo de poder requerido para poder ser recolectado.
+
+Si el jugador intenta romper el bloque con una herramienta cuyo poder sea inferior al requerido:
+1. El evento de rotura es cancelado de inmediato.
+2. El bloque no se rompe ni suelta botín.
+3. Se muestra un mensaje de advertencia y un sonido de impacto metálico (`ITEM_SHIELD_BLOCK`).
+
+```yaml
+ANCIENT_DEBRIS:
+  delay: 180
+  replace-block: CRYING_OBSIDIAN
+  breaking-power:
+    # Poder requerido para minar este bloque
+    required-power: 6
+    # Mensaje mostrado si la herramienta no alcanza el nivel
+    insufficient-power-message: "<red>✖ Necesitas una piqueta con <gold>Breaking Power 6</gold> para minar este mineral.</red>"
+    # Sonido de rechazo
+    deny-sound: "ITEM_SHIELD_BLOCK"
+```
+
+---
+
+### Inmunidad a Insta-Break (Anti Haste Exploit)
+Permite bloquear la rotura instantánea de bloques de alto valor provocada por efectos como *Haste II / Prisa Minera* y encantamientos de Eficiencia elevados:
+
+```yaml
+OBSIDIAN:
+  delay: 45
+  replace-block: BEDROCK
+  # Impide que el bloque sea roto instantáneamente sin importar encantamientos
+  anti-instabreak: true
+  min-break-time-ms: 800 # Milisegundos mínimos de animación requeridos
+```

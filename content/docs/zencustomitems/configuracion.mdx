@@ -1,11 +1,17 @@
 ---
 title: "Configuración y Comandos"
-description: "Ajustes globales de config.yml, messages.yml, comandos administrativos y sistema de actualización."
+description: "Ajustes globales de config.yml, messages.yml, comandos administrativos, editor web LuckPerms-style y sistema de actualización."
 ---
 
 import { Callout } from 'fumadocs-ui/components/callout';
 
-ZenCustomItems organiza sus recursos de forma limpia y desacoplada para facilitar el mantenimiento en servidores de producción.
+**ZenCustomItems** delega su motor central de evaluación en **ZenCore** (`ZenCoreAPI.engine` y `ZenCoreAPI.cooldowns`). Esta arquitectura desacoplada garantiza:
+
+* **Efectos, Condiciones y Filtros Unificados**: Cualquier mecánica registrada en ZenCore (habilidades globales de combate, auras, boosters o tags) está disponible inmediatamente para cualquier ítem sin duplicar código.
+* **Cooldowns Centralizados**: Los tiempos de reutilización de los triggers se gestionan mediante el gestor unificado de cooldowns de ZenCore (`ZenCoreAPI.cooldowns.set`), con feedback instantáneo al jugador mediante la barra de acción (`sendActionBar`).
+* **Puente Bidireccional**: El plugin expone sus propios efectos y condiciones al motor de ZenCore y viceversa, traduciendo de forma transparente `TriggerContext` a `ZenExecutionContext`.
+
+---
 
 ## Estructura del Plugin
 
@@ -14,7 +20,7 @@ plugins/ZenCustomItems/
 ├── config.yml           # Ajustes globales, web editor e integraciones
 ├── messages.yml         # Textos configurables con soporte MiniMessage y Legacy
 ├── items/               # Cada ítem activo vive en su propio archivo .yml
-│   ├── _example.yml     # Archivos que inician con '_' NO se cargan (documentación)
+│   ├── _example.yml     # Archivos que inician con '_' NO se cargan (plantillas)
 │   ├── copper_blade.yml
 │   └── inferno_set.yml  # Sets completos en un solo archivo
 ```
@@ -25,7 +31,7 @@ plugins/ZenCustomItems/
 
 ```yaml
 # ==========================================
-# ZenCustomItems Global Configuration
+#      ZenCustomItems Global Configuration
 # ==========================================
 
 general:
@@ -51,7 +57,7 @@ recipes:
     auto-discover: true
     discover-on-join: true
 
-integrations:
+integraciones:
   placeholderapi: true
   vault: true
   auraskills: true
@@ -74,7 +80,7 @@ prefix: "<gradient:#00ffff:#7a5cff><bold>ZenCustomItems</bold></gradient> <gray>
 no-permission: "<red>No tienes permiso para ejecutar este comando."
 item-saved: "<green>El ítem <yellow>%item%</yellow> ha sido guardado exitosamente."
 item-updated: "<green>Se actualizaron <aqua>%count%</aqua> ítems en los inventarios."
-cooldown: "<red>⏳ En enfriamiento: <yellow>%time%s"
+cooldown: "<red>En enfriamiento: <yellow>%time%s"
 ```
 
 ---
@@ -84,22 +90,59 @@ cooldown: "<red>⏳ En enfriamiento: <yellow>%time%s"
 | Comando | Permiso | Descripción |
 | :--- | :--- | :--- |
 | `/zci help` | `zencustomitems.use` | Muestra la ayuda interactiva de comandos. |
-| `/zci give <jugador> <item> [cant]` | `zencustomitems.give` | Entrega un ítem personalizado al inventario. |
+| `/zci give <jugador> <item> [cant]` | `zencustomitems.give` | Entrega un ítem personalizado a un jugador. |
+| `/zci list` | `zencustomitems.admin` | Lista todos los identificadores de ítems cargados en memoria. |
 | `/zci editor [item]` | `zencustomitems.editor` | Abre el editor GUI interactivo in-game. |
-| `/zci editor-web` | `zencustomitems.editor` | Genera un enlace temporal al editor web seguro. |
-| `/zci apply <code>` | `zencustomitems.editor` | Descarga y aplica los cambios realizados en la web. |
-| `/zci export <item>` | `zencustomitems.admin` | Exporta la definición del ítem en formato Base64. |
-| `/zci import <base64>` | `zencustomitems.admin` | Importa e instala un ítem desde un código Base64. |
+| `/zci editor-web` | `zencustomitems.editor` | Genera una sesión segura e imprime el enlace al editor web. |
+| `/zci apply <code>` | `zencustomitems.editor` | Descarga, valida y aplica los cambios realizados en el editor web. |
+| `/zci export <item>` | `zencustomitems.admin` | Exporta la definición del ítem en formato Base64 copiable. |
+| `/zci import <base64>` | `zencustomitems.admin` | Importa y registra un ítem desde un código Base64. |
 | `/zci update <jugador>` | `zencustomitems.update` | Actualiza todos los ítems del inventario del jugador. |
 | `/zci update-held` | `zencustomitems.update` | Actualiza el ítem que el jugador tiene en la mano. |
 | `/zci flags` | `zencustomitems.flags` | Menú interactivo de banderas de comportamiento. |
-| `/zci reload` | `zencustomitems.admin` | Recarga todas las configuraciones e ítems del disco. |
+| `/zci reload` | `zencustomitems.admin` | Recarga todas las configuraciones, ítems y recetas desde disco. |
+
+---
+
+## Editor Web (LuckPerms Style & Monaco Engine)
+
+ZenCustomItems incluye un editor web completo desarrollado en React 19 + TypeScript + Vite:
+
+1. **Flujo de Edición**:
+   * Ejecuta `/zci editor-web` en el juego o consola.
+   * El plugin sube de forma asíncrona todos los ítems a la sesión web y entrega un enlace único (ej. `https://zci-editor.zenforge.online/?id=...`).
+   * Modifica visualmente los ítems, crea recetas en la mesa de crafteo interactiva, añade triggers y condiciones.
+   * Pulsa **Apply In-Game** en la esquina superior derecha para recibir un código de aplicación (`ZCI-XXXXXX`).
+   * Ejecuta `/zci apply ZCI-XXXXXX` en tu servidor. Los archivos YAML se actualizarán en disco y los ítems se sincronizarán en vivo sin reiniciar.
+2. **Editor de Código Monaco Integrado**:
+   * En la pestaña **YAML Source**, dispones del editor Monaco (el motor de VS Code).
+   * Búsqueda y reemplazo con `Ctrl + F`.
+   * Coloreado de sintaxis YAML con tema oscuro minimalista (`#000000` / `#09090b` / `#2563eb`).
+   * Plegado de bloques de código y minimapa interactivo.
+3. **Sidebar Modernizado**:
+   * Barra de píldoras horizontales (`Category Pills`) para filtrar al instante por categoría (`WEAPON`, `ARMOR`, `TOOL`, etc.).
+   * Conmutador de vista rápida (*Flat List* vs *Categorías Agrupadas*).
+   * Tarjetas de ítem con slot de icono dedicado y badges de triggers activos (`⚡ N`).
 
 ---
 
 ## Sistema de Actualización Automática
 
-Cuando modificas un ítem en `/zci editor` o incrementas su `definition-version` en el archivo YAML:
+Cuando modificas un ítem en el editor web, en el GUI o incrementas su `definition-version`:
 1. **Conservación de Estado**: Gemas engastadas en sockets, nivel de upgrade (+1, +2), reforjas y durabilidad actual **se conservan al 100%**.
 2. **Propagación en Vivo**: El plugin actualiza los ítems de todos los jugadores conectados instantáneamente.
 3. **Actualización Lazy**: Si un jugador tiene el ítem en mano y no ha abierto su inventario, se sincroniza en el primer clic o ataque sin requerir comandos manuales.
+
+---
+
+## Seguridad y Protección de Datos
+
+1. **Protección contra Path Traversal en `/zci apply`**:
+   * Los identificadores de ítem recibidos desde el editor web son validados estrictamente con el regex `^[a-z0-9_-]+$`.
+   * Se rechaza cualquier carga con caracteres `..`, `/` o `\`.
+   * Se verifica mediante rutas canónicas (`canonicalFile.parentFile == itemsFolder`) que ningún archivo pueda ser escrito fuera del directorio seguro `plugins/ZenCustomItems/items/`.
+2. **Tokens Criptográficos de Sesión**:
+   * Los identificadores de sesión en modo embebido se generan con tokens hexadecimales de 32 caracteres (eliminando colisiones y predicciones).
+   * Se implementa un mecanismo de expiración automática (TTL de 30 minutos) con recolección de basura periódica en memoria.
+3. **Escritura Asíncrona en Disco**:
+   * El comando `/zci apply` procesa la serialización y escritura de archivos en un hilo asíncrono para no congelar los ticks del servidor (evita caídas de TPS en packs de 50+ ítems).

@@ -1,0 +1,40 @@
+---
+title: "Bloques de Acción e Interactivos"
+description: "Bloques misteriosos, cofres de recompensa y efectos al interactuar."
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Bloques de Acción e Interactivos
+
+---
+
+ZenBlockRegen permite convertir cualquier bloque del juego en un **Bloque de Acción** ("Lucky Block", depósito de recursos o bloque interactivo). Cuando el jugador rompe o hace clic derecho sobre él, se ejecutan comandos, se entregan recompensas monetarias o se invocan partículas personalizadas antes de iniciar su ciclo de regeneración.
+
+### Parámetros Configurables en `action:`
+
+```yaml
+EMERALD_BLOCK:
+  delay: 60
+  replace-block: BEDROCK
+  action:
+    # Tipo de activación: BREAK o RIGHT_CLICK
+    trigger: BREAK
+    # Sonido reproducido al activar el bloque
+    sound: "UI_TOAST_CHALLENGE_COMPLETE"
+    sound-volume: 1.0
+    sound-pitch: 1.2
+    # Efecto visual
+    particle: "TOTEM_OF_UNDYING"
+    particle-count: 30
+    # Mensaje enviado al jugador (MiniMessage)
+    message: "<gradient:#00b09b:#96c93d><bold>¡DEPÓSITO ENCONTRADO!</bold></gradient> <gray>Has recibido un bonus especial.</gray>"
+    # Comandos ejecutados desde la consola ({player} = ejecutor)
+    commands:
+      - "eco give {player} 500"
+      - "zencustomitems give {player} gema_minera 1"
+    # Probabilidad de activación (1.0 = 100%, 0.25 = 25%)
+    chance: 1.0
+    # Impide que el bloque suelte su ítem vanilla regular al romperse
+    cancel-vanilla-drop: true
+```

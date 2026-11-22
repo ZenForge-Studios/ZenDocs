@@ -1,0 +1,40 @@
+---
+title: "ZenContest"
+description: "Documentación oficial, guías de configuración y arquitectura de ZenContest."
+---
+
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# ZenContest
+
+Bienvenido a la documentación oficial de **ZenContest**, el plugin de competencias y eventos periódicos de alto rendimiento para servidores **PaperMC (1.21+)**, desarrollado en **Kotlin 2.1+** con integración nativa a la suite **ZenSeries** a través de **ZenCore**.
+
+---
+
+## Descripción General
+
+**ZenContest** es un sistema automatizado de torneos y competencias que replica e innova sobre las mecánicas de *Jacob's Farming Contest* de Hypixel Skyblock. Los jugadores compiten durante periodos determinados (por ejemplo, 20 minutos) recolectando objetivos específicos (cultivos, minerales, madera, peces o criaturas).
+
+### Características Destacadas:
+- **Adventure API Nativa:** Todo el sistema de textos utiliza etiquetas MiniMessage (`<gradient>`, `<gold>`, `<hover>`, etc.).
+- **Zero-Database Block Tracker:** Al operar junto a **ZenCore**, los bloques colocados por jugadores se guardan en el `PersistentDataContainer` (PDC) de los Chunks, eliminando el lag por escrituras SQL continuas.
+- **Sistema de Brackets Dinámicos:** Asignación de rangos (Diamante, Platino, Oro, Plata, Bronce) mediante percentiles de participantes o récords dinámicos (*Dynamic Benchmarks*).
+- **Tienda de Medallas y Recompensas:** Interfaz gráfica integrada (`/contest shop`) para intercambiar medallas y tickets por premios especiales.
+- **Scoreboards & BossBars Ultra-Optimizadas:** Dirty-checking para transmitir paquetes únicamente cuando los valores cambian, además de integración directa con **TAB**.
+
+---
+
+## Secciones de la Documentación
+
+<Cards>
+  <Card title="Requisitos e Instalación" href="/docs/zencontest/requisitos_del_sistema" description="Paper 1.21+, Java 21 y dependencias de la suite Zen." />
+  <Card title="Comandos y Permisos" href="/docs/zencontest/comandos_y_permisos" description="Comandos de jugador, interfaz gráfica y comandos de administración." />
+  <Card title="Placeholders (PAPI)" href="/docs/zencontest/placeholders" description="Identificadores para marcadores, tableros y HUDs." />
+  <Card title="Disciplinas Competitivas" href="/docs/zencontest/disciplinas" description="Agricultura, Minería, Tala, Pesca y Caza." />
+  <Card title="Mecánicas Estilo Jacob" href="/docs/zencontest/mecanicas_jacob" description="Brackets percentiles, benchmarks dinámicos y medallas." />
+  <Card title="Configuración (config.yml)" href="/docs/zencontest/config-yml" description="Programador cron, zona horaria y opciones globales." />
+  <Card title="Concursos (contests/*.yml)" href="/docs/zencontest/contests-yml" description="Definición individual de eventos, objetivos y tablas de premios." />
+  <Card title="Integración con TAB" href="/docs/zencontest/integracion_tab" description="Scoreboards contextuales dinámicos sin solapamientos." />
+  <Card title="Preguntas Frecuentes" href="/docs/zencontest/faq" description="Solución a dudas comunes y optimización de rendimiento." />
+</Cards>

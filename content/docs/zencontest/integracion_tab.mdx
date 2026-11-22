@@ -1,0 +1,37 @@
+---
+title: "Integración con TAB"
+description: "Configuración de scoreboards contextuales con TAB v5.0+."
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Integración con TAB
+
+---
+
+ZenContest cuenta con una integración nativa profunda con el plugin **TAB** (de *NEZNAMY*, versión 5.0.0 o superior). Esto permite activar un scoreboard dinámico durante los concursos sin solapar ni desconfigurar el scoreboard principal de tu modalidad.
+
+### Configuración en `plugins/TAB/config.yml`
+
+Añade la siguiente sección a la lista de `scoreboards:` en tu archivo de configuración de TAB:
+
+```yaml
+scoreboards:
+  # Scoreboard temporal durante concursos de ZenContest
+  zencontest-active:
+    # Condición de activación: se activa automáticamente si hay un concurso en curso
+    display-condition: "%zencontest_has_active%=true"
+    title: "<gradient:#FFE000:#799F0C><b>CONCURSO AGRÍCOLA</b></gradient>"
+    lines:
+      - "&7&m-----------------------"
+      - "&fEvento: <yellow>%zencontest_active_name%"
+      - "&fTiempo restante: <green>%zencontest_active_time_left%"
+      - ""
+      - "&eTus Estadísticas:"
+      - "  &7Puntos: <gold>%zencontest_player_score%"
+      - "  &7Posición: <aqua>%zencontest_player_position%"
+      - "  &7Bracket: %zencontest_player_bracket%"
+      - ""
+      - "&fPróximo rango: <gray>%zencontest_bracket_needed_gold% pts"
+      - "&7&m-----------------------"
+```
